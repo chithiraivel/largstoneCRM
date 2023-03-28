@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 
 const SidebarItem = props => {
 
-    const active = props.active ? 'active' : ''
+    const active = props.active ? 'active' : '';
 
     return (
         <div className="sidebar__item">
@@ -13,7 +13,7 @@ const SidebarItem = props => {
                 </span>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default SidebarItem
+export default SidebarItem;

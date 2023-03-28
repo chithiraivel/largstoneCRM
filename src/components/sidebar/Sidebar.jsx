@@ -1,16 +1,16 @@
-import React from 'react'
+import React from 'react';
 
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
-import './sidebar.css'
+import './sidebar.css';
 
-import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/logo.png';
 
-import sidebar_items from '../../assets/JsonData/sidebar_routes.json'
+import sidebar_items from '../../assets/JsonData/sidebar_routes.json';
 
 const SidebarItem = props => {
 
-    const active = props.active ? 'active' : ''
+    const active = props.active ? 'active' : '';
 
     return (
         <div className="sidebar__item">
@@ -21,12 +21,12 @@ const SidebarItem = props => {
                 </span>
             </div>
         </div>
-    )
-}
+    );
+};
 
 const Sidebar = props => {
 
-    const activeItem = sidebar_items.findIndex(item => item.route === props.location.pathname)
+    const activeItem = sidebar_items.findIndex(item => item.route === props.location.pathname);
 
     return (
         <div className='sidebar'>
@@ -45,7 +45,7 @@ const Sidebar = props => {
                 ))
             }
         </div>
-    )
-}
+    );
+};
 
-export default Sidebar
+export default Sidebar;

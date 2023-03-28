@@ -5,6 +5,11 @@
         "icon": "bx bx-category-alt"
     },
     {
+        "display_name": "Students",
+        "route": "/students",
+        "icon": "bx bx-category-alt"
+    },
+    {
         "display_name": "Customers",
         "route": "/customers",
         "icon": "bx bx-user-pin"

@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 
-import Table from '../components/table/Table'
+import Table from '../components/table/Table';
 
-import customerList from '../assets/JsonData/customers-list.json'
+import customerList from '../assets/JsonData/customers-list.json';
 
 const customerTableHead = [
     '',
@@ -12,9 +12,9 @@ const customerTableHead = [
     'total orders',
     'total spend',
     'location'
-]
+];
 
-const renderHead = (item, index) => <th key={index}>{item}</th>
+const renderHead = (item, index) => <th key={index}>{item}</th>;
 
 const renderBody = (item, index) => (
     <tr key={index}>
@@ -26,7 +26,7 @@ const renderBody = (item, index) => (
         <td>{item.total_spend}</td>
         <td>{item.location}</td>
     </tr>
-)
+);
 
 const Customers = () => {
     return (
@@ -50,7 +50,7 @@ const Customers = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Customers
+export default Customers;
