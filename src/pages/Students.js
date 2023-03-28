@@ -1,5 +1,5 @@
-import React,{useEffect, useState} from 'react';
-import { Box, Breadcrumbs, Button, Typography,Link as Links } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ export default function Students() {
         axios.post('http://localhost:8080/register/listall').then((res) => {
             setRows([...res.data.result]);
         });
-    },[])
+    }, [])
 
     // const renderStudentHead = (item, index) => (<th key={index}>{item}</th>)
 
@@ -30,13 +30,6 @@ export default function Students() {
     //     </tr>
     // )
 
-    const handleCrumbClick = (evnt) => {
-        evnt.preventDefault();
-    }
-
-    const breadCrumbs = [<Links underline="none"  key="1" color="black" >Students Table</Links>,];
-
-    
     const columns = [
         {
             field: "id",
@@ -45,9 +38,9 @@ export default function Students() {
             editable: false,
             headerClassName: 'super-app-theme--header',
             headerAlign: "center",
-            align:"center"
+            align: "center"
         },
-        { field: "StudentName", headerName: "Student Name", width: 200, editable: false, headerClassName: 'super-app-theme--header', headerAlign: "center", align:"center" },
+        { field: "StudentName", headerName: "Student Name", width: 200, editable: false, headerClassName: 'super-app-theme--header', headerAlign: "center", align: "center" },
         {
             field: "StudentContactNum",
             headerName: "Contact Number",
@@ -55,7 +48,7 @@ export default function Students() {
             editable: false,
             headerClassName: 'super-app-theme--header',
             headerAlign: "center",
-            align:"center"
+            align: "center"
         },
         {
             field: "StudentEmail",
@@ -64,7 +57,7 @@ export default function Students() {
             editable: false,
             headerClassName: 'super-app-theme--header',
             headerAlign: "center",
-            align:"center"
+            align: "center"
         },
         {
             field: "ParentContactNum",
@@ -73,7 +66,7 @@ export default function Students() {
             editable: false,
             headerClassName: 'super-app-theme--header',
             headerAlign: "center",
-            align:"center"
+            align: "center"
         },
         {
             field: "CourseEnrolledFor",
@@ -82,7 +75,7 @@ export default function Students() {
             editable: false,
             headerClassName: 'super-app-theme--header',
             headerAlign: "center",
-            align:"center"
+            align: "center"
         },
         {
             field: "Batch",
@@ -91,20 +84,20 @@ export default function Students() {
             editable: false,
             headerClassName: 'super-app-theme--header',
             headerAlign: "center",
-            align:"center"
+            align: "center"
         }
     ];
-    
+
     return (
         <div>
-            <AppBreadcrumbs subpage='Home' crntPage = 'Students' path='/'/>
-            <div style={{ background: "#FFF", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", padding: "20px", borderRadius:"20px" }}>
-                <Box sx={{display:"flex", justifyContent:"space-between"}}>
-                    <Typography sx={{fontWeight:"bold"}}>Student Table</Typography>
-                    <Link to='/students/forms' underline="none"> <Button  style={{backgroundColor:"#4daaff"}} disableRipple disableElevation variant='contained'>Add New</Button></Link>
+            <AppBreadcrumbs crntPage='Students' path='/' />
+            <div style={{ background: "#FFF", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", padding: "20px", borderRadius: "20px" }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography sx={{ fontWeight: "bold" }}>Student Table</Typography>
+                    <Link to='/students/forms' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
                 </Box>
                 <StyledDataGrid columns={columns} rows={rows} />
             </div>
-            </div>
-  )
+        </div>
+    )
 };

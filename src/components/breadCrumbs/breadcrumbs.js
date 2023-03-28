@@ -1,50 +1,32 @@
-import { Breadcrumbs } from '@mui/material';
+import { Breadcrumbs, Divider, Typography } from '@mui/material';
 import React from 'react'
-import { Link} from 'react-router-dom'
-
-const AppBreadcrumbs = ({ subpage,crntPage,path }) => {
+import { Link } from 'react-router-dom'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+const AppBreadcrumbs = ({ subpage, crntPage, path }) => {
   return (
-    <div>
-          <Breadcrumbs separator=' > ' aria-label="breadcrumb">
-              <Link to={path}>{subpage}</Link>
-              <p>{crntPage}</p>
-        </Breadcrumbs>
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px", height: "30px" }}>
+      <Typography sx={{ fontWeight: "700", mr: "10px", color: '#349eff' }}>{crntPage}</Typography>
+      <Divider orientation="vertical" sx={{ mr: "10px", borderRightWidth: 3 }} variant="middle" flexItem />
+      <Breadcrumbs aria-label="breadcrumb" separator={<NavigateNextIcon />} sx={{ fontWeight: "700" }}>
+        <Link to="/">
+          Home
+        </Link>
+        {
+          subpage ? (<Link to={path}>
+            {subpage}
+          </Link>) : ""
+        }
+        <span
+          underline="hover"
+          color="inherit"
+        >
+          {crntPage}
+        </span>
+
+      </Breadcrumbs>
     </div>
   )
 }
 
-
-
-
-// import Breadcrumbs from '@mui/material/Breadcrumbs';
-// import Link from '@mui/material/Link';
-// import * as React from 'react';
-
-// export default function DynamicBreadcrumbs() {
-//   const crumbs = [
-//     { name: 'Home', href: '/' },
-//     { name: 'Core', href: '/getting-started/installation/' },
-//     { name: 'Breadcrumb' },
-//   ];
-
-//   return (
-//     <Breadcrumbs aria-label="breadcrumb">
-//       {crumbs.map((crumb, index) => {
-//         const last = index === crumbs.length - 1;
-//         const href = crumb.href ?? '#';
-
-//         return last ? (
-//           <Typography color="text.primary" key={crumb.name}>
-//             {crumb.name}
-//           </Typography>
-//         ) : (
-//           <Link underline="hover" color="inherit" href={href} key={crumb.name}>
-//             {crumb.name}
-//           </Link>
-//         );
-//       })}
-//     </Breadcrumbs>
-//   );
-// }
 
 export default AppBreadcrumbs;
