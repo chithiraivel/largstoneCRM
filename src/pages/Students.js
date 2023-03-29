@@ -19,58 +19,66 @@ export default function Students() {
     const columns = [
         {
             field: "id",
-            headerName: "Sl.No",
-            width: 75,
+            headerName: " ",
+            width:40 ,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
-        { field: "StudentName", headerName: "Student Name", width: 200, editable: false, headerClassName: 'super-app-theme--header', headerAlign: "center", align: "center" },
+        { 
+            field: "StudentName", 
+            headerName: "Student Name", 
+            width: 200, 
+            editable: false, 
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
         {
             field: "StudentContactNum",
             headerName: "Contact Number",
             width: 200,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "StudentEmail",
             headerName: "Email",
             width: 200,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "ParentContactNum",
             headerName: "Parent Number",
             width: 150,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "CourseEnrolledFor",
-            headerName: "Course.",
+            headerName: "Course",
             width: 150,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "Batch",
-            headerName: "Batch",
+            headerName: "Batch Number",
             width: 160,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         }
     ];
 

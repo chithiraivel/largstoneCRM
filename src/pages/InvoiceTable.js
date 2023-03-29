@@ -20,83 +20,84 @@ export default function InvoiceTable() {
     const columns = [
         {
             field: "id",
-            headerName: "Sl.No",
+            headerName: "",
             width: 60,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "InvoiceGenDate",
             headerName: "Date",
             width: 120,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center", align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "StudentName",
             headerName: "Student Name",
             width: 160,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "CourseName",
             headerName: "Course Name",
             width: 160,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "Term",
             headerName: "Term",
             width: 100,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "TermFee",
             headerName: "Term Fee.",
             width: 160,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "Discount",
             headerName: "Discount",
             width: 100,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "TotalAmount",
             headerName: "Total Amount",
             width: 160,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
         {
             field: "PaymentMethod",
             headerName: "Payment Method",
             width: 160,
             editable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: "center",
-            align: "center"
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
         },
     ];
 

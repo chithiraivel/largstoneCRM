@@ -33,16 +33,16 @@ export default function Form(props) {
     const [StudentName, setStudentName] = useState("");
     const [StudentContactNumber, setStudentContactNumber] = useState("");
     const [Email, setEmail] = useState('');
-    const [DOB, setDOB] = useState(moment(new Date()).format('YYYY-MM-DD'));
+    const [DOB, setDOB] = useState("");
 
     const [SSLCboard, setSSLCboard] = useState('');
-    const [SSLCschool, setSSLCschool] = useState('');
-    const [SSLCpassedYear, setSSLCpassedYear] = useState('');
+    const [SSLCSchoolName, setSSLCSchool] = useState('');
+    const [SSLCPassedYear, setSSLCPassedYear] = useState('');
     const [SSLCPercentage, setSSLCPercentage] = useState('');
 
     const [HSCboard, setHSCboard] = useState('');
-    const [HSCschool, setHSCschool] = useState('');
-    const [HSCpassedYear, setHSCpassedYear] = useState('');
+    const [HSCSchoolName, setHSCSchoolName] = useState('');
+    const [HSCPassedYear, setHSCPassedYear] = useState('');
     const [HSCPercentage, setHSCPercentage] = useState('');
 
     const [UGDegreeName, setUGDegreeName] = useState('');
@@ -62,12 +62,44 @@ export default function Form(props) {
 
     const [GuardianName, setGuardianName] = useState("");
     const [GuardianNumber, setGaurdianNumber] = useState("");
+
     const [AdditionalCertificate, setAdditionalCertificate] = useState([{ "id": 1, "description": "" }]);
 
     const [BatchNumber, setBatchNumber] = useState("I");
     const [BatchStartingDate, setBatchStartingDate] = useState((moment(new Date()).format('YYYY-MM-DD')));
     const [CourseName, setCourseName] = useState("");
     const [CourseAdmissionFee, setCourseAdmissionFee] = useState("");
+
+    const [Error, setError] = useState({
+        regDate: false,
+        studentName: false,
+        studentContactNumber: false,
+        studentEmail: false,
+        DOB: false,
+        sslcBoard: false,
+        sslcSchoolName: false,
+        sslcPassedYear: false,
+        sslcPercentage: false,
+        hscBoard: false,
+        hscSchoolName: false,
+        hscPassedYear: false,
+        hscPercentage: false,
+        ugDegreeName: false,
+        ugCollegeName: false,
+        ugCollegePassedYear: false,
+        ugCollegePercentage: false,
+        pgDegreeName: false,
+        pgCollegeName: false,
+        pgCollegePassedYear: false,
+        pgCollegePercentage: false,
+        guardianName: false,
+        guardianNumber: false,
+        additionalCertificate: false,
+        batchNumber: false,
+        batchStartingDate: false,
+        courseName: false,
+        courseAdmissionFee: false,
+    });
 
     // const dataCol = {studentName, studentNumber, email, parentName, RegDate, batchNumber}
     const { register, handleSubmit, formState: { errors }, } = useForm();
@@ -92,20 +124,20 @@ export default function Form(props) {
                         <Typography variant='h6'>Student Details</Typography>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField value={RegDate} name='RegDate' type='date' fullWidth onChange={(e) => setRegDate(e.target.value)} size='small' label="Registration Date" />
+                        <TextField error={Error.regDate} helperText={Error.regDate ? "Registration Date Cannot be Empty" : ""} value={RegDate} type='date' fullWidth onChange={(e) => setRegDate(e.target.value)} size='small' label="Registration Date" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField value={StudentName} name='StudentName' {...register("StudentName", { required: "Enter the Student Name", maxLength: "20", })} error={Boolean(errors.StudentName)} helperText={errors.StudentName?.message} fullWidth onChange={(e) => setAdditionalCertificate(e.target.value)} size='small' label="Student Name" />
+                        <TextField error={Error.regDate} helperText={Error.studentName ? "Student Name field cannot be empty" : ""} value={StudentName} fullWidth onChange={(e) => setAdditionalCertificate(e.target.value)} size='small' label="Student Name" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField value={StudentContactNumber} name='StudentContactNumber' {...register("StudentContactNumber", { required: "Enter contact number" })} error={Boolean(errors.StudentContactNumber)} helperText={errors.StudentContactNumber?.message} fullWidth onChange={(e) => setStudentContactNumber(e.target.value)} size='small' label="Student contact Number" />
+                        <TextField error={Error.studentContactNumber} helperText={Error.studentContactNumber ? "Student Contact number needed" : ""} value={StudentContactNumber} fullWidth onChange={(e) => setStudentContactNumber(e.target.value)} size='small' label="Student contact Number" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField value={Email} name='Email' {...register("Email", { required: "Enter the E-mail" })} error={Boolean(errors.Email)} helperText={errors.Email?.message} fullWidth onChange={(e) => setEmail(e.target.value)} size='small' label="Email" />
+                        <TextField value={Email} error={Error.studentEmail} helperText={Error.studentEmail ? "Student E-mail field cannot be empty" : ""} fullWidth onChange={(e) => setEmail(e.target.value)} size='small' label="Email" />
                     </Grid>
 
                     <Grid item xs={10} md={3.5}>
-                        <TextField value={DOB} name='DOB' type='date' fullWidth onChange={(e) => setDOB(e.target.value)} size='small' label="Date of Birth" />
+                        <TextField value={DOB} error={Error.DOB} helperText={Error.DOB ? "Date of Birth needed!" : ""} type='date' fullWidth onChange={(e) => setDOB(e.target.value)} size='small' label="Date of Birth" />
                     </Grid>
                 </Grid>
 
@@ -118,16 +150,16 @@ export default function Form(props) {
                             <Typography sx={{ fontWeight: "bold" }}>SSLC</Typography>
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField name='TENboard' {...register("TENboard", { required: "Enter the school board", })} error={Boolean(errors.TENboard)} helperText={errors.TENboard?.message} fullWidth onChange={(e) => setSSLCboard(e.target.value)} size='small' label="Board" />
+                            <TextField value={SSLCboard} error={Error.sslcBoard} helperText={Error.sslcBoard ? "Select the Board of Learning" : ""} fullWidth onChange={(e) => setSSLCboard(e.target.value)} size='small' label="Board" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField name='TENschool' {...register("TENschool", { required: "Enter the school Name", })} error={Boolean(errors.TENschool)} helperText={errors.TENschool?.message} fullWidth onChange={(e) => setSSLCschool(e.target.value)} size='small' label="School Name" />
+                            <TextField value={SSLCSchoolName} error={Error.sslcSchoolName} helperText={Error.sslcSchoolName ? "School Name field cannot be Empty" : ""} fullWidth onChange={(e) => setSSLCSchool(e.target.value)} size='small' label="School Name" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField fullWidth label="Passed-out Year" size="small" />
+                            <TextField value={SSLCPassedYear} error={Error.sslcPassedYear} helperText={Error.sslcPassedYear ? "Field Cannot be Empty" : ""} onChange={(e) => setSSLCPassedYear(e.target.value)} fullWidth on label="Passed-out Year" size="small" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField fullWidth label="Percentage of Marks" size="small" />
+                            <TextField value={SSLCPercentage} error={Error.sslcPercentage} helperText={Error.sslcPercentage ? "Field Cannot be Empty" : ""} onChange={(e) => setSSLCPercentage(e.target.value)} fullWidth label="Percentage of Marks" size="small" />
                         </Grid>
                     </Grid>
                     <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
@@ -135,33 +167,30 @@ export default function Form(props) {
                             <Typography sx={{ fontWeight: "bold" }}>HSC</Typography>
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField name='TWELFTHboard' {...register("TWELFTHboard", { required: "Enter the school bosrd" })} error={Boolean(errors.TWELFTHboard)} helperText={errors.TWELFTHboard?.message} fullWidth onChange={(e) => setHSCboard(e.target.value)} size='small' label="Board" />
+                            <TextField value={HSCboard} error={Error.hscBoard} helperText={Error.hscBoard ? "Select the Board of Learning" : ""} fullWidth onChange={(e) => setHSCboard(e.target.value)} size='small' label="Board" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField name='TWELFTHschool' {...register("TWELFTHschool", { required: "Enter the school Name", })} error={Boolean(errors.TWELFTHschool)} helperText={errors.TWELFTHschool?.message} fullWidth onChange={(e) => setHSCschool(e.target.value)} size='small' label="School Name" />
+                            <TextField value={HSCSchoolName} error={Error.hscSchoolName} helperText={Error.hscSchoolName ? "School Name field cannot be Empty" : ""} fullWidth onChange={(e) => setHSCSchoolName(e.target.value)} size='small' label="School Name" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField fullWidth label="Passed-out Year" size="small" />
+                            <TextField value={HSCPassedYear} error={Error.hscPassedYear} helperText={Error.hscPassedYear ? "Field Cannot be Empty" : ""} onChange={(e) => setHSCPassedYear(e.target.value)} fullWidth on label="Passed-out Year" size="small" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField fullWidth label="Percentage of Marks" size="small" />
+                            <TextField value={HSCPercentage} error={Error.hscPercentage} helperText={Error.hscPercentage ? "Field Cannot be Empty" : ""} onChange={(e) => setHSCPercentage(e.target.value)} fullWidth label="Percentage of Marks" size="small" />
                         </Grid>
                     </Grid>
                     <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
-                        <Grid item xs={12}>
-                            <Typography sx={{ fontWeight: "bold" }}>Under Graduate</Typography>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField value={UGDegreeName} error={Error.ugDegreeName} helperText={Error.ugDegreeName ? "Select the Degree" : ""} fullWidth onChange={(e) => setUGDegreeName(e.target.value)} size='small' label="Board" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField name='DegreeName' {...register("DegreeName", { required: "Enter the Degree", maxLength: "15", })} error={Boolean(errors.DegreeName)} helperText={errors.DegreeName?.message} fullWidth onChange={(e) => setUGDegreeName(e.target.value)} size='small' label="Degree" />
+                            <TextField value={UGCollegeName} error={Error.ugCollegeName} helperText={Error.ugCollegeName ? "College Name field cannot be Empty" : ""} fullWidth onChange={(e) => setUGCollegeName(e.target.value)} size='small' label="School Name" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField name='CollegeName' {...register("CollegeName", { required: "Enter the College Name", })} error={Boolean(errors.CollegeName)} helperText={errors.CollegeName?.message} fullWidth onChange={(e) => setUGCollegeName(e.target.value)} size='small' label="College Name" />
+                            <TextField value={UGCollegePassedYear} error={Error.ugCollegePassedYear} helperText={Error.ugCollegePassedYear ? "Field Cannot be Empty" : ""} onChange={(e) => setUGCollegePassedYear(e.target.value)} fullWidth on label="Passed-out Year" size="small" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField fullWidth label="Passed-out Year" size="small" />
-                        </Grid>
-                        <Grid item xs={10} md={3.5}>
-                            <TextField fullWidth label="Percentage of Marks" size="small" />
+                            <TextField value={UGCollegePercentage} error={Error.ugCollegePercentage} helperText={Error.ugCollegePercentage ? "Field Cannot be Empty" : ""} onChange={(e) => setUGCollegePercentage(e.target.value)} fullWidth label="Percentage of Marks" size="small" />
                         </Grid>
                     </Grid>
                 </Box>
@@ -169,12 +198,12 @@ export default function Form(props) {
                     <Grid item xs={12}>
                         <Typography variant='h6'>Parent/Guardian Details</Typography>
                     </Grid>
-                    <Grid item xs={10} md={3.5}>
-                        <TextField name='GuardianName' {...register("GuardianName", { required: "Enter the Name", })} error={Boolean(errors.GuardianName)} helperText={errors.GuardianName?.message} fullWidth onChange={(e) => setGuardianName(e.target.value)} size='small' label="Guardian/Parent Name" />
-                    </Grid>
-                    <Grid item xs={10} md={3.5}>
-                        <TextField name='ParentContactNumber' {...register("ParentContactNumber", { required: "Enter the Parent Contact Number", })} error={Boolean(errors.ParentContactNumber)} helperText={errors.ParentContactNumber?.message} fullWidth onChange={(e) => setGaurdianNumber(e.target.value)} size='small' label="Parent Contact Number" />
-                    </Grid>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField value={GuardianName} error={Error.guardianName} helperText={Error.guardianName ? "Guardian Name needed" : ""} fullWidth onChange={(e) => setGuardianName(e.target.value)} size='small' label="Board" />
+                        </Grid>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField value={GuardianNumber} error={Error.GuardianNumber} helperText={Error.guardianNumber ? "Guardian Number needed" : ""} fullWidth onChange={(e) => setGaurdianNumber(e.target.value)} size='small' label="School Name" />
+                        </Grid>
                 </Grid>
 
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>

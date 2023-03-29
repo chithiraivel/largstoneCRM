@@ -16,7 +16,6 @@ const AppBreadcrumbs = ({ prevPage, crntPage, path }) => {
       </Breadcrumbs>
     </div>
   )
-}
-
+};
 
 export default AppBreadcrumbs;

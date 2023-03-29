@@ -6,8 +6,8 @@
     },
     {
         "display_name": "Students",
-        "route": "/students",
-        "icon": "bx bx-category-alt"
+        "route": "/students/table",
+        "icon": "bx bx-user-pin"
     },
     {
         "display_name": "Customers",
@@ -20,38 +20,13 @@
         "icon": "bx bx-package"
     },
     {
-        "display_name": "Products",
-        "route": "/products",
-        "icon": "bx bx-package"
-    },
-    {
-        "display_name": "Orders",
-        "route": "/orders",
-        "icon": "bx bx-cart"
-    },
-    {
-        "display_name": "Analytics",
-        "route": "/analytics",
-        "icon": "bx bx-bar-chart-alt"
-    },
-    {
-        "display_name": "categories",
-        "route": "/categories",
+        "display_name": "Courses",
+        "route": "/courses/table",
         "icon": "bx bx-list-ol"
     },
     {
-        "display_name": "discount",
-        "route": "/discount",
-        "icon": "bx bx-gift"
-    },
-    {
-        "display_name": "inventory",
-        "route": "/inventory",
+        "display_name": "Batches",
+        "route": "/batches/table",
         "icon": "bx bx-store-alt"
-    },
-    {
-        "display_name": "settings",
-        "route": "/settings",
-        "icon": "bx bx-cog"
     }
 ]
