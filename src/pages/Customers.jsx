@@ -3,6 +3,7 @@ import React from 'react';
 import Table from '../components/table/Table';
 
 import customerList from '../assets/JsonData/customers-list.json';
+import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
 const customerTableHead = [
     '',
@@ -34,6 +35,7 @@ const Customers = () => {
             <h2 className="page-header">
                 customers
             </h2>
+            <AppBreadcrumbs crntPage='Customers' path='/customers' />
             <div className="row">
                 <div className="col-12">
                     <div className="card">

@@ -1,19 +1,9 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
-
-
-const VISIBLE_FIELDS = ['name', 'rating', 'country', 'dateCreated', 'isAdmin'];
+import { Pagination } from '@mui/material';
 
 export default function QuickFilteringGrid(props) {
-  const { data } = useDemoData({
-    dataSet: 'Employee',
-    visibleFields: VISIBLE_FIELDS, 
-    rowLength: 100,
-  });
-
-  // Otherwise filter will be applied on fields such as the hidden column id
 
   // const columns = React.useMemo(
   //   () => data.columns.filter((column) => VISIBLE_FIELDS.includes(column.field)),
@@ -21,14 +11,13 @@ export default function QuickFilteringGrid(props) {
   // );
  
   return (
-    <Box >
+    <Box>
       <DataGrid sx={{
         border: 0, 
         "& .MuiDataGrid-row:hover": { backgroundColor: "#4daaff", color: "#FFF" },
         '.MuiDataGrid-columnSeparator': { display: 'none' },
         '.MuiDataGrid-cell': { border: 'none' }, //tableData
-        '& .super-app-theme--header': { backgroundColor: 'rgb(250,250,251)', }, //className for header bg
-        '& .MuiDataGrid-columnHeaders': { borderBottom: "none", textAlign: "center" }, //tableHeader
+        '& .MuiDataGrid-columnHeaders': { borderBottom: "none", textAlign: "center",backgroundColor: 'rgb(250,250,251)', }, //tableHeader
         '& .MuiDataGrid-main': { my: 2 },  //table
         '& .MuiDataGrid-footerContainer': { border: 0 },
       }}
@@ -36,8 +25,9 @@ export default function QuickFilteringGrid(props) {
           pagination: { paginationModel: { pageSize: 5 }  }
         }}
         autoHeight
+        hideFooter={true}
         pageSizeOptions={[5, 10, 50]}
-        rows={props.rows || data}
+        rows={props.rows}
         disableColumnFilter
         disableColumnSelector
         disableRowSelectionOnClick
@@ -55,6 +45,9 @@ export default function QuickFilteringGrid(props) {
           },
         }}
       />
+      <Box sx={{display:'flex',justifyContent:'end'}} >
+        <Pagination sx={{'& .Mui-selected':{backgroundColor:"#4daaff", color:"#fff", '&: hover':{backgroundColor:"#4daaff"}}}} hideNextButton hidePrevButton color='primary' count={10}   />
+      </Box>
     </Box>
   );
 }

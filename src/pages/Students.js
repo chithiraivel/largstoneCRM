@@ -16,20 +16,6 @@ export default function Students() {
         });
     }, [])
 
-    // const renderStudentHead = (item, index) => (<th key={index}>{item}</th>)
-
-    // const renderStudentBody = (item, index) => (
-    //     <tr key={index}>
-    //         <td>{item.RegID}</td>
-    //         <td>{item.StudentName}</td>
-    //         <td>{item.StudentContactNum}</td>
-    //         <td>{item.StudentEmail}</td>
-    //         <td>{item.ParentContactNum}</td>
-    //         <td>{ item.CourseEnrolledFor}</td>
-    //         <td>{ item.Batch}</td>
-    //     </tr>
-    // )
-
     const columns = [
         {
             field: "id",

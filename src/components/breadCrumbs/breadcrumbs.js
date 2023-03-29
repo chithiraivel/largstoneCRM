@@ -1,8 +1,8 @@
 import { Breadcrumbs, Divider, Typography } from '@mui/material';
-import React from 'react'
+import React from 'react';
 import { Link } from 'react-router-dom'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-const AppBreadcrumbs = ({ subpage, crntPage, path }) => {
+const AppBreadcrumbs = ({ prevPage, crntPage, path }) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: "20px", height: "30px" }}>
       <Typography sx={{ fontWeight: "700", mr: "10px", color: '#349eff' }}>{crntPage}</Typography>
@@ -11,18 +11,8 @@ const AppBreadcrumbs = ({ subpage, crntPage, path }) => {
         <Link to="/">
           Home
         </Link>
-        {
-          subpage ? (<Link to={path}>
-            {subpage}
-          </Link>) : ""
-        }
-        <span
-          underline="hover"
-          color="inherit"
-        >
-          {crntPage}
-        </span>
-
+        {prevPage ? (<Link to={path}>{prevPage}</Link>) : ""}
+        <h3> {crntPage} </h3>
       </Breadcrumbs>
     </div>
   )

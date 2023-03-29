@@ -1,11 +1,25 @@
-import { Box, Breadcrumbs, Button, Grid, MenuItem, TextField, Typography, Link as Links } from '@mui/material';
+import { Box, Breadcrumbs, Button, Grid, MenuItem, TextField, Typography, Link as Links, createTheme, ThemeProvider } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment/moment';
-import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
+import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+
+const theme = createTheme({
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          input: {
+            border: 'none',
+          },
+        },
+      },
+    },
+  },
+});
 
 export default function Form(props) {
 
@@ -14,7 +28,6 @@ export default function Form(props) {
     }
 
     const Batch = [{ batchID: "1", batchNum: "I", batchStartingDate: "01-04-2023" }, { batchID: "2", batchNum: "II", batchStartingDate: "03-05-2023" }, { batchID: "3", batchNum: "III", batchStartingDate: "02-07-2023" }];
-    const breadCrumbs = [<Links underline="hover" href='/students' key="1" color="black" >Students Table</Links>, <Links underline="none" key="2" color="black" >Students Registration</Links>,];
 
     const [RegDate, setRegDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
     const [StudentName, setStudentName] = useState("");
@@ -70,9 +83,10 @@ export default function Form(props) {
     const handlesubmit = (e) => { e.preventDefault() };
 
     return (
+        <ThemeProvider theme={theme}>
         <form onSubmit={handleSubmit(OnSubmit)}>
-            <AppBreadcrumbs crntPage='Student Form' subpage='Students' path='/students' />
-            <Box sx={{ background: "#fff", pb: 3 }}>
+            <AppBreadcrumbs crntPage='Student Form' prevPage='Students Table' path='/students' />
+            <Box sx={{ background: "#fff", pb: 3, borderRadius:"25px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}>
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
                         <Typography variant='h6'>Student Details</Typography>
@@ -165,11 +179,11 @@ export default function Form(props) {
 
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
-                        <Typography variant='h6'>Additional Certifications <Button variant='contained' onClick={() => setAdditionalCertificate([...AdditionalCertificate, { "id": AdditionalCertificate.length + 1, "description": "" }])}>Add<AddCircleOutlineIcon /></Button></Typography>
+                        <Typography variant='h6'>Additional Certifications <Button disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff"}} onClick={() => setAdditionalCertificate([...AdditionalCertificate, { "id": AdditionalCertificate.length + 1, "description": "" }])}>Add<AddCircleOutlineIcon /></Button></Typography>
                     </Grid>
                     {AdditionalCertificate.map((val, ind) => {
                         return (<Grid item xs={10} md={3.5}>
-                            <TextField name='Certification' value={val.description} onChange={(e) => AdditionalCertificate[ind].description = e.target.value} fullWidth label="add here" size='small' />
+                            <TextField name='Certification' value={val.description} onChange={(e) => AdditionalCertificate[ind].description = e.target.value} fullWidth label="Add Certificates" size='small' />
                         </Grid>)
                     })}
                 </Grid>
@@ -196,11 +210,12 @@ export default function Form(props) {
                     </Grid>
                     {/* inputProps={{readOnly:true}} */}
                 </Grid>
-                <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
-                    <Button variant='contained' type='submit'>Confirm</Button>
-                    <Link to='/students'><Button sx={{ ml: 1 }} variant='outlined' color='error'>Back</Button></Link>
+                <Box sx={{ mt: 3, display: "flex", justifyContent: "end", mr:8 }}>
+                    <Button style={{backgroundColor:"#4daaff"}} disableElevation disableRipple variant='contained'>Confirm</Button>
+                    <Link to='/students'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>Back</Button></Link>
                 </Box>
             </Box>
-        </form>
+            </form>
+            </ThemeProvider>
     )
 }

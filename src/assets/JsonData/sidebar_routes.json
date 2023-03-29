@@ -15,6 +15,11 @@
         "icon": "bx bx-user-pin"
     },
     {
+        "display_name": "Invoice",
+        "route": "/invoice/table",
+        "icon": "bx bx-package"
+    },
+    {
         "display_name": "Products",
         "route": "/products",
         "icon": "bx bx-package"
