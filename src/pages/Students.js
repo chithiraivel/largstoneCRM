@@ -14,22 +14,14 @@ export default function Students() {
         axios.post('http://localhost:8080/register/listall').then((res) => {
             setRows([...res.data.result]);
         });
-    }, [])
+    }, []);
 
     const columns = [
-        {
-            field: "id",
-            headerName: " ",
-            width:40 ,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false
-        },
+        
         { 
             field: "StudentName", 
             headerName: "Student Name", 
-            width: 200, 
+            width: 170, 
             editable: false, 
             headerAlign: "left", 
             align: "left",
@@ -38,7 +30,7 @@ export default function Students() {
         {
             field: "StudentContactNum",
             headerName: "Contact Number",
-            width: 200,
+            width: 160,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -56,7 +48,7 @@ export default function Students() {
         {
             field: "ParentContactNum",
             headerName: "Parent Number",
-            width: 150,
+            width: 160,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -65,7 +57,7 @@ export default function Students() {
         {
             field: "CourseEnrolledFor",
             headerName: "Course",
-            width: 150,
+            width: 170,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -90,7 +82,7 @@ export default function Students() {
                     <Typography sx={{ fontWeight: "bold" }}>Student Table</Typography>
                     <Link to='/students/forms' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
                 </Box>
-                <StyledDataGrid columns={columns} rows={rows} />
+                <StyledDataGrid columns={columns} rows={rows} id='StudentID' />
             </div>
         </div>
     )

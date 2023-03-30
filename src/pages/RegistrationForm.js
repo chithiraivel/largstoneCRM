@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Button, Grid, MenuItem, TextField, Typography, Link as Links, createTheme, ThemeProvider } from '@mui/material';
+import { Box, Breadcrumbs, Button, Grid, MenuItem, TextField, Typography, Link as Links, createTheme, ThemeProvider, Autocomplete } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useForm } from "react-hook-form";
@@ -29,11 +29,11 @@ export default function Form(props) {
 
     const Batch = [{ batchID: "1", batchNum: "I", batchStartingDate: "01-04-2023" }, { batchID: "2", batchNum: "II", batchStartingDate: "03-05-2023" }, { batchID: "3", batchNum: "III", batchStartingDate: "02-07-2023" }];
 
-    const [RegDate, setRegDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
+    const [RegDate, setRegDate] = useState(" ");
     const [StudentName, setStudentName] = useState("");
     const [StudentContactNumber, setStudentContactNumber] = useState("");
     const [Email, setEmail] = useState('');
-    const [DOB, setDOB] = useState("");
+    const [DOB, setDOB] = useState(" ");
 
     const [SSLCboard, setSSLCboard] = useState('');
     const [SSLCSchoolName, setSSLCSchool] = useState('');
@@ -66,7 +66,7 @@ export default function Form(props) {
     const [AdditionalCertificate, setAdditionalCertificate] = useState([{ "id": 1, "description": "" }]);
 
     const [BatchNumber, setBatchNumber] = useState("I");
-    const [BatchStartingDate, setBatchStartingDate] = useState((moment(new Date()).format('YYYY-MM-DD')));
+    const [BatchStartingDate, setBatchStartingDate] = useState(" ");
     const [CourseName, setCourseName] = useState("");
     const [CourseAdmissionFee, setCourseAdmissionFee] = useState("");
 
@@ -100,6 +100,12 @@ export default function Form(props) {
         courseName: false,
         courseAdmissionFee: false,
     });
+
+    const batchList = [
+        {label:"I", BatchName:"somename"},
+        {label:"II", BatchName:"somename"},
+        {label:"III", BatchName:"somename"},
+    ];
 
     // const dataCol = {studentName, studentNumber, email, parentName, RegDate, batchNumber}
     const { register, handleSubmit, formState: { errors }, } = useForm();
@@ -228,11 +234,7 @@ export default function Form(props) {
                         <TextField name='AdmissionFee' {...register("AdmissionFee", { required: "Enter the admission fee", })} fullWidth size='small' label="Admission Fee" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField select value={BatchNumber} name='BatchNumber' fullWidth label="Batch" size="small" onChange={(e) => setBatchNumber(e.target.value)}>
-                            {Batch.map((num, index) => {
-                                return (<MenuItem value={num.batchNum} key={index}>{num.batchNum}</MenuItem>)
-                            })}
-                        </TextField>
+                        <Autocomplete size='small' disablePortal options={batchList}  renderInput={(params) => <TextField {...params} label="Batch" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField name='BatchStartDate' type='date' value={BatchStartingDate} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Batch Starting Date" size="small" />
@@ -240,8 +242,8 @@ export default function Form(props) {
                     {/* inputProps={{readOnly:true}} */}
                 </Grid>
                 <Box sx={{ mt: 3, display: "flex", justifyContent: "end", mr:8 }}>
-                    <Button style={{backgroundColor:"#4daaff"}} disableElevation disableRipple variant='contained'>Confirm</Button>
-                    <Link to='/students'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>Back</Button></Link>
+                    <Button style={{backgroundColor:"#4daaff"}} disableElevation disableRipple variant='contained'>Submit</Button>
+                    <Link to='/students/table'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>Back</Button></Link>
                 </Box>
             </Box>
             </form>

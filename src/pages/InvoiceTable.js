@@ -3,14 +3,14 @@ import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/materi
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
 
-import axios from 'axios';
+// import axios from 'axios';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
 export default function InvoiceTable() {
 
     // const [rows, setRows] = useState([]);
     // useEffect(() => {
-    //     axios.post('http://localhost:8080/register/listall').then((res) => {
+    //     axios.post('http://localhost:8080/invoice/listall').then((res) => {
     //         setRows([...res.data.result]);
     //     });
     // }, [])
@@ -48,7 +48,7 @@ export default function InvoiceTable() {
         {
             field: "CourseName",
             headerName: "Course Name",
-            width: 160,
+            width: 180,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -57,7 +57,7 @@ export default function InvoiceTable() {
         {
             field: "Term",
             headerName: "Term",
-            width: 100,
+            width: 70,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -66,7 +66,7 @@ export default function InvoiceTable() {
         {
             field: "TermFee",
             headerName: "Term Fee.",
-            width: 160,
+            width: 100,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -75,7 +75,7 @@ export default function InvoiceTable() {
         {
             field: "Discount",
             headerName: "Discount",
-            width: 100,
+            width: 130,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -84,7 +84,7 @@ export default function InvoiceTable() {
         {
             field: "TotalAmount",
             headerName: "Total Amount",
-            width: 160,
+            width: 130,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -109,7 +109,7 @@ export default function InvoiceTable() {
                     <Typography sx={{ fontWeight: "bold" }}>Invoice Table</Typography>
                     <Link to='/invoice/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
                 </Box>
-                <StyledDataGrid columns={columns} rows={rows} />
+                <StyledDataGrid columns={columns} rows={rows} id='id' />
             </div>
         </div>
     )

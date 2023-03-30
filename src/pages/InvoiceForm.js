@@ -1,4 +1,4 @@
-import { Box, Button, createTheme, Grid, MenuItem, TextField, ThemeProvider, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, createTheme, Grid, MenuItem, TextField, ThemeProvider, Typography } from '@mui/material';
 import axios from 'axios';
 import moment from 'moment';
 import React, { useState } from 'react';
@@ -21,7 +21,7 @@ const theme = createTheme({
 
 export default function InvoiceForm() {
 
-    const [InvoiceGenDate, setInvoiceGenDate] = useState("");
+    const [InvoiceGenDate, setInvoiceGenDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
     const [StudentName, setStudentName] = useState("");
     const [CourseName, setCourseName] = useState("");
     const [Term, setTerm] = useState("");
@@ -40,26 +40,36 @@ export default function InvoiceForm() {
         paymentMethod: false
     });
 
+    const studentsList = [
+        {label:"Suresh Krishnan", role:"Full Stack Developer"},
+        {label:"Puvan", role:"Full Stack Developer"},
+        {label:"Ajay", role:"UI/UX Designer"},
+    ];
+
+    const TermList = [
+        {label:"Full Term"},
+        {label:"First Term"},
+        {label:"Second Term"},
+    ]
 
     const handleSubmit = () => {
-            
-    const GenInvoice = {
-        invoiceGenDate: InvoiceGenDate === "",
-        studentName: StudentName === "",
-        courseName: CourseName ==="",
-        term: Term ==="",
-        termFees: TermFees ==="",
-        discount: Discount ==="",
-        totalAmount: TotalAmount ==="",
-        paymentMethod: PaymentMethod ==="",
-    };    
-    setError(GenInvoice)    
-        // let data = {
-        //     StudentName,
-        // }
-        // axios.post("http://localhost:8080/invoice/create", ).then((res) => {
-        //     res.data.result ? <Link to='/invoice/table' /> : alert(res.data.result);
-        // });
+        const GenInvoice = {
+            invoiceGenDate: InvoiceGenDate === "",
+            studentName: StudentName === "",
+            courseName: CourseName ==="",
+            term: Term ==="",
+            termFees: TermFees ==="",
+            discount: Discount ==="",
+            totalAmount: TotalAmount ==="",
+            paymentMethod: PaymentMethod ==="",
+        };    
+        setError(GenInvoice)    
+            // let data = {
+            //     StudentName,
+            // }
+            // axios.post("http://localhost:8080/invoice/create", ).then((res) => {
+            //     res.data.result ? <Link to='/invoice/table' /> : alert(res.data.result);
+            // });
     };
 
 
@@ -77,19 +87,21 @@ export default function InvoiceForm() {
                             <TextField error={Error.invoiceGenDate} helperText={ Error.invoiceGenDate ? "Date Field cannot be Empty" :""} type='date' label="Invoice Generating Date" value={InvoiceGenDate} size='small' fullWidth onChange={(e)=>setInvoiceGenDate(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.studentName} helperText={ Error.studentName ? "Student Name is needed" :""} select label="Student Name" value={StudentName} size='small' fullWidth onChange={(e) => setStudentName(e.target.value)}>
+                            <Autocomplete size='small' disablePortal options={studentsList}  renderInput={(params) => <TextField {...params} label="Sudent Name" />} />
+                            {/* <TextField error={Error.studentName} helperText={ Error.studentName ? "Student Name is needed" :""} select label="Student Name" value={StudentName} size='small' fullWidth onChange={(e) => setStudentName(e.target.value)}>
                                 <MenuItem value='Suresh'>Suresh</MenuItem>
-                            </TextField>
+                            </TextField> */}
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField error={Error.courseName} helperText={ Error.courseName? "Course Name is needed" :""}  type='text' label='Course Name' value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField select error={Error.term} helperText={ Error.term ? "Select the Term" :""} label="Term" value={Term} size='small' fullWidth onChange={(e) => setTerm(e.target.value)}>
+                        <Autocomplete size='small' disablePortal options={TermList}  renderInput={(params) => <TextField {...params} label="Term" />} />
+                            {/* <TextField select error={Error.term} helperText={ Error.term ? "Select the Term" :""} label="Term" value={Term} size='small' fullWidth onChange={(e) => setTerm(e.target.value)}>
                                 <MenuItem value=" ">-</MenuItem>
                                 <MenuItem value='I'>I</MenuItem>
                                 <MenuItem value='II'>II</MenuItem>
-                            </TextField>
+                            </TextField> */}
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField error={Error.termFees} helperText={ Error.termFees ? "Term Fee Amount needed" :""} type='number' label="Term Fees" value={TermFees} size='small' fullWidth onChange={(e)=>setTermFees(e.target.value)} />

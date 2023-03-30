@@ -11,6 +11,7 @@ import InvoiceForm from '../pages/InvoiceForm';
 import CoursesPage from '../pages/CoursesPage';
 import BatchForm from '../pages/BatchForm';
 import BatchesPage from '../pages/BatchesPage';
+import CoursesForm from '../pages/CoursesForm';
 
 const Routes = () => {
     return (
@@ -21,7 +22,7 @@ const Routes = () => {
             <Route exact path='/students/forms' component={RegistrationForm} />
             <Route exact path='/invoice/table' component={InvoiceTable} />
             <Route exact path='/invoice/form' component={InvoiceForm} />
-            <Route exact path='/courses/form' component={InvoiceForm} />
+            <Route exact path='/courses/form' component={CoursesForm} />
             <Route exact path='/courses/table' component={CoursesPage} />
             <Route exact path='/batches/form' component={BatchForm} />
             <Route exact path='/batches/table' component={BatchesPage} />
