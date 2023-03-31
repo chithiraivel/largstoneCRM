@@ -133,7 +133,7 @@ export default function Form(props) {
                         <TextField error={Error.regDate} helperText={Error.regDate ? "Registration Date Cannot be Empty" : ""} value={RegDate} type='date' fullWidth onChange={(e) => setRegDate(e.target.value)} size='small' label="Registration Date" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.regDate} helperText={Error.studentName ? "Student Name field cannot be empty" : ""} value={StudentName} fullWidth onChange={(e) => setAdditionalCertificate(e.target.value)} size='small' label="Student Name" />
+                        <TextField error={Error.regDate} helperText={Error.studentName ? "Student Name field cannot be empty" : ""} value={StudentName} fullWidth onChange={(e) => setStudentName(e.target.value)} size='small' label="Student Name" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField error={Error.studentContactNumber} helperText={Error.studentContactNumber ? "Student Contact number needed" : ""} value={StudentContactNumber} fullWidth onChange={(e) => setStudentContactNumber(e.target.value)} size='small' label="Student contact Number" />
@@ -205,16 +205,16 @@ export default function Form(props) {
                         <Typography variant='h6'>Parent/Guardian Details</Typography>
                     </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField value={GuardianName} error={Error.guardianName} helperText={Error.guardianName ? "Guardian Name needed" : ""} fullWidth onChange={(e) => setGuardianName(e.target.value)} size='small' label="Board" />
+                            <TextField value={GuardianName} error={Error.guardianName} helperText={Error.guardianName ? "Guardian Name needed" : ""} fullWidth onChange={(e) => setGuardianName(e.target.value)} size='small' label="Parent/Guardian Name" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField value={GuardianNumber} error={Error.GuardianNumber} helperText={Error.guardianNumber ? "Guardian Number needed" : ""} fullWidth onChange={(e) => setGaurdianNumber(e.target.value)} size='small' label="School Name" />
+                            <TextField value={GuardianNumber} error={Error.GuardianNumber} helperText={Error.guardianNumber ? "Guardian Number needed" : ""} fullWidth onChange={(e) => setGaurdianNumber(e.target.value)} size='small' label="Gaurdian Contact Number" />
                         </Grid>
                 </Grid>
 
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
-                        <Typography variant='h6'>Additional Certifications <Button disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff"}} onClick={() => setAdditionalCertificate([...AdditionalCertificate, { "id": AdditionalCertificate.length + 1, "description": "" }])}>Add<AddCircleOutlineIcon /></Button></Typography>
+                        <Typography variant='h6'>Additional Certifications <Button disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} onClick={() => setAdditionalCertificate([...AdditionalCertificate, { "id": AdditionalCertificate.length + 1, "description": "" }])}>Add<AddCircleOutlineIcon /></Button></Typography>
                     </Grid>
                     {AdditionalCertificate.map((val, ind) => {
                         return (<Grid item xs={10} md={3.5}>

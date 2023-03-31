@@ -27,14 +27,14 @@ export default function BatchForm() {
     const [CourseDuration, setCourseDuration] = useState("");
     const [Terms, setTerms] = useState("");
     const [AdmissionFee, setAdmissionFee] = useState("");
-        const [Error, setError] = useState({
-        courseName: false,
-        courseFee: false,
-        subjects: false,
-        courseDuration: false,
-        terms: false,
-        admissionFee:false,
-    });
+    const [Error, setError] = useState({
+    courseName: false,
+    courseFee: false,
+    subjects: false,
+    courseDuration: false,
+    terms: false,
+    admissionFee:false,
+});
 
     const handleSubmit = () => {
         const CreateCourse = {

@@ -7,6 +7,7 @@
     {
         "display_name": "Students",
         "route": "/students/table",
+        "innerroute": "/students/forms",
         "icon": "bx bx-user-pin"
     },
     {
@@ -17,16 +18,19 @@
     {
         "display_name": "Invoice",
         "route": "/invoice/table",
+        "innerroute": "/invoice/form",
         "icon": "bx bx-package"
     },
     {
         "display_name": "Courses",
         "route": "/courses/table",
+        "innerroute": "/courses/form",
         "icon": "bx bx-list-ol"
     },
     {
         "display_name": "Batches",
         "route": "/batches/table",
+        "innerroute": "/batches/form",
         "icon": "bx bx-store-alt"
     }
 ]

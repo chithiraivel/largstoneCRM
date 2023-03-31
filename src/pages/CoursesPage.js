@@ -3,84 +3,18 @@ import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/materi
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
 
-// import axios from 'axios';
+import axios from 'axios';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
 export default function CoursesPage() {
 
 
-    // const [rows, setRows] = useState([]);
-    // useEffect(() => {
-    //     axios.post('http://localhost:8080/invoice/listall').then((res) => {
-    //         setRows([...res.data.result]);
-    //     });
-    // }, [])
-
-  const rows = [
-    {
-      id:1, 
-      CourseName:"Full Stack Developement", 
-      CourseFee:"75000", 
-      Subjects:"MERN stack", 
-      CourseDuration:"Six Months", 
-      Terms:"2", 
-      AdmissionFee:"30000",
-    },
-    {
-      id:1, 
-      CourseName:"Full Stack Developement", 
-      CourseFee:"75000", 
-      Subjects:"MERN stack", 
-      CourseDuration:"Six Months", 
-      Terms:"2", 
-      AdmissionFee:"30000",
-    },
-    {
-      id:1, 
-      CourseName:"Full Stack Developement", 
-      CourseFee:"75000", 
-      Subjects:"MERN stack", 
-      CourseDuration:"Six Months", 
-      Terms:"2", 
-      AdmissionFee:"30000",
-    },
-    {
-      id:1, 
-      CourseName:"Full Stack Developement", 
-      CourseFee:"75000", 
-      Subjects:"MERN stack", 
-      CourseDuration:"Six Months", 
-      Terms:"2", 
-      AdmissionFee:"30000",
-    },
-    {
-      id:1, 
-      CourseName:"Full Stack Developement", 
-      CourseFee:"75000", 
-      Subjects:"MERN stack", 
-      CourseDuration:"Six Months", 
-      Terms:"2", 
-      AdmissionFee:"30000",
-    },
-    {
-      id:1, 
-      CourseName:"Full Stack Developement", 
-      CourseFee:"75000", 
-      Subjects:"MERN stack", 
-      CourseDuration:"Six Months", 
-      Terms:"2", 
-      AdmissionFee:"30000",
-    },
-    {
-      id:1, 
-      CourseName:"Full Stack Developement", 
-      CourseFee:"75000", 
-      Subjects:"MERN stack", 
-      CourseDuration:"Six Months", 
-      Terms:"2", 
-      AdmissionFee:"30000",
-    },
-  ];
+    const [rows, setRows] = useState([]);
+    useEffect(() => {
+        axios.post('http://localhost:8080/courses/listall').then((res) => {
+            setRows([...res.data.result]);
+        });
+    }, [])
 
   const columns = [
       {
@@ -95,7 +29,7 @@ export default function CoursesPage() {
       {
           field: "CourseFee",
           headerName: "Course Fee",
-          width: 160,
+          width: 120,
           editable: false,
           headerAlign: "left", 
           align: "left",
@@ -104,7 +38,7 @@ export default function CoursesPage() {
       {
           field: "Subjects",
           headerName: "Portions Covered",
-          width: 200,
+          width: 330,
           editable: false,
           headerAlign: "left", 
           align: "left",
@@ -113,7 +47,7 @@ export default function CoursesPage() {
       {
           field: "Terms",
           headerName: "Terms",
-          width: 150,
+          width: 100,
           editable: false,
           headerAlign: "left", 
           align: "left",
@@ -122,7 +56,7 @@ export default function CoursesPage() {
       {
           field: "CourseDuration",
           headerName: "Course Duration",
-          width: 180,
+          width: 160,
           editable: false,
           headerAlign: "left", 
           align: "left",
@@ -147,7 +81,7 @@ export default function CoursesPage() {
                     <Typography sx={{ fontWeight: "bold" }}>Courses Table</Typography>
                     <Link to='/courses/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
                 </Box>
-                <StyledDataGrid columns={columns} rows={rows} id='id' />
+                <StyledDataGrid columns={columns} rows={rows} id='CourseID' />
             </div>
         </div>
     )
