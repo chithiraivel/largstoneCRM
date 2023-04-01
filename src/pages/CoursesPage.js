@@ -11,7 +11,7 @@ export default function CoursesPage() {
 
     const [rows, setRows] = useState([]);
     useEffect(() => {
-        axios.post('http://localhost:8080/courses/listall').then((res) => {
+        axios.post('http://localhost:8080/courses/list').then((res) => {
             setRows([...res.data.result]);
         });
     }, [])

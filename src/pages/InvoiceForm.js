@@ -26,6 +26,8 @@ export default function InvoiceForm() {
     const [CourseName, setCourseName] = useState("");
     const [Term, setTerm] = useState("");
     const [TermFees, setTermFees] = useState("");
+    const [PendingTerms, setPendingTerms] = useState("");
+    const [PendingAmount, setPendingAmount] = useState("");
     const [Discount, setDiscount] = useState("");
     const [TotalAmount, setTotalAmount] = useState("");
     const [PaymentMethod, setPaymentMethod] = useState("");
@@ -34,6 +36,9 @@ export default function InvoiceForm() {
         studentName: false,
         courseName: false,
         term: false,
+        termFees: false,
+        pendingTerms: false,
+        pendingAmount:false,
         termFees: false,
         discount: false,
         totalAmount: false,
@@ -59,6 +64,8 @@ export default function InvoiceForm() {
             courseName: CourseName ==="",
             term: Term ==="",
             termFees: TermFees ==="",
+            pendingTerms: PendingTerms === "",
+            pendingAmount: PendingAmount ==="",
             discount: Discount ==="",
             totalAmount: TotalAmount ==="",
             paymentMethod: PaymentMethod ==="",
@@ -89,7 +96,6 @@ export default function InvoiceForm() {
                         <Grid item xs={10} md={3.5}>
                             <Autocomplete size='small' disablePortal options={studentsList}  renderInput={(params) => <TextField {...params} label="Sudent Name" />} />
                             {/* <TextField error={Error.studentName} helperText={ Error.studentName ? "Student Name is needed" :""} select label="Student Name" value={StudentName} size='small' fullWidth onChange={(e) => setStudentName(e.target.value)}>
-                                <MenuItem value='Suresh'>Suresh</MenuItem>
                             </TextField> */}
                         </Grid>
                         <Grid item xs={10} md={3.5}>
@@ -98,19 +104,22 @@ export default function InvoiceForm() {
                         <Grid item xs={10} md={3.5}>
                         <Autocomplete size='small' disablePortal options={TermList}  renderInput={(params) => <TextField {...params} label="Term" />} />
                             {/* <TextField select error={Error.term} helperText={ Error.term ? "Select the Term" :""} label="Term" value={Term} size='small' fullWidth onChange={(e) => setTerm(e.target.value)}>
-                                <MenuItem value=" ">-</MenuItem>
-                                <MenuItem value='I'>I</MenuItem>
-                                <MenuItem value='II'>II</MenuItem>
                             </TextField> */}
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.termFees} helperText={ Error.termFees ? "Term Fee Amount needed" :""} type='number' label="Term Fees" value={TermFees} size='small' fullWidth onChange={(e)=>setTermFees(e.target.value)} />
+                            <TextField error={Error.termFees} helperText={ Error.termFees ? "Term Fee Amount needed" :""} type='tel' label="Term Fees" value={TermFees} size='small' fullWidth onChange={(e)=>setTermFees(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField error={Error.pendingTerms} helperText={ Error.pendingTerms ? "Pending Term is not Known" :""} type='tel' label="Pending Terms" value={PendingTerms} size='small' fullWidth onChange={(e)=>setPendingTerms(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField error={Error.pendingAmount} helperText={ Error.pendingAmount ? "Pending Amount is not tallied" :""} type='tel' label="Pending Amount" value={PendingAmount} size='small' fullWidth onChange={(e)=>setPendingAmount(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField error={Error.discount} helperText={ Error.discount ? "If not have any discount enter NONE" :""} type='text' label="Discount" value={Discount} size='small' fullWidth onChange={(e)=>setDiscount(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.totalAmount} helperText={ Error.totalAmount ? "Total Amount not tallied. Please check" :""} type='number' label="Amount" value={TotalAmount} size='small' fullWidth onChange={(e)=>setTotalAmount(e.target.value)} />
+                            <TextField error={Error.totalAmount} helperText={ Error.totalAmount ? "Total Amount not tallied. Please check" :""} type='tel' label="Amount" value={TotalAmount} size='small' fullWidth onChange={(e)=>setTotalAmount(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField error={Error.paymentMethod} helperText={ Error.paymentMethod ? "Payment method is needed" :""} type='text' label="Payment Method" value={PaymentMethod} size='small' fullWidth onChange={(e)=>setPaymentMethod(e.target.value)} />

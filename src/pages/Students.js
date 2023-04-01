@@ -11,7 +11,7 @@ export default function Students() {
     // const classes = useStyles();
     const [rows, setRows] = useState([]);
     useEffect(() => {
-        axios.post('http://localhost:8080/register/listall').then((res) => {
+        axios.post('http://localhost:8080/registration/list').then((res) => {
             setRows([...res.data.result]);
         });
     }, []);
@@ -28,7 +28,7 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "StudentContactNum",
+            field: "MobileNumber",
             headerName: "Contact Number",
             width: 160,
             editable: false,
@@ -37,7 +37,7 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "StudentEmail",
+            field: "Email",
             headerName: "Email",
             width: 200,
             editable: false,
@@ -46,7 +46,7 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "ParentContactNum",
+            field: "ParentContactNumber",
             headerName: "Parent Number",
             width: 160,
             editable: false,
@@ -55,7 +55,7 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "CourseEnrolledFor",
+            field: "CourseID",
             headerName: "Course",
             width: 170,
             editable: false,
@@ -64,7 +64,7 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "Batch",
+            field: "BatchID",
             headerName: "Batch Number",
             width: 160,
             editable: false,

@@ -25,9 +25,17 @@ export default function Form(props) {
 
     const handleCrumbClick = (evnt) => {
         evnt.preventDefault();
-    }
+    };
 
-    const Batch = [{ batchID: "1", batchNum: "I", batchStartingDate: "01-04-2023" }, { batchID: "2", batchNum: "II", batchStartingDate: "03-05-2023" }, { batchID: "3", batchNum: "III", batchStartingDate: "02-07-2023" }];
+    const [Batch, setBatch] = useState([]);
+    
+    useEffect(() => {
+        axios.get('http://localhost:8080/batches/list').then((res) => {
+            setBatch([...res.data.result]);
+        });
+    }, []);
+
+    // const Batch = [{ batchID: "1", batchNum: "I", batchStartingDate: "01-04-2023" }, { batchID: "2", batchNum: "II", batchStartingDate: "03-05-2023" }, { batchID: "3", batchNum: "III", batchStartingDate: "02-07-2023" }];
 
     const [RegDate, setRegDate] = useState(" ");
     const [StudentName, setStudentName] = useState("");
@@ -100,12 +108,6 @@ export default function Form(props) {
         courseName: false,
         courseAdmissionFee: false,
     });
-
-    const batchList = [
-        {label:"I", BatchName:"somename"},
-        {label:"II", BatchName:"somename"},
-        {label:"III", BatchName:"somename"},
-    ];
 
     // const dataCol = {studentName, studentNumber, email, parentName, RegDate, batchNumber}
     const { register, handleSubmit, formState: { errors }, } = useForm();
@@ -186,11 +188,14 @@ export default function Form(props) {
                         </Grid>
                     </Grid>
                     <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
-                        <Grid item xs={10} md={3.5}>
-                            <TextField value={UGDegreeName} error={Error.ugDegreeName} helperText={Error.ugDegreeName ? "Select the Degree" : ""} fullWidth onChange={(e) => setUGDegreeName(e.target.value)} size='small' label="Board" />
+                        <Grid item xs={12}>
+                            <Typography sx={{ fontWeight: "bold" }}>UnderGraduate</Typography>
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField value={UGCollegeName} error={Error.ugCollegeName} helperText={Error.ugCollegeName ? "College Name field cannot be Empty" : ""} fullWidth onChange={(e) => setUGCollegeName(e.target.value)} size='small' label="School Name" />
+                            <TextField value={UGDegreeName} error={Error.ugDegreeName} helperText={Error.ugDegreeName ? "Select the Degree" : ""} fullWidth onChange={(e) => setUGDegreeName(e.target.value)} size='small' label="Degree Name" />
+                        </Grid>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField value={UGCollegeName} error={Error.ugCollegeName} helperText={Error.ugCollegeName ? "College Name field cannot be Empty" : ""} fullWidth onChange={(e) => setUGCollegeName(e.target.value)} size='small' label="College Name" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField value={UGCollegePassedYear} error={Error.ugCollegePassedYear} helperText={Error.ugCollegePassedYear ? "Field Cannot be Empty" : ""} onChange={(e) => setUGCollegePassedYear(e.target.value)} fullWidth on label="Passed-out Year" size="small" />
@@ -234,7 +239,7 @@ export default function Form(props) {
                         <TextField name='AdmissionFee' {...register("AdmissionFee", { required: "Enter the admission fee", })} fullWidth size='small' label="Admission Fee" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete size='small' disablePortal options={batchList}  renderInput={(params) => <TextField {...params} label="Batch" />} />
+                        <Autocomplete size='small' disablePortal options={Batch} getOptionLabel={(option) => option.BatchName} renderInput={(params) => <TextField {...params} label="Batch" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField name='BatchStartDate' type='date' value={BatchStartingDate} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Batch Starting Date" size="small" />

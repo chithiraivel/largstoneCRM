@@ -28,7 +28,6 @@ export default function QuickFilteringGrid(props) {
         '& .MuiDataGrid-columnHeaders': { borderBottom: "none", backgroundColor: 'rgb(250,250,251)', color:"#455560", fontSize:"16px", }, //tableHeader
         '& .MuiDataGrid-columnHeaderTitle':{fontWeight:"bold"},
         '& .MuiDataGrid-main': { mb: 2, mt:4 },  //table
-        // '& .MuiDataGrid-footerContainer': { border: 0 },
       }}
         autoHeight
         disableColumnMenu
