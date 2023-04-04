@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/material';
+import { Box, Button, Typography, } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
 
@@ -28,15 +28,6 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "MobileNumber",
-            headerName: "Contact Number",
-            width: 160,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false
-        },
-        {
             field: "Email",
             headerName: "Email",
             width: 200,
@@ -46,8 +37,8 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "ParentContactNumber",
-            headerName: "Parent Number",
+            field: "BatchID",
+            headerName: "Batch Number",
             width: 160,
             editable: false,
             headerAlign: "left", 
@@ -64,14 +55,23 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "BatchID",
-            headerName: "Batch Number",
+            field: "MobileNumber",
+            headerName: "Contact Number",
             width: 160,
             editable: false,
             headerAlign: "left", 
             align: "left",
             sortable:false
-        }
+        },
+        {
+            field: "ParentContactNumber",
+            headerName: "Parent Number",
+            width: 160,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
     ];
 
     return (

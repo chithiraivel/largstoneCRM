@@ -3,19 +3,19 @@ import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/materi
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
 
-// import axios from 'axios';
+import axios from 'axios';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
 export default function InvoiceTable() {
 
-    // const [rows, setRows] = useState([]);
-    // useEffect(() => {
-    //     axios.post('http://localhost:8080/invoice/listall').then((res) => {
-    //         setRows([...res.data.result]);
-    //     });
-    // }, [])
+    const [rows, setRows] = useState([]);
+    useEffect(() => {
+        axios.post('http://localhost:8080/invoice/list').then((res) => {
+            setRows([...res.data.result]);
+        });
+    }, [])
 
-    const rows = [{id:1, InvoiceGenDate:"28-03-2023", StudentName:"Suresh Krishnan", CourseName:"Full Stack Developer", Term:"I", TermFee:"25000", Discount:"none", TotalAmount:"25000", PaymentMethod:"Online(Google Pay)"}]
+    // const rows = [{id:1, InvoiceGenDate:"28-03-2023", StudentName:"Suresh Krishnan", CourseName:"Full Stack Developer", Term:"I", TermFee:"25000", Discount:"none", TotalAmount:"25000", PaymentMethod:"Online(Google Pay)", PendingAmount:"25000", PendingTerms:"1"}]
 
     const columns = [
         {
@@ -55,7 +55,7 @@ export default function InvoiceTable() {
             sortable:false
         },
         {
-            field: "Term",
+            field: "FeePayingTerm",
             headerName: "Term",
             width: 70,
             editable: false,
@@ -64,8 +64,8 @@ export default function InvoiceTable() {
             sortable:false
         },
         {
-            field: "TermFee",
-            headerName: "Term Fee.",
+            field: "TermAmount",
+            headerName: "Term Fee",
             width: 100,
             editable: false,
             headerAlign: "left", 
@@ -83,7 +83,7 @@ export default function InvoiceTable() {
         },
         {
             field: "TotalAmount",
-            headerName: "Total Amount",
+            headerName: "Amount Paid",
             width: 130,
             editable: false,
             headerAlign: "left", 
@@ -93,6 +93,15 @@ export default function InvoiceTable() {
         {
             field: "PaymentMethod",
             headerName: "Payment Method",
+            width: 160,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
+        {
+            field: "PendingAmount",
+            headerName: "Pending Amount",
             width: 160,
             editable: false,
             headerAlign: "left", 
@@ -109,7 +118,7 @@ export default function InvoiceTable() {
                     <Typography sx={{ fontWeight: "bold" }}>Invoice Table</Typography>
                     <Link to='/invoice/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
                 </Box>
-                <StyledDataGrid columns={columns} rows={rows} id='id' />
+                <StyledDataGrid columns={columns} rows={rows} id='InvoiceID' />
             </div>
         </div>
     )

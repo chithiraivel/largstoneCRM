@@ -21,7 +21,7 @@ const theme = createTheme({
 
 export default function InvoiceForm() {
 
-    const [InvoiceGenDate, setInvoiceGenDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
+    const [InvoiceGenDate, setInvoiceGenDate] = useState(" ");
     const [StudentName, setStudentName] = useState("");
     const [CourseName, setCourseName] = useState("");
     const [Term, setTerm] = useState("");
@@ -58,8 +58,8 @@ export default function InvoiceForm() {
     ]
 
     const handleSubmit = () => {
-        const GenInvoice = {
-            invoiceGenDate: InvoiceGenDate === "",
+        const GenInvoice = { 
+            invoiceGenDate: InvoiceGenDate === " ",
             studentName: StudentName === "",
             courseName: CourseName ==="",
             term: Term ==="",
@@ -91,15 +91,18 @@ export default function InvoiceForm() {
                             <Typography variant='h6'>Invoice Details</Typography>
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.invoiceGenDate} helperText={ Error.invoiceGenDate ? "Date Field cannot be Empty" :""} type='date' label="Invoice Generating Date" value={InvoiceGenDate} size='small' fullWidth onChange={(e)=>setInvoiceGenDate(e.target.value)} />
-                        </Grid>
-                        <Grid item xs={10} md={3.5}>
                             <Autocomplete size='small' disablePortal options={studentsList}  renderInput={(params) => <TextField {...params} label="Sudent Name" />} />
                             {/* <TextField error={Error.studentName} helperText={ Error.studentName ? "Student Name is needed" :""} select label="Student Name" value={StudentName} size='small' fullWidth onChange={(e) => setStudentName(e.target.value)}>
                             </TextField> */}
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField error={Error.courseName} helperText={ Error.courseName? "Course Name is needed" :""}  type='text' label='Course Name' value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField error={Error.courseName} helperText={ Error.courseName? "Course Name is needed" :""}  type='text' label='Batch Name' value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField error={Error.courseName} helperText={ Error.courseName? "Course Name is needed" :""}  type='text' label='Session' value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                         <Autocomplete size='small' disablePortal options={TermList}  renderInput={(params) => <TextField {...params} label="Term" />} />
@@ -110,12 +113,6 @@ export default function InvoiceForm() {
                             <TextField error={Error.termFees} helperText={ Error.termFees ? "Term Fee Amount needed" :""} type='tel' label="Term Fees" value={TermFees} size='small' fullWidth onChange={(e)=>setTermFees(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.pendingTerms} helperText={ Error.pendingTerms ? "Pending Term is not Known" :""} type='tel' label="Pending Terms" value={PendingTerms} size='small' fullWidth onChange={(e)=>setPendingTerms(e.target.value)} />
-                        </Grid>
-                        <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.pendingAmount} helperText={ Error.pendingAmount ? "Pending Amount is not tallied" :""} type='tel' label="Pending Amount" value={PendingAmount} size='small' fullWidth onChange={(e)=>setPendingAmount(e.target.value)} />
-                        </Grid>
-                        <Grid item xs={10} md={3.5}>
                             <TextField error={Error.discount} helperText={ Error.discount ? "If not have any discount enter NONE" :""} type='text' label="Discount" value={Discount} size='small' fullWidth onChange={(e)=>setDiscount(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
@@ -124,9 +121,18 @@ export default function InvoiceForm() {
                         <Grid item xs={10} md={3.5}>
                             <TextField error={Error.paymentMethod} helperText={ Error.paymentMethod ? "Payment method is needed" :""} type='text' label="Payment Method" value={PaymentMethod} size='small' fullWidth onChange={(e)=>setPaymentMethod(e.target.value)} />
                         </Grid>
+                        <Grid item xs={10} md={3.5}>
+                            <TextField error={Error.invoiceGenDate} helperText={ Error.invoiceGenDate ? "Date Field cannot be Empty" :""} type='date' label="Invoice Generating Date" value={InvoiceGenDate} size='small' fullWidth onChange={(e)=>setInvoiceGenDate(e.target.value)} />
+                        </Grid>
+                        {/* <Grid item xs={10} md={3.5}>
+                            <TextField error={Error.pendingTerms} helperText={ Error.pendingTerms ? "Pending Term is not Known" :""} type='tel' label="Pending Terms" value={PendingTerms} size='small' fullWidth onChange={(e)=>setPendingTerms(e.target.value)} />
+                        </Grid> */}
+                        <Grid item xs={10} md={3.5}>
+                            <TextField error={Error.pendingAmount} helperText={ Error.pendingAmount ? "Pending Amount is not tallied" :""} type='tel' label="Pending Amount" value={PendingAmount} size='small' fullWidth onChange={(e)=>setPendingAmount(e.target.value)} />
+                        </Grid>
                     </Grid> 
                     <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
-                        <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>Generate</Button>
+                        <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>Create</Button>
                         <Link to='/invoice/table'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >Cancel</Button></Link>
                     </Box>
                 </Box>

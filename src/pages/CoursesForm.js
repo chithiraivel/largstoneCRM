@@ -23,7 +23,8 @@ export default function BatchForm() {
 
     const [CourseName, setCourseName] = useState("");
     const [CourseFee, setCourseFee] = useState("");
-    const [Subjects, setSubjects] = useState("");
+    const [Subjects, setSubjects] = useState([{ "id": 1, "Subject": "",}]);
+    // const [Subjects, setSubjects] = useState("");
     const [CourseDuration, setCourseDuration] = useState("");
     const [Terms, setTerms] = useState("");
     const [AdmissionFee, setAdmissionFee] = useState("");
@@ -47,16 +48,17 @@ export default function BatchForm() {
         };    
         setError(CreateCourse)    
             // let data = {
-            //     CourseFee,
-            // }
-            // axios.post("http://localhost:8080/courses/create", ).then((res) => {
+            //     CourseFee, CourseName, CourseDuration, Subjects, Terms, AdmissionFee
+            // };
+            // axios.post("http://localhost:8080/courses/create",data ).then((res) => {
+            //     console.log(res.data.result);
             //     res.data.result ? <Link to='/courses/table' /> : alert(res.data.result);
+                
             // });
     };
 
 
     return (
-        //   const rows = [{id:1, CourseName:"28-03-2023", CourseFee:"Suresh", Subjects:"Full Stack Developer", Term:"I", TermFee:"25000", Terms:"none", TotalAmount:"25000", PaymentMethod:"Online(Google Pay)"}];
         <div>
             <ThemeProvider theme={theme}>
                 <AppBreadcrumbs crntPage='Courses Form' prevPage="Courses Table" path='/courses/table' />
@@ -73,18 +75,36 @@ export default function BatchForm() {
                             <TextField error={Error.courseFee} helperText={ Error.courseFee ? "Course Fee is needed" :""} type='tel' label="Course Fee" value={CourseFee} size='small' fullWidth onChange={(e) => setCourseFee(e.target.value)}>
                             </TextField>
                         </Grid>
-                        <Grid item xs={10} md={3.5}>
+                        {/* <Grid item xs={10} md={3.5}>
                             <TextField error={Error.subjects} helperText={ Error.subjects? "Subjects feild cannot be empty" :""}  type='text' label='Subjects Taught' value={Subjects} size='small' fullWidth onChange={(e)=>setSubjects(e.target.value)} />
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.courseDuration} helperText={ Error.courseDuration ? " Course Duration must be Mentioned" :""} type='text' label="Course Duration" value={CourseDuration} size='small' fullWidth onChange={(e)=>setCourseDuration(e.target.value)} />
+                        <TextField error={Error.courseDuration} select  helperText={ Error.courseDuration ? "Course Duration is required" :""}  label='Select Course Duration' value={CourseDuration} size='small' fullWidth onChange={(e)=>setCourseDuration(e.target.value)} >
+                            <MenuItem value='3months'>Three Months</MenuItem>
+                            <MenuItem value='6months'>Six Months</MenuItem>
+                            <MenuItem value='1year'>1 Year</MenuItem>
+                        </TextField>
+                            {/* <TextField error={Error.courseDuration} helperText={ Error.courseDuration ? " Course Duration must be Mentioned" :""} type='text' label="Course Duration" value={CourseDuration} size='small' fullWidth onChange={(e)=>setCourseDuration(e.target.value)} /> */}
                         </Grid>
-                        <Grid item xs={10} md={3.5}>
+                        {/* <Grid item xs={10} md={3.5}>
                             <TextField error={Error.terms} helperText={ Error.terms ? "If not have any Terms enter NONE" :""} type='text' label="Number of Terms" value={Terms} size='small' fullWidth onChange={(e)=>setTerms(e.target.value)} />
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={10} md={3.5}>
                             <TextField error={Error.admissionFee} helperText={ Error.admissionFee ? " Admission Fee needed" :""} type='tel' label="Admission Fee" value={AdmissionFee} size='small' fullWidth onChange={(e)=>setAdmissionFee(e.target.value)} />
                         </Grid>
+                        <Grid item xs={12}>
+                            <Typography sx={{fontWeight:"bold"}}>Subjects <Button disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} onClick={() => setSubjects([...Subjects, { "id": Subjects.length + 1, "Suject": "" }])}>Add</Button></Typography>
+                        </Grid>
+                        {Subjects.map((val, ind) => {
+                            return (
+                            <Grid key={ind} item xs={10} md={3.5}>
+                                <TextField name='Subjects' value={val.Subject} onChange={(e) => Subjects[ind].Subject = e.target.value} fullWidth label="Subject Name" size='small' />
+                            </Grid>
+                            )
+                        })}
+                        {/* <Grid item xs={10} md={3.5}>
+                            <TextField size='small' fullWidth label='Subject' onChange={setAdmissionFee} />
+                        </Grid> */}
                     </Grid> 
                     <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
                         <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>Create</Button>

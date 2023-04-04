@@ -3,25 +3,26 @@ import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/materi
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
 
-// import axios from 'axios';
+import axios from 'axios';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
 export default function BatchesPage() {
 
-    // const [rows, setRows] = useState([]);
-    // useEffect(() => {
-    //     axios.post('http://localhost:8080/Batches/listall').then((res) => {
-    //         setRows([...res.data.result]);
-    //     });
-    // }, [])
+    const [rows, setRows] = useState([]);
+    useEffect(() => {
+        axios.post('http://localhost:8080/Batches/list').then((res) => {
+            setRows([...res.data.result]);
+        });
+    }, [])
 
-    const rows = [{BatchID:"1", BatchName:"FSD-APR-23", StartDate:"2023-03-30", EndDate:"2023-09-03", StartTime:"10.00 AM", EndTime:"01.30 PM", Count:"20", Available:"5"}]
+    // const rows = [{BatchID:"1", BatchName:"FSD-APR-23", StartDate:"2023-03-30", EndDate:"2023-09-03", StartTime:"10.00 AM", EndTime:"01.30 PM", Count:"20", Available:"5"}]
 
     const columns = [
+
         {
             field: "BatchName",
             headerName: "Batch Name",
-            width: 120,
+            width: 220,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -30,7 +31,7 @@ export default function BatchesPage() {
         {
             field: "StartDate",
             headerName: "Batch Starting Date",
-            width: 170,
+            width: 180,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -39,24 +40,42 @@ export default function BatchesPage() {
         {
             field: "EndDate",
             headerName: "Batch Ending Date",
-            width: 160,
+            width: 180,
             editable: false,
             headerAlign: "left", 
             align: "left",
             sortable:false
         },
         {
-            field: "StartTime",
+            field: "Session",
+            headerName: "Session",
+            width: 120,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
+        {
+            field: "SessionStartTime",
             headerName: "Starting Time",
-            width: 150,
+            width: 140,
             editable: false,
             headerAlign: "left", 
             align: "left",
             sortable:false
         },
         {
-            field: "EndTime",
+            field: "SessionEndTime",
             headerName: "End Time",
+            width: 130,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
+        {
+            field: "SeatsTaken",
+            headerName: "Students Joined",
             width: 150,
             editable: false,
             headerAlign: "left", 
@@ -64,18 +83,15 @@ export default function BatchesPage() {
             sortable:false
         },
         {
-            field: "Count",
-            headerName: "Students Joined",
-            width: 180,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false
-        },
-        {
-            field: "Available",
+            field: "AvailableSeats",
             headerName: "Available Seats",
-            width: 180,
+            width: 150,
+            renderCell: (params) =>{
+                let Total = (params.row.BatchCountLimit);
+                let Taken = (params.row.SeatsTaken);
+                let Available = Total - Taken;
+                return <span>{Available}</span>
+            },
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -97,3 +113,18 @@ export default function BatchesPage() {
     )
 };
 
+
+
+        // {
+        //     field: "no",
+        //     headerName: "No.",
+        //     width: 60,
+        //     renderCell: (params) =>{
+        //         const rowIndex = params.api.getRowIndexById(params.id);
+        //         return <span>{params.rowIndex + 1}</span>
+        //     },
+        //     editable: false,
+        //     headerAlign: "left", 
+        //     align: "left",
+        //     sortable:false
+        // },
