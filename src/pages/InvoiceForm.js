@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+import { useEffect } from 'react';
 
 const theme = createTheme({
   components: {
@@ -44,6 +45,14 @@ export default function InvoiceForm() {
         totalAmount: false,
         paymentMethod: false
     });
+
+    const [Student, setStudent] = useState("");
+
+    useEffect(() => {
+        axios.post('http://localhost:8080/registration/list').then((res) => {
+            setStudent([...res.data.result]);
+        });
+    }, []);
 
     const studentsList = [
         {label:"Suresh Krishnan", role:"Full Stack Developer"},
@@ -91,7 +100,7 @@ export default function InvoiceForm() {
                             <Typography variant='h6'>Invoice Details</Typography>
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <Autocomplete size='small' disablePortal options={studentsList}  renderInput={(params) => <TextField {...params} label="Sudent Name" />} />
+                            <Autocomplete size='small' disablePortal getOptionLabel={(option) => option.StudentName} options={Student}  renderInput={(params) => <TextField {...params} label="Sudent Name" />} />
                             {/* <TextField error={Error.studentName} helperText={ Error.studentName ? "Student Name is needed" :""} select label="Student Name" value={StudentName} size='small' fullWidth onChange={(e) => setStudentName(e.target.value)}>
                             </TextField> */}
                         </Grid>

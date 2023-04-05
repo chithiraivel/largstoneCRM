@@ -57,6 +57,7 @@ export default function BatchForm() {
             // });
     };
 
+    const CourseSession = [{label:"Morning"},{ label:"AfterNoon"}, {label:"Evening"}, {label:"Full Day",}]
 
     return (
         <ThemeProvider theme={theme}>
@@ -70,7 +71,6 @@ export default function BatchForm() {
                         <TextField error={Error.courseName} helperText={ Error.courseName ? "Batch Name cannot be Empty" :""} type='text' label="Batch Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        {/* <Autocomplete size='small' disablePortal options={studentsList}  renderInput={(params) => <TextField {...params} label="Sudent Name" />} /> */}
                         <TextField error={Error.courseFee} helperText={ Error.courseFee ? "Student Name is required" :""} type='date' label="Batch Starting Date" value={CourseFee} size='small' fullWidth onChange={(e) => setCourseFee(e.target.value)}>
                         </TextField>
                     </Grid>
@@ -78,12 +78,7 @@ export default function BatchForm() {
                         <TextField error={Error.subjects} helperText={ Error.subjects ? "Course Name is required" :""}  type='date' label='Batch Ending Date' value={Subjects} size='small' fullWidth onChange={(e)=>setSubjects(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.session} select placeholder='Select the Session' helperText={ Error.session ? "Session is required" :""}  label='Session' value={Session} size='small' fullWidth onChange={(e)=>setSession(e.target.value)} >
-                            <MenuItem value='Morning'>Morning(F.N)</MenuItem>
-                            <MenuItem value='AfterNoon'>After Noon(A.N)</MenuItem>
-                            <MenuItem value='Evening'>Evening(P.M)</MenuItem>
-                            <MenuItem value='FullDay'>Full Day</MenuItem>
-                        </TextField>
+                        <Autocomplete size='small' disablePortal options={CourseSession}  value={Session} renderInput={(params) => <TextField {...params} label=" Select the Session" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField error={Error.sessionStartingTime} helperText={ Error.sessionStartingTime ? "Select Session StraAmount required" :""} type='time' label="Session Starting Time" value={SessionStartingTime} size='small' fullWidth onChange={(e)=>setSessionStartingTime(e.target.value)} />

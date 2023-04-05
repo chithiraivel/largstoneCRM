@@ -37,18 +37,18 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "BatchID",
-            headerName: "Batch Number",
-            width: 160,
+            field: "BatchName",
+            headerName: "Batch Name",
+            width: 200,
             editable: false,
             headerAlign: "left", 
             align: "left",
             sortable:false
         },
         {
-            field: "CourseID",
-            headerName: "Course",
-            width: 170,
+            field: "CourseName",
+            headerName: "Course Name",
+            width: 200,
             editable: false,
             headerAlign: "left", 
             align: "left",

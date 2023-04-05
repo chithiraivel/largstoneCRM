@@ -282,11 +282,6 @@ export default function Form(props) {
                                         </Grid>
                                         <Grid item xs={6}>
                                             <Autocomplete size='small' disablePortal options={Duration} renderInput={(params) => <TextField {...params} label="Period" />} />
-                                            {/* <TextField select name='durationSt' fullWidth label="Period" size='small'>
-                                                <MenuItem value='days'>Days</MenuItem>
-                                                <MenuItem value='months'>Months</MenuItem>
-                                                <MenuItem value='year'>Year</MenuItem>
-                                            </TextField> */}
                                         </Grid>
                                     </Grid>
                                 </Grid>

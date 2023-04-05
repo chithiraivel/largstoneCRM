@@ -57,6 +57,8 @@ export default function BatchForm() {
             // });
     };
 
+            const CourseDura = [{label:"3 months",}, {label:"6 months",}, {label:"1 year",}];
+
 
     return (
         <div>
@@ -71,24 +73,12 @@ export default function BatchForm() {
                             <TextField error={Error.courseName} helperText={ Error.courseName ? "Course Name cannot be Empty" :""} type='text' label="Course Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            {/* <Autocomplete size='small' disablePortal options={studentsList}  renderInput={(params) => <TextField {...params} label="Sudent Name" />} /> */}
                             <TextField error={Error.courseFee} helperText={ Error.courseFee ? "Course Fee is needed" :""} type='tel' label="Course Fee" value={CourseFee} size='small' fullWidth onChange={(e) => setCourseFee(e.target.value)}>
                             </TextField>
                         </Grid>
-                        {/* <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.subjects} helperText={ Error.subjects? "Subjects feild cannot be empty" :""}  type='text' label='Subjects Taught' value={Subjects} size='small' fullWidth onChange={(e)=>setSubjects(e.target.value)} />
-                        </Grid> */}
                         <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.courseDuration} select  helperText={ Error.courseDuration ? "Course Duration is required" :""}  label='Select Course Duration' value={CourseDuration} size='small' fullWidth onChange={(e)=>setCourseDuration(e.target.value)} >
-                            <MenuItem value='3months'>Three Months</MenuItem>
-                            <MenuItem value='6months'>Six Months</MenuItem>
-                            <MenuItem value='1year'>1 Year</MenuItem>
-                        </TextField>
-                            {/* <TextField error={Error.courseDuration} helperText={ Error.courseDuration ? " Course Duration must be Mentioned" :""} type='text' label="Course Duration" value={CourseDuration} size='small' fullWidth onChange={(e)=>setCourseDuration(e.target.value)} /> */}
+                        <Autocomplete size='small' disablePortal options={CourseDura}  renderInput={(params) => <TextField {...params} label="Course Duration" />} />
                         </Grid>
-                        {/* <Grid item xs={10} md={3.5}>
-                            <TextField error={Error.terms} helperText={ Error.terms ? "If not have any Terms enter NONE" :""} type='text' label="Number of Terms" value={Terms} size='small' fullWidth onChange={(e)=>setTerms(e.target.value)} />
-                        </Grid> */}
                         <Grid item xs={10} md={3.5}>
                             <TextField error={Error.admissionFee} helperText={ Error.admissionFee ? " Admission Fee needed" :""} type='tel' label="Admission Fee" value={AdmissionFee} size='small' fullWidth onChange={(e)=>setAdmissionFee(e.target.value)} />
                         </Grid>
