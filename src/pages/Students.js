@@ -64,7 +64,7 @@ export default function Students() {
             sortable:false
         },
         {
-            field: "ParentContactNumber",
+            field: "GuardianNumber",
             headerName: "Parent Number",
             width: 160,
             editable: false,

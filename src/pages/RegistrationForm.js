@@ -1,11 +1,11 @@
-import { Box, Breadcrumbs, Button, Grid, MenuItem, TextField, Typography, Link as Links, createTheme, ThemeProvider, Autocomplete } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography, createTheme, ThemeProvider, Autocomplete } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import moment, { duration } from 'moment/moment';
+import moment from 'moment/moment';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+
 
 const theme = createTheme({
   components: {
@@ -23,27 +23,19 @@ const theme = createTheme({
 
 export default function Form(props) {
 
-    const handleCrumbClick = (evnt) => {
-        evnt.preventDefault();
-    };
-
     const [Batch, setBatch] = useState([]);
-    
     useEffect(() => {
         axios.get('http://localhost:8080/batches/list').then((res) => {
             setBatch([...res.data.result]);
         });
-    }, []);
-
-    const [Courses, setCourses] = useState([]);
-
-    useEffect(() => {
         axios.get('http://localhost:8080/courses/list').then((res) => {
             setCourses([...res.data.result]);
         });
     }, []);
-
-    // const Batch = [{ batchID: "1", batchNum: "I", batchStartingDate: "01-04-2023" }, { batchID: "2", batchNum: "II", batchStartingDate: "03-05-2023" }, { batchID: "3", batchNum: "III", batchStartingDate: "02-07-2023" }];
+    
+    const [Courses, setCourses] = useState([]);
+    const [CourseID, setCourseID] = useState("");
+    const [BatchID, setBatchID] = useState("");
 
     const [RegDate, setRegDate] = useState(" ");
     const [StudentName, setStudentName] = useState("");
@@ -61,36 +53,26 @@ export default function Form(props) {
     const [HSCPassedYear, setHSCPassedYear] = useState('');
     const [HSCPercentage, setHSCPercentage] = useState('');
 
-    const [UGDegree, setUGDegree] = useState([{"id": 1, "desc": ""}]);
-
-    const [UGDegreeName, setUGDegreeName] = useState('');
-    const [UGCollegeName, setUGCollegeName] = useState('');
-    const [UGCollegePassedYear, setUGCollegePassedYear] = useState('');
-    const [UGCollegePercentage, setUGCollegePercentage] = useState('');
-
-    const [PGDegreeName, setPGDegreeName] = useState('');
-    const [PGCollegeName, setPGCollegeName] = useState('');
-    const [PGCollegePassedYear, setPGCollegePassedYear] = useState('');
-    const [GCollegePercentage, setPGCollegePercentage] = useState('');
-
-    const [PhDMajor, setPhDMajor] = useState('');
-    const [PhDCollegeName, setPhDCollegeName] = useState('');
-    const [PhDPassedYear, setPhDPassedYear] = useState('');
-    const [PhDPercentage, setPhDPercentage] = useState('');
-
+    const [Degree, setDegree] = useState([{"id": 1, "degree": "", "College":"", "yearOfPass":"", "Percentage":""}]);
+    
     const [GuardianName, setGuardianName] = useState("");
     const [GuardianNumber, setGaurdianNumber] = useState("");
 
-    const [AdditionalCertificate, setAdditionalCertificate] = useState([{ "id": 1, "academy": "",}]);
+    const [Address, setAddress] = useState([{"doornum":"", "street":"", "place":""}]);
 
+    const [AdditionalCertificate, setAdditionalCertificate] = useState([{ "id": 1, "academy": "", "course":"", "time":"", "days":""}]);
     const [AdmissionFee, setAdmissionFee] = useState("");
     const [Session, setSession] = useState("");
     const [SessionStartTime, setSessionStartTime] = useState(" ");
     const [SessionEndTime, setSessionEndTime] = useState(" ");
     const [BatchStartingDate, setBatchStartingDate] = useState(" ");
     const [BatchEndDate, setBatchEndDate] = useState(" ");
-    const [CourseName, setCourseName] = useState("");
-    // const [CourseAdmissionFee, setCourseAdmissionFee] = useState("");
+
+    const [CreatedBy, setCreatedBy] = useState("Admin");
+    const [UpdatedBy, setUpdatedBy] = useState("Admin");
+
+    const [CreatedDate, setCreatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+    const [UpdatedDate, setUpdatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
 
     const [Error, setError] = useState({
         regDate: false,
@@ -107,28 +89,22 @@ export default function Form(props) {
         hscPassedYear: false,
         hscPercentage: false,
         ugDegreeName: false,
+        degree: false,
         ugCollegeName: false,
         ugCollegePassedYear: false,
         ugCollegePercentage: false,
-        pgDegreeName: false,
-        pgCollegeName: false,
-        pgCollegePassedYear: false,
-        pgCollegePercentage: false,
         guardianName: false,
         guardianNumber: false,
         additionalCertificate: false,
-        batchNumber: false,
+        batchName: false,
         batchStartingDate: false,
         batchEndDate: false,
         courseName: false,
         courseAdmissionFee: false,
     });
 
-    // const dataCol = {studentName, studentNumber, email, parentName, RegDate, batchNumber}
-    const { register, handleSubmit, formState: { errors }, } = useForm();
-
     const getCourseDetails = (e, val) => {
-        setCourseName(val);
+        setCourseID(val.CourseID);
         setAdmissionFee(val.AdmissionFee)
     };
 
@@ -138,30 +114,57 @@ export default function Form(props) {
         setSession(val.Session)
         setSessionEndTime(val.SessionEndTime);
         setSessionStartTime(val.SessionStartTime);
+        setBatchID(val.BatchID)
     };
 
-    const OnSubmit = (data) => {
-        axios.post("http://localhost:8080/registration/create",).then((res) => {
-            res.data.result ? <Link to='/students/table' /> : alert(res.data.result);
-        });
+    const handleSubmit = () => {
+        const RegisterStudent = {
+            studentName: StudentName === "",
+            studentContactNumber: StudentContactNumber === "",
+            studentEmail: Email === "",
+            DOB: DOB ===" ",
+            regDate: RegDate === " ",
+            sslcBoard: SSLCboard === "",
+            sslcSchoolName: SSLCSchoolName === "",
+            sslcPassedYear: SSLCPassedYear === "",
+            sslcPercentage: SSLCPercentage === "",
+            hscBoard: HSCboard === "",
+            hscSchoolName: HSCSchoolName === "",
+            hscPassedYear: HSCPassedYear === "",
+            hscPercentage: HSCPercentage === "",
+            guardianNumber: GuardianNumber === "",
+            guardianName: GuardianName === "",
+        };    
+        setError(RegisterStudent)
+        if (Object.values(RegisterStudent).some(val => val == true )){}
+        else{
+            let HSC = JSON.stringify({HSCboard, HSCSchoolName, HSCPassedYear, HSCPercentage});
+            let SSLC = JSON.stringify({SSLCboard, SSLCSchoolName, SSLCPassedYear, SSLCPercentage});
+
+            let data = {
+                StudentName, MobileNumber: StudentContactNumber, Email, DOB, RegDate, AdmissionFee, GuardianName, GuardianNumber, CourseID,  BatchID,
+                HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), CreatedBy, CreatedDate
+            };
+            axios.post("http://localhost:8080/registration/register", data ).then((res) => {     
+                console.log(res.data.result, "result"); 
+                res.data.result ? props.history.push('/students/table') : alert(res.data.result);   
+                });
+        };
     };
 
     const Duration = [
-        {label:"days"}, {label:"months"}, {label:"year"},
-    ]
+        {title:"days"}, {title:"months"}, {title:"year"},
+    ];
 
-    useEffect(() => {
+    // useEffect(() => {
 
-    }, [AdditionalCertificate.length,AdmissionFee])
-    const handlesubmit = (e) => { e.preventDefault() };
+    // }, [AdditionalCertificate.length,AdmissionFee])
+    // const handlesubmit = (e) => { e.preventDefault() };
 
     return (
-        <ThemeProvider theme={theme}>
-        <form onSubmit={handleSubmit(OnSubmit)}>
+        <ThemeProvider theme = {theme}>
             <AppBreadcrumbs crntPage='Student Form' prevPage='Students Table' path='/students/table' />
-            
             <Box sx={{ background: "#fff", pb: 3, borderRadius:"25px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}>
-
                 {/* Student Details */}
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
@@ -225,22 +228,49 @@ export default function Form(props) {
                     </Grid>
                     <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                         <Grid item xs={12}>
-                            <Typography sx={{ fontWeight: "bold" }}>UnderGraduate <Button disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} onClick={() => setUGDegree([...UGDegree, { "id": UGDegree.length + 1, "desc": "" }])}>Add</Button></Typography>
+                            <Grid container>
+                                <Grid item xs={3}>
+                                    <Typography variant='h6'>UnderGraduate / PostGraduate</Typography>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <Button disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} 
+                                    onClick={() => setDegree([...Degree, { "id": Degree.length + 1, "degree": "", "College":"", "yearOfPass":"", "Percentage":"" }])}>Add<AddCircleOutlineIcon /></Button>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setDegree(Degree.slice(0, -1))} variant='contained' sx={{display: (Degree.length > 1) ? "block" : "none"}}>Cancel</Button>
+                                </Grid>
+                            </Grid>
                         </Grid>
-                        {UGDegree.map((val, ind)=>{
+                        {Degree.map((val, ind)=>{
                             return(
                                 <Grid container rowGap={3} columnGap={5} key={ind}>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField value={UGDegreeName} error={Error.ugDegreeName[ind]} helperText={Error.ugDegreeName[ind] ? "Select the Degree" : ""} fullWidth onChange={(e) => setUGDegreeName(e.target.value)} size='small' label="Degree Name" />
+                                        <TextField value={val.degree} onChange={(e) => {
+                                            const newDegree = [...Degree];
+                                            newDegree[ind].degree = e.target.value;
+                                            setDegree(newDegree)
+                                        }} fullWidth label="Degree Name" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField value={UGCollegeName} error={Error.ugCollegeName} helperText={Error.ugCollegeName ? "College Name field cannot be Empty" : ""} fullWidth onChange={(e) => setUGCollegeName(e.target.value)} size='small' label="College Name" />
+                                        <TextField value={val.College} onChange={(e) => {
+                                            const newDegree = [...Degree];
+                                            newDegree[ind].College = e.target.value;
+                                            setDegree(newDegree)
+                                        }} fullWidth label="College Name" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField value={UGCollegePassedYear} error={Error.ugCollegePassedYear} helperText={Error.ugCollegePassedYear ? "Field Cannot be Empty" : ""} onChange={(e) => setUGCollegePassedYear(e.target.value)} fullWidth on label="Passed-out Year" size="small" />
+                                        <TextField value={val.Percentage} onChange={(e) => {
+                                            const newDegree = [...Degree];
+                                            newDegree[ind].Percentage = e.target.value;
+                                            setDegree(newDegree)
+                                        }} fullWidth label="Percentage of Marks" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField value={UGCollegePercentage} error={Error.ugCollegePercentage} helperText={Error.ugCollegePercentage ? "Field Cannot be Empty" : ""} onChange={(e) => setUGCollegePercentage(e.target.value)} fullWidth label="Percentage of Marks" size="small" />
+                                        <TextField value={val.yearOfPass} onChange={(e) => {
+                                            const newDegree = [...Degree];
+                                            newDegree[ind].yearOfPass = e.target.value;
+                                            setDegree(newDegree)
+                                        }} fullWidth label="Year of Passing" size='small' />
                                     </Grid>
                                 </Grid>
                             )
@@ -254,37 +284,73 @@ export default function Form(props) {
                         <Typography variant='h6'>Parent/Guardian Details</Typography>
                     </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField value={GuardianName} error={Error.guardianName} helperText={Error.guardianName ? "Guardian Name needed" : ""} fullWidth onChange={(e) => setGuardianName(e.target.value)} size='small' label="Parent/Guardian Name" />
+                            <TextField value={GuardianName} error={Error.guardianName} helperText={Error.guardianName ? "Guardian Name required" : ""} fullWidth onChange={(e) => setGuardianName(e.target.value)} size='small' label="Parent/Guardian Name" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField value={GuardianNumber} error={Error.GuardianNumber} helperText={Error.guardianNumber ? "Guardian Number needed" : ""} fullWidth onChange={(e) => setGaurdianNumber(e.target.value)} size='small' label="Gaurdian Contact Number" />
+                            <TextField value={GuardianNumber} error={Error.guardianNumber} helperText={Error.guardianNumber ? "Guardian Number required" : ""} fullWidth onChange={(e) => setGaurdianNumber(e.target.value)} size='small' label="Gaurdian Contact Number" />
                         </Grid>
                 </Grid>
 
                 {/* Additional Certifications */}
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
-                        <Typography variant='h6'>Additional Certifications <Button disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} onClick={() => setAdditionalCertificate([...AdditionalCertificate, { "id": AdditionalCertificate.length + 1, "description": "" }])}>Add<AddCircleOutlineIcon /></Button></Typography>
+                        <Grid container>
+                            <Grid item xs={3}>
+                                <Typography variant='h6'>Additional Certifications</Typography>
+                            </Grid>
+                            <Grid item xs={1}>
+                                <Button disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} 
+                                onClick={() => setAdditionalCertificate([...AdditionalCertificate, { "id": AdditionalCertificate.length + 1, "description": "" }])}>Add<AddCircleOutlineIcon /></Button>
+                            </Grid>
+                            <Grid item xs={1}>
+                                <Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setAdditionalCertificate(AdditionalCertificate.slice(0, -1))} variant='contained' sx={{display: (AdditionalCertificate.length > 1) ? "block" : "none"}}>Cancel</Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                     {AdditionalCertificate.map((val, ind) => {
                         return (
                             <Grid container key={ind} rowGap={3} columnGap={5}>
                                 <Grid item xs={10} md={3.5}>
-                                    <TextField name='Certification' value={val.description} onChange={(e) => AdditionalCertificate[ind].description = e.target.value} fullWidth label="Academy Name" size='small' />
+                                    <TextField value={val.academy} onChange={(e) => {
+                                        const newCertificate = [...AdditionalCertificate];
+                                        newCertificate[ind].academy = e.target.value;
+                                        setAdditionalCertificate(newCertificate)
+                                    }} fullWidth label="Academy Name" size='small' />
                                 </Grid>
                                 <Grid item xs={10} md={3.5}>
-                                    <TextField name='Certification' value={val.description} onChange={(e) => AdditionalCertificate[ind].description = e.target.value} fullWidth label="Course Name" size='small' />
+                                    <TextField value={val.course} onChange={(e) => {
+                                        const newCertificate = [...AdditionalCertificate];
+                                        newCertificate[ind].course = e.target.value;
+                                        setAdditionalCertificate(newCertificate)
+                                    }} fullWidth label="Course Name" size='small' />
                                 </Grid>
                                 <Grid item xs={10} md={3.5}>
                                     <Grid container columnGap={1}>
                                         <Grid item xs={5.5}>
-                                            <TextField name='durationT'  fullWidth label="Duration" size='small' />
+                                            <TextField value={val.time} onChange={(e) => {
+                                                const newCertificate = [...AdditionalCertificate];
+                                                newCertificate[ind].time = e.target.value;
+                                                setAdditionalCertificate(newCertificate)
+                                            }} fullWidth label="Duration" size='small' />
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <Autocomplete size='small' disablePortal options={Duration} renderInput={(params) => <TextField {...params} label="Period" />} />
+                                            <Autocomplete
+                                            value={val.days}
+                                            onChange={(e, newValue) => {
+                                                const newCertificate = [...AdditionalCertificate];
+                                                newCertificate[ind].days = newValue;
+                                                setAdditionalCertificate(newCertificate);
+                                            }}
+                                            getOptionLabel={(option) => option.title || ''}
+                                            size="small"
+                                            disablePortal
+                                            options={Duration}
+                                            renderInput={(params) => <TextField {...params} label="Period" />} />
                                         </Grid>
                                     </Grid>
                                 </Grid>
+                           
+                           
                             </Grid>
                         )
                     })}
@@ -296,7 +362,6 @@ export default function Form(props) {
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <Autocomplete size='small' disablePortal options={Courses} onChange={getCourseDetails} getOptionLabel={(option) => option.CourseName} renderInput={(params) => <TextField {...params} label="Course Enrolled For" />} />
-                        {/* <TextField name='CourseName' fullWidth size='small' label="Course Enrolled For" /> */}
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField name='AdmissionFee' value={AdmissionFee} fullWidth size='small' label="Admission Fee" />
@@ -312,21 +377,20 @@ export default function Form(props) {
                     </Grid>
                     {/* inputProps={{readOnly:true}} */}
                     <Grid item xs={10} md={3.5}>
-                        <TextField name='BatchStartDate' type='text' value={Session} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session" size="small" />
+                        <TextField name='Session' type='text' value={Session} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session" size="small" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField name='BatchStartDate' type='time' value={SessionStartTime} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session Starting Time" size="small" />
+                        <TextField  type='time' value={SessionStartTime} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session Starting Time" size="small" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField name='BatchEndDate' type='time' value={SessionEndTime} inputProps={{readOnly:true}} onChange={(e) => setBatchEndDate(e.target.value)} fullWidth label="Session Ending Time" size="small" />
+                        <TextField type='time' value={SessionEndTime} inputProps={{readOnly:true}} onChange={(e) => setBatchEndDate(e.target.value)} fullWidth label="Session Ending Time" size="small" />
                     </Grid>
                 </Grid>
                 <Box sx={{ mt: 3, display: "flex", justifyContent: "end", mr:8 }}>
-                    <Button style={{backgroundColor:"#4daaff"}} disableElevation disableRipple variant='contained'>Submit</Button>
+                    <Button style={{backgroundColor:"#4daaff"}} disableElevation disableRipple onClick={handleSubmit} variant='contained'>Submit</Button>
                     <Link to='/students/table'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>Back</Button></Link>
                 </Box>
             </Box>
-            </form>
-            </ThemeProvider>
+        </ThemeProvider>
     )
 }
