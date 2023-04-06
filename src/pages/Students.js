@@ -91,9 +91,9 @@ export default function Students() {
                 console.log(params, "rendercell")   
                 return (
                     <Stack direction="row" spacing={2}>
-                        {/* <Link to='/students/forms'> <IconButton disableRipple sx={{p:0, color:"#2EFF2E", border:"HighlightText"}}><EditOutlined/></IconButton></Link> */}
-                        <IconButton  disableRipple sx={{p:0, color:"#4daaff", outline:1}}><VisibilityOutlined/></IconButton>
-                        {/* <IconButton disableRipple sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton> */}
+                        <Link to={`/students/forms/update${params.row.StudentID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
+                        <IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton>
+                        <IconButton disableRipple sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
                     </Stack>
                 )
             },

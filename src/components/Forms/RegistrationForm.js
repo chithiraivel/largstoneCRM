@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment/moment';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
-
+import AxiosInstance from '../../axiosinstance';
 
 const theme = createTheme({
   components: {
@@ -25,12 +25,19 @@ export default function Form(props) {
 
     const [Batch, setBatch] = useState([]);
     useEffect(() => {
-        axios.get('http://localhost:8080/batches/list').then((res) => {
+
+        AxiosInstance.get('/batches/list').then((res)=>{
             setBatch([...res.data.result]);
-        });
-        axios.get('http://localhost:8080/courses/list').then((res) => {
+        })
+        // AxiosInstance.get('/registration/batchandcourse').then((res)=>{
+        //     setBatch([...res.data.result]);
+        //     console.log(Batch, "tesr");
+        // })
+
+        AxiosInstance.get('/courses/list').then((res)=>{
             setCourses([...res.data.result]);
-        });
+        })
+
     }, []);
     
     const [Courses, setCourses] = useState([]);
@@ -156,11 +163,6 @@ export default function Form(props) {
     const Duration = [
         {title:"days"}, {title:"months"}, {title:"year"},
     ];
-
-    // useEffect(() => {
-
-    // }, [AdditionalCertificate.length,AdmissionFee])
-    // const handlesubmit = (e) => { e.preventDefault() };
 
     return (
         <ThemeProvider theme = {theme}>
