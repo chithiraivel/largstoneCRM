@@ -4,7 +4,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment/moment';
-import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 
 
 const theme = createTheme({
@@ -145,6 +145,7 @@ export default function Form(props) {
                 StudentName, MobileNumber: StudentContactNumber, Email, DOB, RegDate, AdmissionFee, GuardianName, GuardianNumber, CourseID,  BatchID,
                 HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), CreatedBy, CreatedDate
             };
+            
             axios.post("http://localhost:8080/registration/register", data ).then((res) => {     
                 console.log(res.data.result, "result"); 
                 res.data.result ? props.history.push('/students/table') : alert(res.data.result);   

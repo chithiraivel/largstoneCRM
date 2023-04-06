@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, } from '@mui/material';
+import { Box, Button, IconButton, Stack, Typography, } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
-
+import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material'
 import axios from 'axios';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
@@ -10,11 +10,18 @@ export default function Students() {
 
     // const classes = useStyles();
     const [rows, setRows] = useState([]);
+
     useEffect(() => {
         axios.post('http://localhost:8080/registration/list').then((res) => {
             setRows([...res.data.result]);
         });
     }, []);
+
+    const handleViewClick = () =>{
+        axios.get('http://localhost:8080/registration/read',).then((res) =>{
+            console.log(res.data.result, "ss");
+        })
+    }
 
     const columns = [
         
@@ -30,7 +37,7 @@ export default function Students() {
         {
             field: "Email",
             headerName: "Email",
-            width: 200,
+            width: 280,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -72,6 +79,25 @@ export default function Students() {
             align: "left",
             sortable:false
         },
+        {
+            field: "none",
+            headerName: "Action",
+            width: 150,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false,
+            renderCell: (params) => {
+                console.log(params, "rendercell")   
+                return (
+                    <Stack direction="row" spacing={2}>
+                        {/* <Link to='/students/forms'> <IconButton disableRipple sx={{p:0, color:"#2EFF2E", border:"HighlightText"}}><EditOutlined/></IconButton></Link> */}
+                        <IconButton  disableRipple sx={{p:0, color:"#4daaff", outline:1}}><VisibilityOutlined/></IconButton>
+                        {/* <IconButton disableRipple sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton> */}
+                    </Stack>
+                )
+            },
+        }
     ];
 
     return (

@@ -5,13 +5,13 @@ import { Route, Switch } from 'react-router-dom';
 import Dashboard from '../pages/Dashboard';
 import Customers from '../pages/Customers';
 import Students from '../pages/Students';
-import RegistrationForm from '../pages/RegistrationForm';
+import RegistrationForm from './Forms/RegistrationForm';
 import InvoiceTable from '../pages/InvoiceTable';
-import InvoiceForm from '../pages/InvoiceForm';
+import InvoiceForm from './Forms/InvoiceForm';
 import CoursesPage from '../pages/CoursesPage';
-import BatchForm from '../pages/BatchForm';
+import BatchForm from './Forms/BatchForm';
 import BatchesPage from '../pages/BatchesPage';
-import CoursesForm from '../pages/CoursesForm';
+import CoursesForm from './Forms/CoursesForm';
 
 const Routes = () => {
     return (

@@ -22,9 +22,8 @@ export default function QuickFilteringGrid(props) {
     <Box>
       <DataGrid sx={{
         border: 0, 
-        "& .MuiDataGrid-row:hover": { backgroundColor: "#4daaff", color: "#FFF" },
         '.MuiDataGrid-columnSeparator': { display: 'none' },
-        '.MuiDataGrid-cell': { border: 'none', color:"#455560", fontSize:"16px" }, //tableCell
+        '.MuiDataGrid-cell': { border: 'none', fontSize:"16px" }, //tableCell
         '& .MuiDataGrid-columnHeaders': { borderBottom: "none", backgroundColor: 'rgb(250,250,251)', color:"#455560", fontSize:"16px", }, //tableHeader
         '& .MuiDataGrid-columnHeaderTitle':{fontWeight:"bold"},
         '& .MuiDataGrid-main': { mb: 2, mt:4 },  //table

@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import { useEffect } from 'react';
 
 const theme = createTheme({
@@ -32,49 +32,55 @@ export default function InvoiceForm(props) {
     const [PendingAmount, setPendingAmount] = useState("");
     const [Discount, setDiscount] = useState("");
     const [TotalAmount, setTotalAmount] = useState("");
+    const [CreatedBy, setCreatedBy] = useState("Admin");
+    const [UpdatedBy, setUpdatedBy] = useState("Admin");
+
+    const [CreatedDate, setCreatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+    const [UpdatedDate, setUpdatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+
     const [PaymentMethod, setPaymentMethod] = useState("");
-        const [Error, setError] = useState({
-        invoiceGenDate: false,
-        studentName: false,
-        courseName: false,
-        session: false,
-        batchName: false,
-        termFees: false,
-        term: false,
-        pendingAmount:false,
-        termFees: false,
-        discount: false,
-        totalAmount: false,
-        paymentMethod: false
+    const [Error, setError] = useState({
+    invoiceGenDate: false,
+    studentName: false,
+    courseName: false,
+    session: false,
+    batchName: false,
+    termFees: false,
+    term: false,
+    pendingAmount:false,
+    termFees: false,
+    discount: false,
+    totalAmount: false,
+    paymentMethod: false
     });
     const [Student, setStudent] = useState("");
     const [StudentID, setStudentID] = useState("");
     const getStudent = (e, val) =>{
         setStudentID(val.StudentID);
         setStudentName(val.StudentName);
-        const courseid = val.CourseID;
-        const batchid = val.BatchID;
-        axios.post(`http://localhost:8080/courses/read?courseid=${courseid}`).then((res) =>{
-            setCourseName(res.data.result[0].CourseName);
-        })
+        setCourseName(val.CourseName);
+        setBatchName(val.CourseName);
+        setSession(val.CourseName);
 
-        axios.post(`http://localhost:8080/batches/read?batchid=${batchid}`).then((res) =>{
-            setBatchName(res.data.result[0].BatchName);
-            setSession(res.data.result[0].Session);
-        })
+        // axios.post(`http://localhost:8080/courses/read`,{courseid:courseid}).then((res) =>{
+        //     setCourseName(res.data.result[0].CourseName);
+        // })
+
+        // axios.post(`http://localhost:8080/batches/read`, {batchid: batchid}).then((res) =>{
+        //     setBatchName(res.data.result[0].BatchName);
+        //     setSession(res.data.result[0].Session);
+        // })
     };
     useEffect(() => {
-        axios.post('http://localhost:8080/registration/list').then((res) => {
+        axios.post('http://localhost:8080/invoice/liststudent').then((res) => {
             setStudent([...res.data.result]);
+            console.log(Student, "Student");
         });
 
     }, []);
 
     const TermList = [
-        {title:"Full Term"},
-        {title:"First Term"},
-        {title:"Second Term"},
-    ]
+        {title:"Full Term", amnt:"70000"}, {title:"First Term", amnt:"35000"}, {title:"Second Term", amnt:"35000"}, ];
 
     const handleSubmit = () => {
         const GenInvoice = { 
@@ -90,13 +96,14 @@ export default function InvoiceForm(props) {
             paymentMethod: PaymentMethod ==="",
         };    
         setError(GenInvoice)
-        if (Object.values(GenInvoice).some(val => val == true )){}
+        if (Object.values(GenInvoice).some(val => val == true )){console.log(Term, "if");}
         else {
             let data = {
-                StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate
+                StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, CreatedBy, CreatedDate
             };
-            console.log(data, "data");
+
             axios.post("http://localhost:8080/invoice/create", data ).then((res) => {
+
                 res.data.result ? props.history.push('/invoice/table') : alert(res.data.result);
             });
         }
@@ -114,31 +121,53 @@ export default function InvoiceForm(props) {
                         <Autocomplete size='small' disablePortal options={Student} onChange={getStudent} getOptionLabel={(option) => option.StudentName} renderInput={(params) => <TextField {...params} label="Sudent Name" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.courseName} helperText={ Error.courseName? "Course Name is required" :""}  type='text' label='Course Name' value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
+                        <TextField error={Error.courseName} helperText={ Error.courseName ? "Course Name is required" :""}  type='text' label='Course Name' value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.batchName} helperText={ Error.batchName? "Batch Name is required" :""}  type='text' label='Batch Name' value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
+                        <TextField error={Error.batchName} helperText={ Error.batchName ? "Batch Name is required" :""}  type='text' label='Batch Name' value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.session} helperText={ Error.session? "Session is required" :""}  type='text' label='Session' value={Session} size='small' fullWidth onChange={(e)=>setSession(e.target.value)} />
+                        <TextField error={Error.session} helperText={ Error.session ? "Session is required" :""}  type='text' label='Session' value={Session} size='small' fullWidth onChange={(e)=>setSession(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                    <Autocomplete size='small' disablePortal  options={TermList} value={Term} getOptionLabel={(option) => option.title || ''} renderInput={(params) => <TextField {...params} label="Term" />} />
+                        <Autocomplete 
+                            size='small' 
+                            onChange={(e, val) => {
+                                setTerm(val.title)
+                                setTermFees(val.amnt)
+                                setPendingAmount(val.title == "Full Term" ? "0" : val.amnt)
+                            }}
+                            disablePortal 
+                            options={TermList}  
+                            getOptionLabel={(option) => option.title || ""} 
+                            renderInput={(params) => (
+                                <TextField 
+                                {...params} 
+                                label="Term" 
+                                value={Term} 
+                                />
+                            )} 
+                            />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.termFees} helperText={ Error.termFees ? "Term Fee Amount required" :""} type='tel' label="Term Fees" value={TermFees} size='small' fullWidth onChange={(e)=>setTermFees(e.target.value)} />
+                        <TextField error={Error.termFees} helperText={ Error.termFees ? "Term Fee Amount required" :""} type='tel' label="Term Fees" value={TermFees} size='small' fullWidth 
+                        onChange={(e)=>
+                         {setTermFees(e.target.value)}} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField type='text' label="Discount" value={Discount} size='small' fullWidth onChange={(e)=>setDiscount(e.target.value)} />
+                        <TextField type='text' label="Discount" value={Discount} size='small' fullWidth 
+                        onChange={(e)=>{
+                            setDiscount(e.target.value)
+                            setTotalAmount( Discount =="" ? TermFees :(TermFees - ((e.target.value/100) * TermFees)))}} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.totalAmount} helperText={ Error.totalAmount ? "Total Amount field is required" :""} type='tel' label="Amount" value={TotalAmount} size='small' fullWidth onChange={(e)=>setTotalAmount(e.target.value)} />
+                        <TextField error={Error.totalAmount} helperText={ Error.totalAmount ? "Total Amount field is required" :""} type='tel' label="Payable Amount" value={TotalAmount} size='small' fullWidth onChange={(e)=>setTotalAmount(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField error={Error.paymentMethod} helperText={ Error.paymentMethod ? "Payment method field is required" :""} type='text' label="Payment Method" value={PaymentMethod} size='small' fullWidth onChange={(e)=>setPaymentMethod(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.invoiceGenDate} helperText={ Error.invoiceGenDate ? "Invoice Generating Date reqiured" :""} type='date' label="Invoice Generating Date" value={InvoiceGenDate} size='small' fullWidth onChange={(e)=>setInvoiceGenDate(e.target.value)} />
+                        <TextField error={Error.invoiceGenDate} helperText={ Error.invoiceGenDate ? "Invoice Generating Date reqiured" :""} type='date' label="Invoice Generating Date" value={InvoiceGenDate} size='small' fullWidth onChange={(e)=>setInvoiceGenDate(moment(e.target.value).format("YYYY-MM-DD"))} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField error={Error.pendingAmount} helperText={ Error.pendingAmount ? "Pending Amount is required" :""} type='tel' label="Pending Amount" value={PendingAmount} size='small' fullWidth onChange={(e)=>setPendingAmount(e.target.value)} />

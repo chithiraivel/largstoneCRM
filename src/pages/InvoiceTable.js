@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+import moment from 'moment';
 
 export default function InvoiceTable() {
 
@@ -13,9 +14,7 @@ export default function InvoiceTable() {
         axios.post('http://localhost:8080/invoice/list').then((res) => {
             setRows([...res.data.result]);
         });
-    }, [])
-
-    // const rows = [{id:1, InvoiceGenDate:"28-03-2023", StudentName:"Suresh Krishnan", CourseName:"Full Stack Developer", Term:"I", TermFee:"25000", Discount:"none", TotalAmount:"25000", PaymentMethod:"Online(Google Pay)", PendingAmount:"25000", PendingTerms:"1"}]
+    }, []);
 
     const columns = [
         {
@@ -25,16 +24,8 @@ export default function InvoiceTable() {
             editable: false,
             headerAlign: "left", 
             align: "left",
-            sortable:false
-        },
-        {
-            field: "InvoiceGenDate",
-            headerName: "Date",
-            width: 120,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false
+            sortable:false,
+            
         },
         {
             field: "StudentName",
@@ -48,23 +39,23 @@ export default function InvoiceTable() {
         {
             field: "CourseName",
             headerName: "Course Name",
-            width: 180,
+            width: 200,
             editable: false,
             headerAlign: "left", 
             align: "left",
             sortable:false
         },
         {
-            field: "FeePayingTerm",
-            headerName: "Term",
-            width: 70,
+            field: "Term",
+            headerName: "PayingTerm",
+            width: 130,
             editable: false,
             headerAlign: "left", 
             align: "left",
             sortable:false
         },
         {
-            field: "TermAmount",
+            field: "TermFees",
             headerName: "Term Fee",
             width: 100,
             editable: false,
@@ -79,7 +70,13 @@ export default function InvoiceTable() {
             editable: false,
             headerAlign: "left", 
             align: "left",
-            sortable:false
+            sortable:false,
+            valueFormatter: (params) =>{
+                if (params.value == "") {
+                    return 'N/A'
+                } 
+                return `${params.value} %`
+            }
         },
         {
             field: "TotalAmount",
@@ -107,6 +104,16 @@ export default function InvoiceTable() {
             headerAlign: "left", 
             align: "left",
             sortable:false
+        },
+        {
+            field: "InvoiceGenDate",
+            headerName: "Date",
+            width: 120,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false,
+            valueGetter: (params) => moment(params.value).format("YYYY-MM-DD")
         },
     ];
 

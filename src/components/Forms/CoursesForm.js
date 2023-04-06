@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 
 const theme = createTheme({
   components: {
