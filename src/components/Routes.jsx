@@ -20,9 +20,10 @@ const Routes = () => {
             <Route path='/customers' component={Customers} />
             <Route exact path='/students/table' component={Students} />
             <Route exact path='/students/forms' component={RegistrationForm} />
-            <Route exact path='/students/forms/:StudentID' component={RegistrationForm} />
+            <Route exact path='/students/forms/:action/:StudentID' component={RegistrationForm} />
             <Route exact path='/invoice/table' component={InvoiceTable} />
             <Route exact path='/invoice/form' component={InvoiceForm} />
+            <Route exact path='/invoices/forms/:action/:InvoiceID' component={InvoiceForm} />
             <Route exact path='/courses/form' component={CoursesForm} />
             <Route exact path='/courses/table' component={CoursesPage} />
             <Route exact path='/batches/form' component={BatchForm} />

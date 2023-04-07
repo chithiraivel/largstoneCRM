@@ -3,7 +3,7 @@ import { Box, Button, IconButton, Stack, Typography, } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
 import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material'
-import axios from 'axios';
+import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
 export default function Students() {
@@ -11,17 +11,20 @@ export default function Students() {
     // const classes = useStyles();
     const [rows, setRows] = useState([]);
 
-    useEffect(() => {
-        axios.post('http://localhost:8080/registration/list').then((res) => {
+ 
+    const ListStudents = ()=>{
+        instance.post('registration/list').then((res) => {
             setRows([...res.data.result]);
         });
-    }, []);
-
-    const handleViewClick = () =>{
-        axios.get('http://localhost:8080/registration/read',).then((res) =>{
-            console.log(res.data.result, "ss");
-        })
     }
+
+    const handleRowDelete = (StudentID)=>{
+        instance.post(`registration/delete`, {StudentID: StudentID}).then((res)=>{
+            if (res.data.status == true){
+                ListStudents()
+            }
+        })
+    };
 
     const columns = [
         
@@ -88,18 +91,21 @@ export default function Students() {
             align: "left",
             sortable:false,
             renderCell: (params) => {
-                console.log(params, "rendercell")   
                 return (
                     <Stack direction="row" spacing={2}>
-                        <Link to={`/students/forms/update${params.row.StudentID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
-                        <IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton>
-                        <IconButton disableRipple sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
+                        <Link to={`/students/forms/update/${params.row.StudentID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
+                        <Link to={`/students/forms/read/${params.row.StudentID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
+                        <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.StudentID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
                     </Stack>
                 )
             },
         }
     ];
 
+    useEffect(() => {
+        ListStudents()
+    }, []);
+    
     return (
         <div>
             <AppBreadcrumbs crntPage='Students' path='/' />

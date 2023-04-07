@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/material';
+import { Box, Breadcrumbs, Button, Typography, Link as Links, Stack, IconButton } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
-
-import axios from 'axios';
+import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material'
+import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 import moment from 'moment';
 
 export default function InvoiceTable() {
 
     const [rows, setRows] = useState([]);
-    useEffect(() => {
-        axios.post('http://localhost:8080/invoice/list').then((res) => {
+
+    const ListInvoice = ()=>{
+        instance.post('invoice/list').then((res) => {
             setRows([...res.data.result]);
         });
-    }, []);
+    };
+    
+    const handleRowDelete = (StudentID)=>{
+        instance.post(`invoice/delete`, {StudentID: StudentID}).then((res)=>{
+            if (res.data.status == true){
+                ListInvoice()
+            }
+        })
+    };
 
     const columns = [
         {
@@ -115,7 +124,31 @@ export default function InvoiceTable() {
             sortable:false,
             valueGetter: (params) => moment(params.value).format("YYYY-MM-DD")
         },
+        {
+            field: "none",
+            headerName: "Action",
+            width: 150,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false,
+            renderCell: (params) => {
+                return (
+                    <Stack direction="row" spacing={2}>
+                        <Link to={`/invoices/forms/update/${params.row.StudentID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
+                        <Link to={`/invoices/forms/read/${params.row.StudentID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
+                        <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.StudentID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
+                    </Stack>
+                )
+            },
+        }
     ];
+
+
+    useEffect(() => {
+        ListInvoice()
+    }, []);
+
 
     return (
         <div>

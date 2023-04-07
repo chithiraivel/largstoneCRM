@@ -41,6 +41,7 @@ const Sidebar = props => {
                             title={item.display_name}
                             icon={item.icon}
                             active={(index === activeItem) || (index === activeInnerItem)}
+                        // active={location.pathname.includes(activeItem)}
                         />
                     </Link>
                 ))
