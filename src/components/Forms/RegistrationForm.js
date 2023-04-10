@@ -2,7 +2,6 @@ import { Box, Button, Grid, TextField, Typography, createTheme, ThemeProvider, A
 import React, { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
 import moment from 'moment/moment';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import AxiosInstance from '../../axiosinstance';
@@ -23,10 +22,10 @@ const theme = createTheme({
 
 export default function Form(props) {
 
-    const [Batch, setBatch] = useState([]);    
-    const [BatchName, setBatchName] = useState([]);    
-    const [Courses, setCourses] = useState([]);
-    const [CourseName, setCourseName] = useState([]);
+    const [Batch, setBatch] = useState("");    
+    const [BatchName, setBatchName] = useState("");    
+    const [Courses, setCourses] = useState("");
+    const [CourseName, setCourseName] = useState("");
     const [CourseID, setCourseID] = useState("");
     const [BatchID, setBatchID] = useState("");
 
@@ -84,9 +83,6 @@ export default function Form(props) {
         hscPercentage: false,
         ugDegreeName: false,
         degree: false,
-        ugCollegeName: false,
-        ugCollegePassedYear: false,
-        ugCollegePercentage: false,
         guardianName: false,
         guardianNumber: false,
         additionalCertificate: false,
@@ -96,10 +92,9 @@ export default function Form(props) {
         courseName: false,
         courseAdmissionFee: false,
     });
-
+   
     const [Disable, setDisable] = useState(false);
-    const params = useParams()
-    
+    const params = useParams() 
     
     const ListBatches = ()=>{
         AxiosInstance.get('/batches/list').then((res)=>{
@@ -128,7 +123,6 @@ export default function Form(props) {
     };
 
     const Read = ()=>{
-
         AxiosInstance.put('registration/read',{StudentID: params.StudentID} ).then((res)=>{
             if (res.data.status){
                 setStudentName(res.data.result[0].StudentName ? res.data.result[0].StudentName :"")
@@ -169,26 +163,41 @@ export default function Form(props) {
             StudentName, MobileNumber: StudentContactNumber, Email, DOB, RegDate, AdmissionFee, GuardianName, GuardianNumber, BatchID, CourseID,
             HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), Address: JSON.stringify(Address), UpdatedBy, UpdatedDate, StudentID: params.StudentID
         };
-        console.log(data, "data");
-        // AxiosInstance.post('registration/update', data).then((res)=>{
-        //     res.data.result ? props.history.push('/students/table') : alert(res.data.result);
-        // })
-    }
+        AxiosInstance.post('registration/update', data).then((res)=>{
+            res.data.result ? props.history.push('/students/table') : alert(res.data.result);
+        })
+    };
 
     const getCourseDetails = (e, val) => {
-
-        setCourseName(val.CourseName)
-        setCourseID(val.CourseID);
-        setAdmissionFee(val.AdmissionFee)
+        if (val != null && val.CourseName != null){
+            setCourseName(val.CourseName)
+            setCourseID(val.CourseID);
+            setAdmissionFee(val.AdmissionFee)
+        } else {
+            setCourseName("")
+            setCourseID(null);
+            setAdmissionFee("")        
+        }
     };
 
     const getBatchDetails = (e, val) => {
-        setBatchStartingDate(moment(val.BatchStartDate).format("YYYY-MM-DD"));
-        setBatchEndDate(moment(val.BatchEndDate).format("YYYY-MM-DD"));
-        setSession(val.Session)
-        setSessionEndTime(val.SessionEndTime);
-        setSessionStartTime(val.SessionStartTime);
-        setBatchID(val.BatchID)
+        if (val != null && val.BatchName != null) {
+            setBatchStartingDate(moment(val.BatchStartDate).format("YYYY-MM-DD"));
+            setBatchEndDate(moment(val.BatchEndDate).format("YYYY-MM-DD"));
+            setSession(val.Session)
+            setBatchName(val.BatchName)
+            setBatchID(val.BatchID)
+            setSessionEndTime(val.SessionEndTime);
+            setSessionStartTime(val.SessionStartTime);
+        } else {
+            setBatchName("")
+            setBatchStartingDate(" ");
+            setBatchEndDate(" ");
+            setSession("")
+            setSessionEndTime(" ");
+            setSessionStartTime(" ");
+            setBatchID(null)            
+        }
     };
 
     const handleSubmit = () => {
@@ -208,9 +217,11 @@ export default function Form(props) {
             hscPercentage: HSCPercentage === "",
             guardianNumber: GuardianNumber === "",
             guardianName: GuardianName === "",
-        };    
+            additionalCertificate : AdditionalCertificate === [{ id: 1, academy: "", course: "", time :"", days: ""}]
+        };
         setError(RegisterStudent)
-
+        console.log("cer", AdditionalCertificate);
+         console.log("reg",RegisterStudent);
         if (Object.values(RegisterStudent).some(val => val == true )){}
         else{
             if(params.action == "update"){
@@ -244,10 +255,10 @@ export default function Form(props) {
                         <Typography variant='h6'>Student Details</Typography>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} error={Error.regDate} helperText={Error.studentName ? "Student Name field cannot be empty" : ""} value={StudentName} fullWidth onChange={(e) => setStudentName(e.target.value)} size='small' label="Student Name" />
+                        <TextField disabled={Disable} error={Error.studentName} helperText={Error.studentName ? "* Student Name is required" : ""} value={StudentName} fullWidth onChange={(e) => setStudentName(e.target.value)} size='small' label="Student Name" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} error={Error.studentContactNumber} helperText={Error.studentContactNumber ? "Student Contact number needed" : ""} value={StudentContactNumber} fullWidth onChange={(e) => setStudentContactNumber(e.target.value)} size='small' label="Student contact Number" />
+                        <TextField disabled={Disable} error={Error.studentContactNumber} helperText={Error.studentContactNumber ? "*  Contact number is required" : ""} value={StudentContactNumber} fullWidth onChange={(e) => setStudentContactNumber(e.target.value)} size='small' label="Student contact Number" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disable} value={Email} error={Error.studentEmail} helperText={Error.studentEmail ? "Student E-mail field cannot be empty" : ""} fullWidth onChange={(e) => setEmail(e.target.value)} size='small' label="Email" />
@@ -318,7 +329,7 @@ export default function Form(props) {
                             return(
                                 <Grid container rowGap={3} columnGap={5} key={ind}>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField disabled={Disable} value={val.degree} onChange={(e) => {
+                                        <TextField disabled={Disable} value={val.degree}  onChange={(e) => {
                                             const newDegree = [...Degree];
                                             newDegree[ind].degree = e.target.value;
                                             setDegree(newDegree)
@@ -421,7 +432,11 @@ export default function Form(props) {
                         return (
                             <Grid container key={ind} rowGap={3} columnGap={5}>
                                 <Grid item xs={10} md={3.5}>
-                                    <TextField disabled={Disable} value={val.academy} onChange={(e) => {
+                                    <TextField disabled={Disable} error={Error.additionalCertificate && !val.academy}
+                                        helperText={
+                                            Error.additionalCertificate && !val.academy
+                                            ? "Academy name is required"
+                                            : "" } value={val.academy} onChange={(e) => {
                                         const newCertificate = [...AdditionalCertificate];
                                         newCertificate[ind].academy = e.target.value;
                                         setAdditionalCertificate(newCertificate)
@@ -500,7 +515,7 @@ export default function Form(props) {
                 <Box sx={{ mt: 3, display: "flex", justifyContent: "end", mr:8 }}>
                     {params.action == "read" ? "" :
                     <Button style={{backgroundColor:"#4daaff",}} disableElevation disableRipple onClick={handleSubmit} variant='contained'>{params.action=="update"? "Update" : "Submit"}</Button> }
-                    <Link to='/students/table'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>Back</Button></Link>
+                    <Link to='/students/table'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
         </ThemeProvider>

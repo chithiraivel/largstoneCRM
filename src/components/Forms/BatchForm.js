@@ -1,9 +1,10 @@
 import { Autocomplete, Box, Button, createTheme, Grid, TextField, ThemeProvider, Typography } from '@mui/material';
-import axios from 'axios';
+import AxiosInstance from '../../axiosinstance';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
+import { useEffect } from 'react';
 
 const theme = createTheme({
   components: {
@@ -19,43 +20,97 @@ const theme = createTheme({
   },
 });
 
-export default function BatchForm() {
+export default function BatchForm(props) {
 
-    const [CourseName, setCourseName] = useState("");
-    const [CourseFee, setCourseFee] = useState(" ");
-    const [Subjects, setSubjects] = useState(" ");
+    const [BatchName, setBatchName] = useState("");
+    const [BatchStartDate, setBatchStartDate] = useState(" ");
+    const [BatchEndDate, setBatchEndDate] = useState(" ");
     const [Session, setSession] = useState(" ");
-    const [SessionStartingTime, setSessionStartingTime] = useState(" ");
-    const [SessionEndingTime, setSessionEndingTime] = useState(" ");
-    const [Count, setCount] = useState("");
+    const [SessionStartTime, setSessionStartTime] = useState(" ");
+    const [SessionEndTime, setSessionEndTime] = useState(" ");
+    const [BatchCountLimit, setBatchCountLimit] = useState("");
+    const [BatchStatus, setBatchStatus] = useState("");
+
+    const [Disabled, setDisabled] = useState(false);
+
+    const [CreatedBy, setCreatedBy] = useState("Admin");
+    const [UpdatedBy, setUpdatedBy] = useState("Admin");
+
+    const [CreatedDate, setCreatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+    const [UpdatedDate, setUpdatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+
     const [Error, setError] = useState({
-    courseName: false,
-    courseFee: false,
-    subjects: false,
+    BatchName: false,
+    BatchStartDate: false,
+    BatchEndDate: false,
     session: false,
-    sessionStartingTime: false,
-    sessionEndingTime: false,
-    count:false,
+    sessionStartTime: false,
+    sessionEndTime: false,
+    BatchCountLimit:false,
     });
 
+    const params = useParams();
+
+    const Post = ()=>{
+        let data = {
+            BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, CreatedBy, CreatedDate, BatchStatus: "Active", BatchCountLimit
+        };
+        AxiosInstance.post("batches/create", data ).then((res) => {
+            res.data.status ? props.history.push('/batches/table') : alert(res.data.result);
+        });
+    };
+
+    const Read = ()=>{
+        AxiosInstance.post("batches/read", {BatchID: params.BatchID}).then((res)=>{
+            setBatchName(res.data.result[0].BatchName ? res.data.result[0].BatchName : "");
+            setBatchStartDate(res.data.result[0].BatchStartDate ? moment(res.data.result[0].BatchStartDate).format("YYYY-MM-DD") : "");
+            setBatchEndDate(res.data.result[0].BatchEndDate ? moment(res.data.result[0].BatchEndDate).format("YYYY-MM-DD") : "");
+            setSession(res.data.result[0].Session ? res.data.result[0].Session : "");
+            setSessionStartTime(res.data.result[0].SessionStartTime ? res.data.result[0].SessionStartTime : "");
+            setSessionEndTime(res.data.result[0].SessionEndTime ? res.data.result[0].SessionEndTime : "");
+            setBatchCountLimit(res.data.result[0].BatchCountLimit ? res.data.result[0].BatchCountLimit : "");
+        })
+    };
+ 
+    const Update = ()=>{
+        let data = {
+            BatchID: params.BatchID, BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, UpdatedBy, UpdatedDate, BatchStatus: "Active", BatchCountLimit
+        };
+        console.log("update", data);
+        AxiosInstance.post("batches/update", data).then((res)=>{
+            res.data.status ? props.history.push('/batches/table') : alert(res.data.result);
+        })
+    };
+    
     const handleSubmit = () => {
         const CreateBatch = {
-            CourseName: CourseName === " ",
-            CourseFee: CourseFee === " ",
-            subjects: Subjects ==="",
-            session: Session ==="",
-            sessionStartingTime: SessionStartingTime ===" ",
-            sessionEndingTime: SessionEndingTime ===" ",
-            count: Count ==="",
+            BatchName: BatchName === "",
+            BatchStartDate: BatchStartDate === " ",
+            BatchEndDate: BatchEndDate ===" ",
+            session: Session === "",
+            sessionStartTime: SessionStartTime ===" ",
+            sessionEndTime: SessionEndTime ===" ",
+            BatchCountLimit: BatchCountLimit ==="",
         };    
-        setError(CreateBatch)    
-            // let data = {
-            //     CourseFee,
-            // }
-            // axios.post("http://localhost:8080/batches/create", ).then((res) => {
-            //     res.data.result ? <Link to='/batches/table' /> : alert(res.data.result);
-            // });
+        setError(CreateBatch)
+        if (Object.values(CreateBatch).some(val => val == true )){}
+        else {
+            if(params.action == "update"){
+                Update()
+            } else {
+                Post()
+            }
+        }
     };
+
+    useEffect(() => {
+        if (params.action == "read" || params.action == "update"){
+            Read()
+        }
+        if(params.action == "read"){
+            setDisabled(true)
+        }
+    }, []);
 
     const CourseSession = [{label:"Morning"},{ label:"AfterNoon"}, {label:"Evening"}, {label:"Full Day",}]
 
@@ -68,31 +123,32 @@ export default function BatchForm() {
                         <Typography sx={{ fontWeight: "bold" }}>Batch Details</Typography>
                     </Grid>                        
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.courseName} helperText={ Error.courseName ? "Batch Name cannot be Empty" :""} type='text' label="Batch Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.BatchName} helperText={ Error.BatchName ? "Batch Name is required" :""} type='text' label="Batch Name" value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.courseFee} helperText={ Error.courseFee ? "Student Name is required" :""} type='date' label="Batch Starting Date" value={CourseFee} size='small' fullWidth onChange={(e) => setCourseFee(e.target.value)}>
+                        <TextField disabled={Disabled} error={Error.BatchStartDate} helperText={ Error.BatchStartDate ? "Student Name is required" :""} type='date' label="Batch Starting Date" value={BatchStartDate} size='small' fullWidth onChange={(e) => setBatchStartDate(e.target.value)}>
                         </TextField>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.subjects} helperText={ Error.subjects ? "Course Name is required" :""}  type='date' label='Batch Ending Date' value={Subjects} size='small' fullWidth onChange={(e)=>setSubjects(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.BatchEndDate} helperText={ Error.BatchEndDate ? "Course Name is required" :""}  type='date' label='Batch Ending Date' value={BatchEndDate} size='small' fullWidth onChange={(e)=>setBatchEndDate(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete size='small' disablePortal options={CourseSession}  value={Session} renderInput={(params) => <TextField {...params} label=" Select the Session" />} />
+                        <Autocomplete disabled={Disabled} error={Error.session} helperText={ Error.session ? "Session is required" :""}  size='small' disablePortal options={CourseSession} onChange={((e, val)=> setSession(val.label))} value={Session} renderInput={(params) => <TextField {...params} label=" Select the Session" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.sessionStartingTime} helperText={ Error.sessionStartingTime ? "Select Session StraAmount required" :""} type='time' label="Session Starting Time" value={SessionStartingTime} size='small' fullWidth onChange={(e)=>setSessionStartingTime(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.sessionStartTime} helperText={ Error.sessionStartTime ? "Select Session StraAmount required" :""} type='time' label="Session Starting Time" value={SessionStartTime} size='small' fullWidth onChange={(e)=>setSessionStartTime(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.sessionEndingTime} helperText={ Error.sessionEndingTime ? "If not have any SessionEndingTime enter NONE" :""} type='time' label="SessionEndingTime" value={SessionEndingTime} size='small' fullWidth onChange={(e)=>setSessionEndingTime(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime ? "If not have any SessionEndTime enter NONE" :""} type='time' label="SessionEndTime" value={SessionEndTime} size='small' fullWidth onChange={(e)=>setSessionEndTime(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField error={Error.count} helperText={ Error.count ? "Total Amount not tallied. Please check" :""} type='tel' label="Maximum Seats"  value={Count} size='small' fullWidth onChange={(e)=>setCount(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.BatchCountLimit} helperText={ Error.BatchCountLimit ? "total seats required" :""} type='tel' label="Maximum Seats"  value={BatchCountLimit} size='small' fullWidth onChange={(e)=>setBatchCountLimit(e.target.value)} />
                     </Grid>
                 </Grid> 
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
-                    <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>Create</Button>
-                    <Link to='/batches/table'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >Cancel</Button></Link>
+                    {params.action == "read" ? "" :
+                    <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action == "update" ? "Update" : "Create"}</Button>}
+                    <Link to='/batches/table'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
         </ThemeProvider>

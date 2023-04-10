@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, IconButton, Stack, Typography, } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
-import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material'
+import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material';
 import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
@@ -11,7 +11,6 @@ export default function Students() {
     // const classes = useStyles();
     const [rows, setRows] = useState([]);
 
- 
     const ListStudents = ()=>{
         instance.post('registration/list').then((res) => {
             setRows([...res.data.result]);
@@ -40,7 +39,7 @@ export default function Students() {
         {
             field: "Email",
             headerName: "Email",
-            width: 280,
+            width: 250,
             editable: false,
             headerAlign: "left", 
             align: "left",

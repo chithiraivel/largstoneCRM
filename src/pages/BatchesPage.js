@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/material';
+import { Box,  Button, IconButton, Stack, Typography } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
+import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material';
 
-import axios from 'axios';
+import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 
 export default function BatchesPage() {
 
     const [rows, setRows] = useState([]);
-    useEffect(() => {
-        axios.post('http://localhost:8080/Batches/list').then((res) => {
+    const Listbatch = ()=>{
+        instance.post('batches/list').then((res) => {
             setRows([...res.data.result]);
         });
-    }, [])
+    }
 
-    // const rows = [{BatchID:"1", BatchName:"FSD-APR-23", StartDate:"2023-03-30", EndDate:"2023-09-03", StartTime:"10.00 AM", EndTime:"01.30 PM", Count:"20", Available:"5"}]
+    const handleRowDelete = (BatchID)=>{
+        instance.post(`batches/delete`, {BatchID: BatchID}).then((res)=>{
+            if (res.data.status == true){
+                Listbatch()
+            }
+        })
+    };
 
     const columns = [
 
@@ -97,7 +104,29 @@ export default function BatchesPage() {
             align: "left",
             sortable:false
         },
+        {
+            field: "none",
+            headerName: "Action",
+            width: 150,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false,
+            renderCell: (params) => {
+                return (
+                    <Stack direction="row" spacing={2}>
+                        <Link to={`/batches/forms/update/${params.row.BatchID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
+                        <Link to={`/batches/forms/read/${params.row.BatchID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
+                        <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.BatchID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
+                    </Stack>
+                )
+            },
+        }
     ];
+
+    useEffect(() => {
+        Listbatch()
+    },[])
 
     return (
         <div>
@@ -113,18 +142,3 @@ export default function BatchesPage() {
     )
 };
 
-
-
-        // {
-        //     field: "no",
-        //     headerName: "No.",
-        //     width: 60,
-        //     renderCell: (params) =>{
-        //         const rowIndex = params.api.getRowIndexById(params.id);
-        //         return <span>{params.rowIndex + 1}</span>
-        //     },
-        //     editable: false,
-        //     headerAlign: "left", 
-        //     align: "left",
-        //     sortable:false
-        // },

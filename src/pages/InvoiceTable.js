@@ -17,8 +17,8 @@ export default function InvoiceTable() {
         });
     };
     
-    const handleRowDelete = (StudentID)=>{
-        instance.post(`invoice/delete`, {StudentID: StudentID}).then((res)=>{
+    const handleRowDelete = (InvoiceID)=>{
+        instance.post(`invoice/delete`, {InvoiceID: InvoiceID}).then((res)=>{
             if (res.data.status == true){
                 ListInvoice()
             }
@@ -135,9 +135,9 @@ export default function InvoiceTable() {
             renderCell: (params) => {
                 return (
                     <Stack direction="row" spacing={2}>
-                        <Link to={`/invoices/forms/update/${params.row.StudentID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
-                        <Link to={`/invoices/forms/read/${params.row.StudentID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
-                        <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.StudentID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
+                        <Link to={`/invoices/forms/update/${params.row.InvoiceID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
+                        <Link to={`/invoices/forms/read/${params.row.InvoiceID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
+                        <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.InvoiceID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
                     </Stack>
                 )
             },

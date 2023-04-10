@@ -1,78 +1,101 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Breadcrumbs, Button, Typography, Link as Links } from '@mui/material';
+import { Box, Button, Typography, Stack, IconButton } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
-
-import axios from 'axios';
+import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material'
+
 
 export default function CoursesPage() {
 
 
     const [rows, setRows] = useState([]);
-    useEffect(() => {
-        axios.post('http://localhost:8080/courses/list').then((res) => {
+
+    const ListCourses = ()=>{
+        instance.post('courses/list').then((res) => {
             setRows([...res.data.result]);
         });
-    }, [])
+    }
 
-  const columns = [
-      {
-          field: "CourseName",
-          headerName: "Course Name",
-          width: 250,
-          editable: false,
-          headerAlign: "left", 
-          align: "left",
-          sortable:false
-      },
-      {
-          field: "CourseFee",
-          headerName: "Course Fee",
-          width: 120,
-          editable: false,
-          headerAlign: "left", 
-          align: "left",
-          sortable:false
-      },
-      {
-          field: "Subjects",
-          headerName: "Portions Covered",
-          width: 330,
-          editable: false,
-          headerAlign: "left", 
-          align: "left",
-          sortable:false
-      },
-      {
-          field: "Terms",
-          headerName: "Terms",
-          width: 100,
-          editable: false,
-          headerAlign: "left", 
-          align: "left",
-          sortable:false
-      },
-      {
-          field: "CourseDuration",
-          headerName: "Course Duration",
-          width: 160,
-          editable: false,
-          headerAlign: "left", 
-          align: "left",
-          sortable:false
-      },
-      {
-          field: "AdmissionFee",
-          headerName: "Admission Fee",
-          width: 130,
-          editable: false,
-          headerAlign: "left", 
-          align: "left",
-          sortable:false
-      },
-  ];
+    const handleRowDelete = (CourseID)=>{
+        instance.post(`courses/delete`, {CourseID: CourseID}).then((res)=>{
+            if (res.data.status == true){
+                ListCourses()
+            }
+        })
+    };
 
+    const columns = [
+        {
+            field: "CourseName",
+            headerName: "Course Name",
+            width: 250,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
+        {
+            field: "CourseFee",
+            headerName: "Course Fee",
+            width: 120,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
+        {
+            field: "Subjects",
+            headerName: "Portions Covered",
+            width: 330,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false, 
+            valueGetter : (params)=> params.value ? JSON.parse(params.value).map(val=> val.Subject).join(", ") :""
+        },
+        {
+            field: "CourseDuration",
+            headerName: "Course Duration",
+            width: 160,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
+        {
+            field: "AdmissionFee",
+            headerName: "Admission Fee",
+            width: 130,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false
+        },
+        {
+            field: "none",
+            headerName: "Action",
+            width: 150,
+            editable: false,
+            headerAlign: "left", 
+            align: "left",
+            sortable:false,
+            renderCell: (params) => {
+                return (
+                    <Stack direction="row" spacing={2}>
+                        <Link to={`/courses/forms/update/${params.row.CourseID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
+                        <Link to={`/courses/forms/read/${params.row.CourseID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
+                        <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.CourseID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
+                    </Stack>
+                )
+            },
+        }
+    ];
+
+    useEffect(() => {
+        ListCourses()
+    },[])
     return (
         <div>
             <AppBreadcrumbs crntPage='Courses Table' path='/' />
