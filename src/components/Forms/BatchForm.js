@@ -25,7 +25,7 @@ export default function BatchForm(props) {
     const [BatchName, setBatchName] = useState("");
     const [BatchStartDate, setBatchStartDate] = useState(" ");
     const [BatchEndDate, setBatchEndDate] = useState(" ");
-    const [Session, setSession] = useState(" ");
+    const [Session, setSession] = useState("");
     const [SessionStartTime, setSessionStartTime] = useState(" ");
     const [SessionEndTime, setSessionEndTime] = useState(" ");
     const [BatchCountLimit, setBatchCountLimit] = useState("");
@@ -76,7 +76,6 @@ export default function BatchForm(props) {
         let data = {
             BatchID: params.BatchID, BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, UpdatedBy, UpdatedDate, BatchStatus: "Active", BatchCountLimit
         };
-        console.log("update", data);
         AxiosInstance.post("batches/update", data).then((res)=>{
             res.data.status ? props.history.push('/batches/table') : alert(res.data.result);
         })
@@ -126,28 +125,28 @@ export default function BatchForm(props) {
                         <TextField disabled={Disabled} error={Error.BatchName} helperText={ Error.BatchName ? "Batch Name is required" :""} type='text' label="Batch Name" value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchStartDate} helperText={ Error.BatchStartDate ? "Student Name is required" :""} type='date' label="Batch Starting Date" value={BatchStartDate} size='small' fullWidth onChange={(e) => setBatchStartDate(e.target.value)}>
+                        <TextField disabled={Disabled} error={Error.BatchStartDate} helperText={ Error.BatchStartDate ? "Batch Start Time is required" :""} type='date' label="Batch Starting Date" value={BatchStartDate} size='small' fullWidth onChange={(e) => setBatchStartDate(e.target.value)}>
                         </TextField>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchEndDate} helperText={ Error.BatchEndDate ? "Course Name is required" :""}  type='date' label='Batch Ending Date' value={BatchEndDate} size='small' fullWidth onChange={(e)=>setBatchEndDate(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.BatchEndDate} helperText={ Error.BatchEndDate ? "Batch End Time is required" :""}  type='date' label='Batch Ending Date' value={BatchEndDate} size='small' fullWidth onChange={(e)=>setBatchEndDate(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete disabled={Disabled} error={Error.session} helperText={ Error.session ? "Session is required" :""}  size='small' disablePortal options={CourseSession} onChange={((e, val)=> setSession(val.label))} value={Session} renderInput={(params) => <TextField {...params} label=" Select the Session" />} />
+                        <Autocomplete disabled={Disabled} size='small' disablePortal options={CourseSession} onChange={((e, val)=> setSession(val.label))} value={{label :Session}} renderInput={(params) => <TextField {...params} error={Error.session} helperText={ Error.session ? "Session is required" : ""} label=" Select the Session" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.sessionStartTime} helperText={ Error.sessionStartTime ? "Select Session StraAmount required" :""} type='time' label="Session Starting Time" value={SessionStartTime} size='small' fullWidth onChange={(e)=>setSessionStartTime(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.sessionStartTime} helperText={ Error.sessionStartTime ? "Session Start Time is required" :""} type='time' label="Session Starting Time" value={SessionStartTime} size='small' fullWidth onChange={(e)=>setSessionStartTime(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime ? "If not have any SessionEndTime enter NONE" :""} type='time' label="SessionEndTime" value={SessionEndTime} size='small' fullWidth onChange={(e)=>setSessionEndTime(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime ? "Session End Time is required" :""} type='time' label="SessionEndTime" value={SessionEndTime} size='small' fullWidth onChange={(e)=>setSessionEndTime(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchCountLimit} helperText={ Error.BatchCountLimit ? "total seats required" :""} type='tel' label="Maximum Seats"  value={BatchCountLimit} size='small' fullWidth onChange={(e)=>setBatchCountLimit(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.BatchCountLimit} helperText={ Error.BatchCountLimit ? "Total Seats Count required" :""} type='tel' label="Maximum Seats"  value={BatchCountLimit} size='small' fullWidth onChange={(e)=>setBatchCountLimit(e.target.value)} />
                     </Grid>
                 </Grid> 
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
                     {params.action == "read" ? "" :
-                    <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action == "update" ? "Update" : "Create"}</Button>}
+                        <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action == "update" ? "Update" : "Create"}</Button>}
                     <Link to='/batches/table'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>

@@ -82,15 +82,24 @@ export default function Form(props) {
         hscPassedYear: false,
         hscPercentage: false,
         ugDegreeName: false,
-        degree: false,
+        degreeCollege: false,
+        degreeName: false,
+        degreePercentage: false,
+        degreePassingYear: false,
         guardianName: false,
         guardianNumber: false,
         additionalCertificate: false,
         batchName: false,
         batchStartingDate: false,
         batchEndDate: false,
+        session: false,
+        sessionStartTime: false,
+        sessionEndtime: false,
         courseName: false,
         courseAdmissionFee: false,
+        addressDN: false,
+        addressPlace: false,
+        addressStreet: false
     });
    
     const [Disable, setDisable] = useState(false);
@@ -215,9 +224,23 @@ export default function Form(props) {
             hscSchoolName: HSCSchoolName === "",
             hscPassedYear: HSCPassedYear === "",
             hscPercentage: HSCPercentage === "",
+            degreeCollege :Degree.map((obj, ind) => (obj.College)).some(val => val == ""),
+            degreeName :Degree.map((obj, ind) => (obj.degree)).some(val => val == ""),
+            degreePercentage :Degree.map((obj, ind) => (obj.Percentage)).some(val => val == ""),
+            degreePassingYear :Degree.map((obj, ind) => (obj.yearOfPass)).some(val => val == ""),
             guardianNumber: GuardianNumber === "",
             guardianName: GuardianName === "",
-            additionalCertificate : AdditionalCertificate === [{ id: 1, academy: "", course: "", time :"", days: ""}]
+            batchName : BatchName === "",
+            batchStartingDate: BatchStartingDate === " ",
+            batchEndDate : BatchEndDate ===" ",
+            session : Session === "",
+            sessionStartTime : SessionStartTime === " ",
+            sessionEndtime : SessionEndTime === " ",
+            courseAdmissionFee : AdmissionFee === "",
+            courseName: CourseName === "",
+            addressDN : Address.map((obj)=> (obj.doornum)).some(val => val ==""),
+            addressStreet : Address.map((obj)=> (obj.street)).some(val => val ==""),
+            addressPlace : Address.map((obj)=> (obj.place)).some(val => val ==""),
         };
         setError(RegisterStudent)
         console.log("cer", AdditionalCertificate);
@@ -329,28 +352,28 @@ export default function Form(props) {
                             return(
                                 <Grid container rowGap={3} columnGap={5} key={ind}>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField disabled={Disable} value={val.degree}  onChange={(e) => {
+                                        <TextField error={Error.degreeName} helperText={Error.degreeName ? "Degree Name is required" : ""} disabled={Disable} value={val.degree}  onChange={(e) => {
                                             const newDegree = [...Degree];
                                             newDegree[ind].degree = e.target.value;
                                             setDegree(newDegree)
                                         }} fullWidth label="Degree Name" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField disabled={Disable} value={val.College} onChange={(e) => {
+                                        <TextField error={Error.degreeCollege} helperText={Error.degreeCollege ? "College Name is required" : ""} disabled={Disable} value={val.College} onChange={(e) => {
                                             const newDegree = [...Degree];
                                             newDegree[ind].College = e.target.value;
                                             setDegree(newDegree)
                                         }} fullWidth label="College Name" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField disabled={Disable} value={val.Percentage} onChange={(e) => {
+                                        <TextField error={Error.degreePercentage} helperText={Error.degreePercentage ? "Percentage of Marks is required" : ""} disabled={Disable} value={val.Percentage} onChange={(e) => {
                                             const newDegree = [...Degree];
                                             newDegree[ind].Percentage = e.target.value;
                                             setDegree(newDegree)
                                         }} fullWidth label="Percentage of Marks" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField disabled={Disable} value={val.yearOfPass} onChange={(e) => {
+                                        <TextField error={Error.degreePassingYear} helperText={Error.degreePassingYear ? "Year of Passing is required" : ""} disabled={Disable} value={val.yearOfPass} onChange={(e) => {
                                             const newDegree = [...Degree];
                                             newDegree[ind].yearOfPass = e.target.value;
                                             setDegree(newDegree)
@@ -386,21 +409,21 @@ export default function Form(props) {
                                 <>
                                 <Grid container rowGap={3} columnGap={5} paddingTop={3}>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField disabled={Disable} value={val.doornum} onChange={(e) => {
+                                        <TextField error={Error.addressDN} helperText={Error.addressDN ? "Home Door Number is required" : ""} disabled={Disable} value={val.doornum} onChange={(e) => {
                                             const newAddress = [...Address]
                                             newAddress[ind].doornum = e.target.value;
                                             setAddress(newAddress)
                                         }} fullWidth label=" Door Number" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField disabled={Disable} value={val.street} onChange={(e) => {
+                                        <TextField error={Error.addressStreet} helperText={Error.addressStreet ? "Street Name is required" : ""} disabled={Disable} value={val.street} onChange={(e) => {
                                             const newAddress = [...Address]
                                             newAddress[ind].street = e.target.value;
                                             setAddress(newAddress)
                                         }} fullWidth label="Street" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField disabled={Disable} value={val.place} onChange={(e) => {
+                                        <TextField error={Error.addressPlace} helperText={Error.addressPlace ? "Place Name is required" : ""} disabled={Disable} value={val.place} onChange={(e) => {
                                             const newAddress = [...Address]
                                             newAddress[ind].place = e.target.value;
                                             setAddress(newAddress)
@@ -487,29 +510,29 @@ export default function Form(props) {
                         <Typography variant='h6'>Course Details</Typography>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete disabled={Disable} size='small' value={{CourseName}} disablePortal options={Courses} onChange={getCourseDetails} getOptionLabel={(option) => option.CourseName} renderInput={(params) => <TextField {...params} label="Course Enrolled For" />} />
+                        <Autocomplete disabled={Disable} size='small' value={{CourseName}} disablePortal options={Courses} onChange={getCourseDetails} getOptionLabel={(option) => option.CourseName} renderInput={(params) => <TextField {...params} error={Error.courseName} helperText={Error.courseName ? "Course Name is required" : ""} label="Course Enrolled For" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} name='AdmissionFee' value={AdmissionFee} fullWidth size='small' label="Admission Fee" />
+                        <TextField disabled={Disable} error={Error.courseAdmissionFee} helperText={Error.courseAdmissionFee ? "Admission Fee is required" : ""} name='AdmissionFee' value={AdmissionFee} fullWidth size='small' label="Admission Fee" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete disabled={Disable} size='small' disablePortal value={{BatchName}} options={Batch} getOptionDisabled={(option) => option.BatchStatus !== 'Active'} onChange={getBatchDetails} getOptionLabel={(option) => option.BatchName} renderInput={(params) => <TextField {...params} label="Batch" />} />
+                        <Autocomplete disabled={Disable}  size='small' disablePortal value={{BatchName}} options={Batch} getOptionDisabled={(option) => option.BatchStatus !== 'Active'} onChange={getBatchDetails} getOptionLabel={(option) => option.BatchName} renderInput={(params) => <TextField {...params} error={Error.batchName} helperText={Error.batchName ? "Batch Name is required" : ""} label="Batch" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} name='BatchStartDate' type='date' value={BatchStartingDate} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Batch Starting Date" size="small" />
+                        <TextField error={Error.batchStartingDate} helperText={Error.batchStartingDate ? "Batch Start date is required" : ""} disabled={Disable} name='BatchStartDate' type='date' value={BatchStartingDate} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Batch Starting Date" size="small" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} name='BatchEndDate' type='date' value={BatchEndDate} inputProps={{readOnly:true}} onChange={(e) => setBatchEndDate(e.target.value)} fullWidth label="Batch Ending Date" size="small" />
+                        <TextField error={Error.batchEndDate} helperText={Error.batchEndDate ? "Batch End Date is required" : ""} disabled={Disable} name='BatchEndDate' type='date' value={BatchEndDate} inputProps={{readOnly:true}} onChange={(e) => setBatchEndDate(e.target.value)} fullWidth label="Batch Ending Date" size="small" />
                     </Grid>
                     {/* inputProps={{readOnly:true}} */}
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} name='Session' type='text' value={Session} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session" size="small" />
+                        <TextField error={Error.session} helperText={Error.session ? "Session is required" : ""} disabled={Disable} name='Session' type='text' value={Session} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session" size="small" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} type='time' value={SessionStartTime} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session Starting Time" size="small" />
+                        <TextField error={Error.sessionStartTime} helperText={Error.sessionStartTime ? "Session Start Time is required" : ""} disabled={Disable} type='time' value={SessionStartTime} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session Starting Time" size="small" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} type='time' value={SessionEndTime} inputProps={{readOnly:true}} onChange={(e) => setBatchEndDate(e.target.value)} fullWidth label="Session Ending Time" size="small" />
+                        <TextField error={Error.sessionEndtime} helperText={Error.sessionEndtime ? "Session End Time is required" : ""} disabled={Disable} type='time' value={SessionEndTime} inputProps={{readOnly:true}} onChange={(e) => setBatchEndDate(e.target.value)} fullWidth label="Session Ending Time" size="small" />
                     </Grid>
                 </Grid>
                 <Box sx={{ mt: 3, display: "flex", justifyContent: "end", mr:8 }}>

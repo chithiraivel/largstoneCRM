@@ -45,12 +45,14 @@ export default function BatchForm(props) {
 
     const PostCourses = ()=>{
         let data = {
-            CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), Terms, AdmissionFee, CreatedBy, CreatedDate
+            CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, CreatedBy, CreatedDate
         };
-        AxiosInstance.post("courses/create",data ).then((res) => {
-            res.data.result ? props.history.push('/courses/table') : alert(res.data.result);
+        console.log("Ds", data);
+        
+        // AxiosInstance.post("courses/create",data ).then((res) => {
+        //     res.data.result ? props.history.push('/courses/table') : alert(res.data.result);
             
-        });
+        // });
     };
 
     const Update = ()=>{
@@ -79,12 +81,12 @@ export default function BatchForm(props) {
         const CreateCourse = {
             courseName: CourseName === "",
             courseFee: CourseFee === "",
-            subjects: Subjects === "",
+            subjects: Subjects.map((obj, ind) => (obj.Subject)).some(val => val == ""),
             courseDuration: CourseDuration ==="",
             admissionFee: AdmissionFee === "",
         };
         setError(CreateCourse)
-        if (Object.values(CreateCourse).some(val => val == true )){console.log(CreateCourse);}
+        if (Object.values(CreateCourse).some(val => val == true )){console.log(CreateCourse)}
         else{
             if(params.action == "update"){
                 Update()
@@ -113,15 +115,15 @@ export default function BatchForm(props) {
                             <Typography sx={{ fontWeight: "bold" }}>Course Details</Typography>
                         </Grid>                        
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} error={Error.courseName} helperText={ Error.courseName ? "Course Name is required" :""} type='text' label="Course Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
+                            <TextField disabled={Disable} inputProps={{pattern : "[A-Z]{1}"}} error={Error.courseName} helperText={ Error.courseName ? "Course Name is required" :""} type='text' label="Course Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField disabled={Disable} error={Error.courseFee} helperText={ Error.courseFee ? "Course Fee is required" :""} type='tel' label="Course Fee" value={CourseFee} size='small' fullWidth onChange={(e) => setCourseFee(e.target.value)}>
                             </TextField>
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                        <Autocomplete disabled={Disable} error={Error.courseDuration} helperText={ Error.courseDuration ? "Course Duration is required" :""} size='small'  value={{title:CourseDuration}} disablePortal options={CourseDura} getOptionLabel={(option) => option.title}
-                                      renderInput={(params) => <TextField {...params} label="Course Duration" />} onChange={(e, val) =>{ 
+                        <Autocomplete disabled={Disable} size='small'  value={{title:CourseDuration}} disablePortal options={CourseDura} getOptionLabel={(option) => option.title}
+                                      renderInput={(params) => <TextField {...params} error={Error.courseDuration} helperText={ Error.courseDuration ? "Course Duration is required" :""} label="Course Duration" />} onChange={(e, val) =>{ 
                                         if (val != null){setCourseDuration(val.title)} else{setCourseDuration("")}}} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
@@ -149,7 +151,7 @@ export default function BatchForm(props) {
                             }
                             return (
                             <Grid key={ind} item xs={10} md={3.5}>
-                                <TextField disabled={Disable} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
+                                <TextField disabled={Disable} error={Error.subjects} helperText={ Error.subjects ? "Subject is required" :""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
                             </Grid>
                             
                             )

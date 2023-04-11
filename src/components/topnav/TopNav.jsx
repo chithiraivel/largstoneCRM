@@ -73,7 +73,7 @@ const Topnav = () => {
                     {/* dropdown here */}
                 </div>
                 <div className="topnav__right-item">
-                    <ThemeMenu />
+                    {/* <ThemeMenu /> */}
                 </div>
             </div>
         </div>

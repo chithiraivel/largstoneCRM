@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Breadcrumbs, Button, Typography, Link as Links, Stack, IconButton } from '@mui/material';
 import StyledDataGrid from '../components/table/dataGrid';
 import { Link } from 'react-router-dom';
-import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material'
+import {DeleteOutlineOutlined, VisibilityOutlined, EditOutlined, PrintOutlined} from '@mui/icons-material'
 import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 import moment from 'moment';
@@ -135,6 +135,7 @@ export default function InvoiceTable() {
             renderCell: (params) => {
                 return (
                     <Stack direction="row" spacing={2}>
+                        <Link to={`/invoices/generate/${params.row.InvoiceID}`}> <IconButton disableRipple sx={{p:0, color:"#FDB750"}}><PrintOutlined/></IconButton></Link>
                         <Link to={`/invoices/forms/update/${params.row.InvoiceID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
                         <Link to={`/invoices/forms/read/${params.row.InvoiceID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
                         <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.InvoiceID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>

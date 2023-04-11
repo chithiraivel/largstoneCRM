@@ -160,7 +160,7 @@ export default function InvoiceForm(props) {
                         <Typography variant='h6'>Invoice Details</Typography>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete disabled={Disabled} error={Error.studentName} helperText={ Error.studentName ? "Student Name is required" :""} size='small' disablePortal value={{StudentName}}  options={Student} onChange={getStudent} getOptionLabel={(option) => option.StudentName} renderInput={(params) => <TextField {...params} label="Sudent Name" />} />
+                        <Autocomplete disabled={Disabled} size='small' disablePortal value={{StudentName}}  options={Student} onChange={getStudent} getOptionLabel={(option) => option.StudentName} renderInput={(params) => <TextField {...params}  error={Error.studentName} helperText={ Error.studentName ? "Student Name is required" :""}  label="Sudent Name" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} error={Error.courseName} helperText={ Error.courseName ? "Course Name is required" :""}  type='text' label='Course Name' value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
@@ -172,8 +172,11 @@ export default function InvoiceForm(props) {
                         <TextField disabled={Disabled} error={Error.session} helperText={ Error.session ? "Session is required" :""}  type='text' label='Session' value={Session} size='small' fullWidth onChange={(e)=>setSession(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
+                        <TextField disabled={Disabled} error={Error.pendingAmount} helperText={ Error.pendingAmount ? "Pending Amount is required" :""} type='tel' label="Pending Amount" value={PendingAmount} size='small' fullWidth onChange={(e)=>setPendingAmount(e.target.value)} />
+                    </Grid>
+                    <Grid item xs={10} md={3.5}>
                         <Autocomplete disabled={Disabled} value={{title:Term}}
-                        error={Error.term} helperText={ Error.term ? "Term is required" :""} disablePortal options={TermList} getOptionLabel={(option) => option.title || ""} getOptionSelected={(option, value) => option.value === value.value}
+                        disablePortal options={TermList} getOptionLabel={(option) => option.title || ""} getOptionSelected={(option, value) => option.value === value.value}
                         size='small' 
                         onChange={(e, val) => {
                             if (val != null && val.title != null) {
@@ -186,7 +189,8 @@ export default function InvoiceForm(props) {
                             }
                         }}     
                         renderInput={(params) => (
-                            <TextField 
+                            <TextField
+                            error={Error.term} helperText={ Error.term ? "Term is required" :""} 
                             {...params} 
                             label="Term" 
                             
@@ -213,9 +217,6 @@ export default function InvoiceForm(props) {
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} error={Error.invoiceGenDate} helperText={ Error.invoiceGenDate ? "Invoice Generating Date reqiured" :""} type='date' label="Invoice Generating Date" value={InvoiceGenDate} size='small' fullWidth onChange={(e)=>setInvoiceGenDate(moment(e.target.value).format("YYYY-MM-DD"))} />
-                    </Grid>
-                    <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.pendingAmount} helperText={ Error.pendingAmount ? "Pending Amount is required" :""} type='tel' label="Pending Amount" value={PendingAmount} size='small' fullWidth onChange={(e)=>setPendingAmount(e.target.value)} />
                     </Grid>
                 </Grid> 
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
