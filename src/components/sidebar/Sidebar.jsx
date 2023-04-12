@@ -26,8 +26,9 @@ const SidebarItem = props => {
 
 const Sidebar = props => {
 
-    const activeItem = sidebar_items.findIndex(item => item.route === props.location.pathname);
-    const activeInnerItem = sidebar_items.findIndex(item => item.innerroute === props.location.pathname);
+    // const activeItem = sidebar_items.findIndex(item => item.route === props.location.pathname);
+    // const activeItem = props.location.pathname.includes(item => );
+    // const activeInnerItem = sidebar_items.findIndex(item => item.innerroute === props.location.pathname);
 
     return (
         <div className='sidebar'>
@@ -40,7 +41,7 @@ const Sidebar = props => {
                         <SidebarItem
                             title={item.display_name}
                             icon={item.icon}
-                            active={(index === activeItem) || (index === activeInnerItem)}
+                            active={props.location.pathname.includes(item.route)}
                         // active={location.pathname.includes(activeItem)}
                         />
                     </Link>

@@ -22,10 +22,10 @@ td {
     padding: 15px 10px;
 }
 
-tbody > tr:hover {
+/* tbody > tr:hover {
     background-color: var(--main-color);
     color: var(--txt-white);
-}
+} */
 
 .table__pagination {
     display: flex;
@@ -35,7 +35,7 @@ tbody > tr:hover {
     margin-top: 20px;
 }
 
-.table__pagination-item ~ .table__pagination-item {
+.table__pagination-item~.table__pagination-item {
     margin-left: 10px;
 }
 

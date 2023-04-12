@@ -127,13 +127,14 @@ export default function Form(props) {
             HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), CreatedBy, CreatedDate
         };
         AxiosInstance.post("registration/register", data ).then((res) => {     
-            res.data.result ? props.history.push('/students/table') : alert(res.data.result);   
+            res.data.result ? props.history.push('/students') : alert(res.data.result);   
         });
     };
 
     const Read = ()=>{
         AxiosInstance.put('registration/read',{StudentID: params.StudentID} ).then((res)=>{
             if (res.data.status){
+                
                 setStudentName(res.data.result[0].StudentName ? res.data.result[0].StudentName :"")
                 setStudentContactNumber(res.data.result[0].MobileNumber ? res.data.result[0].MobileNumber :"")
                 setEmail(res.data.result[0].Email ? res.data.result[0].Email :"")
@@ -150,6 +151,8 @@ export default function Form(props) {
                 setCourseName(res.data.result[0].CourseName ? res.data.result[0].CourseName :"")
                 setAdmissionFee(res.data.result[0].AdmissionFee ? res.data.result[0].AdmissionFee :"")
                 setBatchName(res.data.result[0].BatchName ? res.data.result[0].BatchName :"")
+                setBatchStartingDate(res.data.result[0].BatchStartDate ? moment(res.data.result[0].BatchStartDate).format("YYYY-MM-DD") : " ")
+                setBatchEndDate(res.data.result[0].BatchEndDate ? moment(res.data.result[0].BatchEndDate).format("YYYY-MM-DD") : " ")
                 setSession(res.data.result[0].Session ? res.data.result[0].Session :"")
                 setSessionStartTime(res.data.result[0].SessionStartTime ? res.data.result[0].SessionStartTime :"")
                 setSessionEndTime(res.data.result[0].SessionEndTime ? res.data.result[0].SessionEndTime :"")
@@ -173,7 +176,7 @@ export default function Form(props) {
             HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), Address: JSON.stringify(Address), UpdatedBy, UpdatedDate, StudentID: params.StudentID
         };
         AxiosInstance.post('registration/update', data).then((res)=>{
-            res.data.result ? props.history.push('/students/table') : alert(res.data.result);
+            res.data.result ? props.history.push('/students') : alert(res.data.result);
         })
     };
 
@@ -270,7 +273,7 @@ export default function Form(props) {
 
     return (
         <ThemeProvider theme = {theme}>
-            <AppBreadcrumbs crntPage='Student Form' prevPage='Students Table' path='/students/table' />
+            <AppBreadcrumbs crntPage='Student Form' prevPage='Students Table' path='/students' />
             <Box sx={{ background: "#fff", pb: 3, borderRadius:"25px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}>
                 {/* Student Details */}
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
@@ -538,7 +541,7 @@ export default function Form(props) {
                 <Box sx={{ mt: 3, display: "flex", justifyContent: "end", mr:8 }}>
                     {params.action == "read" ? "" :
                     <Button style={{backgroundColor:"#4daaff",}} disableElevation disableRipple onClick={handleSubmit} variant='contained'>{params.action=="update"? "Update" : "Submit"}</Button> }
-                    <Link to='/students/table'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
+                    <Link to='/students'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
         </ThemeProvider>

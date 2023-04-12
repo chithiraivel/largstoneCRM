@@ -47,12 +47,11 @@ export default function BatchForm(props) {
         let data = {
             CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, CreatedBy, CreatedDate
         };
-        console.log("Ds", data);
         
-        // AxiosInstance.post("courses/create",data ).then((res) => {
-        //     res.data.result ? props.history.push('/courses/table') : alert(res.data.result);
+        AxiosInstance.post("courses/create",data ).then((res) => {
+            res.data.result ? props.history.push('/courses') : alert(res.data.result);
             
-        // });
+        });
     };
 
     const Update = ()=>{
@@ -60,7 +59,7 @@ export default function BatchForm(props) {
             CourseID: params.CourseID, CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, UpdatedBy, UpdatedDate
         };
         AxiosInstance.post('courses/update', data).then((res)=>{
-            res.data.result ? props.history.push('/courses/table') : alert(res.data.result);
+            res.data.result ? props.history.push('/courses') : alert(res.data.result);
         })
     };
 
@@ -108,7 +107,7 @@ export default function BatchForm(props) {
     return (
         <div>
             <ThemeProvider theme={theme}>
-                <AppBreadcrumbs crntPage='Courses Form' prevPage="Courses Table" path='/courses/table' />
+                <AppBreadcrumbs crntPage='Courses Form' prevPage="Courses Table" path='/courses' />
                 <Box sx={{ background: "#fff", pb: 3, boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", borderRadius:"25px" }}>
                     <Grid container rowGap={5} columnGap={5} paddingLeft={4} paddingTop={3}>
                         <Grid item xs={12}>
@@ -160,7 +159,7 @@ export default function BatchForm(props) {
                     <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
                         
                         {params.action == "read" ? "" : <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action == "update"? "Update" : "Create"}</Button>}
-                        <Link to='/courses/table'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
+                        <Link to='/courses'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                     </Box>
                 </Box>
             </ThemeProvider>

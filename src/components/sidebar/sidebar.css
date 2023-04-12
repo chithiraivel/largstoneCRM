@@ -51,3 +51,9 @@
             var(--second-color));
     color: var(--txt-white);
 }
+
+@media print {
+    .sidebar {
+        visibility: hidden;
+    }
+}

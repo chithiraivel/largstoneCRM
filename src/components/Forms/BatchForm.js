@@ -56,7 +56,7 @@ export default function BatchForm(props) {
             BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, CreatedBy, CreatedDate, BatchStatus: "Active", BatchCountLimit
         };
         AxiosInstance.post("batches/create", data ).then((res) => {
-            res.data.status ? props.history.push('/batches/table') : alert(res.data.result);
+            res.data.status ? props.history.push('/batches') : alert(res.data.result);
         });
     };
 
@@ -77,7 +77,7 @@ export default function BatchForm(props) {
             BatchID: params.BatchID, BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, UpdatedBy, UpdatedDate, BatchStatus: "Active", BatchCountLimit
         };
         AxiosInstance.post("batches/update", data).then((res)=>{
-            res.data.status ? props.history.push('/batches/table') : alert(res.data.result);
+            res.data.status ? props.history.push('/batches') : alert(res.data.result);
         })
     };
     
@@ -115,7 +115,7 @@ export default function BatchForm(props) {
 
     return (
         <ThemeProvider theme={theme}>
-            <AppBreadcrumbs crntPage='Batches Form' prevPage="Batches Table" path='/batches/table' />
+            <AppBreadcrumbs crntPage='Batches Form' prevPage="Batches Table" path='/batches' />
             <Box sx={{ background: "#fff", pb: 3, boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", borderRadius:"25px" }}>
                 <Grid container rowGap={5} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
@@ -147,7 +147,7 @@ export default function BatchForm(props) {
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
                     {params.action == "read" ? "" :
                         <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action == "update" ? "Update" : "Create"}</Button>}
-                    <Link to='/batches/table'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
+                    <Link to='/batches'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
         </ThemeProvider>
