@@ -31,7 +31,7 @@ const Layout = () => {
     return (
         <BrowserRouter>
             <Route render={(props) => (
-                <div className={`layout ${themeReducer.mode} ${themeReducer.color}`}>
+                <div >
                     <Sidebar {...props} />
                     <div className="layout__content">
                         <TopNav />

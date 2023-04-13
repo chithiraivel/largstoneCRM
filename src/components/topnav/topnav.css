@@ -8,7 +8,7 @@
 
 @media print {
     .topnav {
-        visibility: hidden;
+        display: none;
     }
 }
 

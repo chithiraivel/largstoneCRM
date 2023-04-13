@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import InvoiceImage from '../../assets/images/LSOT_744_291.png';
@@ -35,6 +35,17 @@ export default function InvoicePrintForm() {
             <Typography>Tenkasi-627803.</Typography>
         </Box>
     );
+
+    const print = ()=>{
+        var layoutContent = document.querySelector('.layout__content');
+        layoutContent.style.paddingLeft = '0'; // Set padding-left to 0
+        var layoutOuterContent = document.querySelector('.layout__content-main');
+        layoutOuterContent.style.padding = '0'; // Set paddingto 0
+        window.print(); 
+        layoutContent.style.paddingLeft = '';
+        layoutOuterContent.style.padding = '';
+    };
+
     const Read = ()=>{
         AxiosInstance.post('invoice/read', {InvoiceID : params.InvoiceID}).then((res)=>{
             setInvoiceNumber(res.data.result[0].InvoiceID ? res.data.result[0].InvoiceID : "");
@@ -58,8 +69,8 @@ export default function InvoicePrintForm() {
     const columns = [
         {
             field: "id",
-            headerName: "sl. num",
-            width: 120,
+            headerName: "No",
+            width: 40,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -69,7 +80,7 @@ export default function InvoicePrintForm() {
         {
             field : "Description",
             headerName:"Description",
-            width: 250,
+            width: 200,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -78,7 +89,7 @@ export default function InvoicePrintForm() {
         {
             field : "Term",
             headerName:"Paying Term",
-            width: 150,
+            width: 130,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -87,7 +98,7 @@ export default function InvoicePrintForm() {
         {
             field:"UnitPrice",
             headerName:"Unit Price",
-            width: 180,
+            width: 120,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -96,7 +107,7 @@ export default function InvoicePrintForm() {
         {
             field:"Discount",
             headerName:"Discount(%)",
-            width: 240,
+            width: 120,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -110,10 +121,11 @@ export default function InvoicePrintForm() {
             headerAlign: "left",
             align: "left",
             sortable:false,
+            valueFormatter: params => (params.id === 5) ? `${params.value}` : params.value
         },
     ];
 
-    const rows = [{id:1,Description : CourseName, Term: Term, Discount: Discount, UnitPrice: TermFees, Total: TotalAmount}, {id: 2, Description : AdditionalDiscountName, Total: AdditionalDiscountAmount}, {id:3, Discount: "Sub Total", Total: SubTotal}, {id:4, Discount: "GST 12%", Total: GSTAmount}, {id:5, Discount: "Total Amount", Total: GrandTotal}]
+    const rows = [{id:1,Description : CourseName, Term: Term, Discount: Discount, UnitPrice: TermFees, Total: TotalAmount}, {id: 2, Description : AdditionalDiscountName, Total: AdditionalDiscountAmount}, {id:3, Discount: "Sub Total", Total: SubTotal}, {id:4, Discount: "GST 12%", Total: GSTAmount}, {id:5, Discount: "Total", Total: GrandTotal}]
 
     useEffect(()=>{
         Read()
@@ -124,20 +136,20 @@ export default function InvoicePrintForm() {
         <AppBreadcrumbs crntPage='Invoice' prevPage="Invoices Table" path='/invoice'/>
         <Box sx={{background:"#fff", borderRadius :"20px",  boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", py:3}}>
             <Grid container justifyContent = "space-between">
-                <Grid item xs={10}>
+                <Grid item xs={8}>
                     <Box sx={{pl:4}}>
                         <Typography sx={{fontSize:"45px",verticalAlign:"center", pb:0.5, fontWeight:"bold"}}>Invoice</Typography>
                         {OfficeAddress}
                     </Box>
                 </Grid>
-                <Grid item xs={2}>
-                    <img src={InvoiceImage} height="14%" width="20%" alt='invoice' />
+                <Grid item xs={3}>
+                    <Box component='img' src={InvoiceImage} sx={{height:"60%", width:"100%", mt:2, pr:2}} alt='invoice' />
                 </Grid>
             </Grid>
              {/*main  */}
-            <Grid container sx={{mt:4, p:4, display:"flex"}}>
+            <Grid container justifyContent="end" sx={{mt:3, p:4}}>
                 {/* First Column */}
-                <Grid item >
+                <Grid item xs={6} >
                     <Box >
                         <Typography sx={{fontSize:"30px", fontWeight:"700"}}>Bill to </Typography>
                         <Typography>{StudentName},</Typography>
@@ -147,15 +159,15 @@ export default function InvoicePrintForm() {
                     </Box>
                 </Grid>
                 {/* Second Column */}
-                <Grid item>
-                    <Grid container sx={{display:"flex", pl:35}}>
-                        <Grid item >
-                            <Box sx={{ pr:5}}>
+                <Grid item xs={6}>
+                    <Grid container>
+                        <Grid item xs={4}>
+                            <Box>
                                 <Typography sx={{fontWeight:"700"}}>Invoice#</Typography>
                                 <Typography sx={{fontWeight:"700"}}>Invoice Date</Typography>
                             </Box>
                         </Grid>
-                        <Grid item >
+                        <Grid item xs={4}>
                             <Box>
                                 <Typography>{InvoiceNumber}</Typography>
                                 <Typography>{InvoiceGenDate}</Typography>
@@ -165,27 +177,58 @@ export default function InvoicePrintForm() {
                 </Grid>
             </Grid>
             <Grid container>
-                <Grid item xs={12} sx={{px:4}}>
-                    <InvoiceDatagrid sx={{p:4}} columns={columns} rows={rows} id='id' />
+                <Grid item xs={12} sx={{px:4}} >
+                    <InvoiceDatagrid columns={columns} rows={rows} id='id' />
                 </Grid>
             </Grid>
-            <Grid sx={{p:4}} container justifyContent="space-between">
+            <Grid container sx={{ mt:10, px:4}} justifyContent="space-between">
                 <Grid item xs={4}>
-                    <Box>
-                        <Typography sx={{fontWeight:"bold",}}>Bank Details</Typography>
-                        <Typography>Puvan Mani Elansudar</Typography>
-                        <Typography>Indian OverSeas Bank</Typography>
-                        <Typography>Pavoorchatram Branch</Typography>
-                        <Typography>AC No. :784596555555448</Typography>
-                        <Typography>IFSC No. :78455448</Typography>
+                        {/* <Table>
+                            <TableHead>
+                                <TableRow sx={{borderBottom:0}}>
+                                    <TableCell sx={{borderBottom:0}}>Bank Details</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <tr>
+                                        <th>Account Holder Name :</th><td>Puvan Mani Elansudar</td>
+                                </tr>
+                                <tr>
+                                        <th>Bank Name :</th><td>Puvan Mani Elansudar</td>
+                                </tr>
+                                <tr>
+                                        <th>Account Holder  :</th><td>Puvan Mani Elansudar</td>
+                                </tr>
+                                <tr>
+                                        <th>Account Holder Name :</th><td>Puvan Mani Elansudar</td>
+                                </tr>
+                            </TableBody>
+                        </Table> */}
+                    <Box>                        
+                    {/* <Box sx={{borderRight:"1px solid black"}}>                         */}
+                        <Typography sx={{fontWeight:"bold", fontSize:"20px"}}>Bank Details</Typography>
+                        <Typography sx={{mt:1}}><b>Account Holder Name:</b> Puvan Mani Elansudar</Typography>
+                        <Typography sx={{mt:0.5}}><b>Bank :</b>Indian OverSeas Bank</Typography>
+                        <Typography sx={{mt:0.5}}><b>Branch :</b>Pavoorchatram</Typography>
+                        <Typography sx={{mt:0.5}} ><b>ACC No. :</b>784596555555448</Typography>
+                        <Typography sx={{mt:0.5}}><b>IFSC Code :</b>78455448</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs={4}>
-                    <Typography sx={{fontWeight:"bold"}}>Terms and Conditions</Typography>
+                    <Box>
+                        <Typography sx={{fontWeight:"bold", fontSize:"20px"}}>Terms and Conditions</Typography>
+                        <ul style={{listStyleType: "disc"}}>
+                            <li style={{marginTop:"8px"}}>some point</li>
+                            <li style={{marginTop:"4px"}}>some point</li>
+                            <li style={{marginTop:"4px"}}>some point</li>
+                            <li style={{marginTop:"4px"}}>some point</li>
+                            <li style={{marginTop:"4px"}}>some point</li>
+                        </ul>
+                    </Box>
                 </Grid>
-                <Grid item xs={3}>
-                    <Box sx={{ ml:10, display:"flex", flexDirection:"column", alignItems:"center"}}>
-                        <img src={Signature} alt="Signature"/>
+                <Grid item xs={2}>
+                    <Box sx={{ display:"flex", flexDirection:"column", alignItems:"center"}}>
+                        <Box component= "img" src={Signature} alt="Signature"/>
                         <Typography>Full Stack Developer</Typography>
                         <Typography>(Puvan Mani Elansudar)</Typography>
                     </Box>
@@ -193,8 +236,8 @@ export default function InvoicePrintForm() {
             </Grid>
         </Box>
         <Box sx={{display:"flex", justifyContent:"end", my:4, pr:4}}>
-            <Button endIcon={<PrintOutlinedIcon/>} style={{backgroundColor:"#4daaff", marginRight:"20px"}} onClick={()=>window.print()} disableElevation disableRipple  variant='contained'>Print</Button>
-            <Link to = "/invoice"><Button style={{backgroundColor: "#ff726f",}} disableElevation disableRipple  variant='contained'>Back</Button></Link>
+            <Button endIcon={<PrintOutlinedIcon/>} sx={{"@media print" : {display:"none"}}} style={{ backgroundColor:"#4daaff", marginRight:"20px"}} onClick={print} disableElevation disableRipple  variant='contained'>Print</Button>
+            <Link to = "/invoice"><Button sx={{"@media print" : {display:"none"}}} style={{backgroundColor: "#ff726f",}} disableElevation disableRipple  variant='contained'>Back</Button></Link>
         </Box>
     </div>
   )

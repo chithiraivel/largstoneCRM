@@ -7,8 +7,8 @@ import { useState } from 'react';
   
 export default function InvoiceDatagrid(props) {
 
-  const apiData = props.rows;
   const [page,setPage]=useState(1);
+  const apiData = props.rows;
   let row = 5;
   const count = Math.ceil((props.rows).length/row);
   row = row * page
@@ -20,10 +20,18 @@ export default function InvoiceDatagrid(props) {
   return (
     <Box>
       <DataGrid sx={{
+        '@media print': {
+              '.MuiDataGrid-main': {
+                width: 'fit-content',
+                fontSize: '10px',
+                height: 'fit-content',
+                overflow: 'visible',
+              },},
         border: 0, 
         '.MuiDataGrid-columnSeparator': { display: 'none' },
         '& .MuiDataGrid-row:nth-child(2)':{ borderBottom:"1px solid black"},
         '& .MuiDataGrid-row:nth-child(4)':{ borderBottom:"1px solid black"},
+        '& .MuiDataGrid-row:nth-child(5)':{  fontWeight:"bold"},
         '.MuiDataGrid-cell': { border: 'none', fontSize:"16px" }, //tableCell
         '& .MuiDataGrid-columnHeaders': { borderBottom: "none", backgroundColor: 'rgb(250,250,251)', color:"#455560", fontSize:"16px", }, //tableHeader
         '& .MuiDataGrid-columnHeaderTitle':{fontWeight:"bold"},
@@ -33,7 +41,6 @@ export default function InvoiceDatagrid(props) {
         disableColumnMenu
         GridColDef={false}
         hideFooter={true}
-        pageSizeOptions={[5, 10, 50]}
         rows={list}
         getRowId={(row)=> row[props.id]}
         disableColumnFilter
@@ -42,16 +49,6 @@ export default function InvoiceDatagrid(props) {
         disableMultipleRowSelection
         disableDensitySelector
         columns={props.columns}
-        // slots={{ toolbar: GridToolbar }}
-        // slotProps={{
-        //   toolbar: {
-        //     sx:{display:"block"},
-        //     csvOptions: { disableToolbarButton: true },
-        //     printOptions: { disableToolbarButton: true },
-        //     showQuickFilter: true,
-        //     quickFilterProps: { placeholder:"Search here..", debounceMs: 500, InputProps:{disableUnderline :true, endAdornment:(<SearchOutlined/>), sx:{px:2, border:"none", backgroundColor:"#fff", borderRadius:"10px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", height:"50px", width:"280px", input: {border:"none", color: '#455560', "&::placeholder": { opacity: 1, } } },} },
-        //   },
-        // }}
       />
     </Box>
   );

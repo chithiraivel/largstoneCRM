@@ -2,6 +2,16 @@
     color: var(--txt-color);
 }
 
+@media print {
+    .layout__content {
+        padding-left: 0 !important;
+    }
+
+    .layout__content-main {
+        padding: 0 !important;
+    }
+}
+
 .layout__content {
     padding-left: var(--sidebar-width);
     background-color: var(--second-bg);
