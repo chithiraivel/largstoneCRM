@@ -13,6 +13,7 @@ import BatchForm from './Forms/BatchForm';
 import BatchesPage from '../pages/BatchesPage';
 import CoursesForm from './Forms/CoursesForm';
 import InvoicePrintForm from './Forms/InvoicePrintForm';
+// import LoginForm from './Forms/LoginForm';
 
 const Routes = () => {
     return (
@@ -34,6 +35,7 @@ const Routes = () => {
             <Route exact path='/batches/form' component={BatchForm} />
             <Route exact path='/batches/forms/:action/:BatchID' component={BatchForm} />
             <Route exact path='/batches' component={BatchesPage} />
+            {/* <Route exact path='/login' component={LoginForm} /> */}
         </Switch>
     );
 };

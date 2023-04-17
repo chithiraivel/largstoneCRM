@@ -52,10 +52,3 @@
             var(--second-color));
     color: var(--txt-white);
 }
-
-@media print {
-    .sidebar {
-        display: none;
-        width: 0px;
-    }
-}

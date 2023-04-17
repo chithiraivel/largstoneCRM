@@ -1,21 +1,8 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-// import { Pagination } from '@mui/material';
-// import { SearchOutlined } from '@mui/icons-material';
-import { useState } from 'react';
+import { DataGrid} from '@mui/x-data-grid';
   
 export default function InvoiceDatagrid(props) {
-
-  const [page,setPage]=useState(1);
-  const apiData = props.rows;
-  let row = 5;
-  const count = Math.ceil((props.rows).length/row);
-  row = row * page
-  const list = apiData.slice((page-1)*5 , row);
-  const handleChange = (event ,value) => {
-    setPage(value);
-};
 
   return (
     <Box>
@@ -41,7 +28,7 @@ export default function InvoiceDatagrid(props) {
         disableColumnMenu
         GridColDef={false}
         hideFooter={true}
-        rows={list}
+        rows={props.rows}
         getRowId={(row)=> row[props.id]}
         disableColumnFilter
         disableColumnSelector

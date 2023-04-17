@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import InvoiceImage from '../../assets/images/LSOT_744_291.png';
 import AxiosInstance from '../../axiosinstance';
@@ -8,6 +8,7 @@ import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
 import moment from 'moment';
 import Signature from '../../assets/images/signature.png'; 
 import { Link, useParams } from 'react-router-dom';
+import ReactToPrint from 'react-to-print';
 
 export default function InvoicePrintForm() {
 
@@ -15,15 +16,13 @@ export default function InvoicePrintForm() {
     const [StudentName, setStudentName] = useState("");
     const [InvoiceNumber, setInvoiceNumber] = useState("");
     const [CourseName, setCourseName] = useState("");
+    const [GuardianNumber, setGuardianNumber] = useState("");
     const [Term, setTerm] = useState("");
     const [TermFees, setTermFees] = useState("");
     const [Discount, setDiscount] = useState("");
     const [AdditionalDiscountName, setAdditionalDiscountName] = useState("");
-    // const [AdditionalDiscount, setAdditionalDiscount] = useState("50");
     const [AdditionalDiscountAmount, setAdditionalDiscountAmount] = useState("");
     const [TotalAmount, setTotalAmount] = useState("");
-    // const [CreatedBy, setCreatedBy] = useState("Admin");
-    // const [UpdatedBy, setUpdatedBy] = useState("Admin");
     const [Address, setAddress] = useState([{"doornum": "", "street": "", "place":""}]);
 
     const params = useParams();
@@ -35,16 +34,6 @@ export default function InvoicePrintForm() {
             <Typography>Tenkasi-627803.</Typography>
         </Box>
     );
-
-    const print = ()=>{
-        var layoutContent = document.querySelector('.layout__content');
-        layoutContent.style.paddingLeft = '0'; // Set padding-left to 0
-        var layoutOuterContent = document.querySelector('.layout__content-main');
-        layoutOuterContent.style.padding = '0'; // Set paddingto 0
-        window.print(); 
-        layoutContent.style.paddingLeft = '';
-        layoutOuterContent.style.padding = '';
-    };
 
     const Read = ()=>{
         AxiosInstance.post('invoice/read', {InvoiceID : params.InvoiceID}).then((res)=>{
@@ -59,6 +48,7 @@ export default function InvoicePrintForm() {
             setAddress(res.data.result[0].Address ? JSON.parse(res.data.result[0].Address) : Address);
             setAdditionalDiscountName(res.data.result[0].AdditionalDiscountName ? res.data.result[0].AdditionalDiscountName : "");
             setAdditionalDiscountAmount(res.data.result[0].AdditionalDiscountAmount ? res.data.result[0].AdditionalDiscountAmount : "");
+            setGuardianNumber(res.data.result[0].GuardianNumber ? res.data.result[0].GuardianNumber : "");
         })
     };
 
@@ -80,7 +70,7 @@ export default function InvoicePrintForm() {
         {
             field : "Description",
             headerName:"Description",
-            width: 200,
+            width: 250,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -89,7 +79,7 @@ export default function InvoicePrintForm() {
         {
             field : "Term",
             headerName:"Paying Term",
-            width: 130,
+            width: 180,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -98,7 +88,7 @@ export default function InvoicePrintForm() {
         {
             field:"UnitPrice",
             headerName:"Unit Price",
-            width: 120,
+            width: 180,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -107,7 +97,7 @@ export default function InvoicePrintForm() {
         {
             field:"Discount",
             headerName:"Discount(%)",
-            width: 120,
+            width: 200,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -116,7 +106,7 @@ export default function InvoicePrintForm() {
         {
             field:"Total",
             headerName:"Total Amount",
-            width: 150,
+            width: 180,
             editable: false,
             headerAlign: "left",
             align: "left",
@@ -127,6 +117,8 @@ export default function InvoicePrintForm() {
 
     const rows = [{id:1,Description : CourseName, Term: Term, Discount: Discount, UnitPrice: TermFees, Total: TotalAmount}, {id: 2, Description : AdditionalDiscountName, Total: AdditionalDiscountAmount}, {id:3, Discount: "Sub Total", Total: SubTotal}, {id:4, Discount: "GST 12%", Total: GSTAmount}, {id:5, Discount: "Total", Total: GrandTotal}]
 
+    let componentRef = useRef();
+
     useEffect(()=>{
         Read()
     },[])
@@ -134,7 +126,7 @@ export default function InvoicePrintForm() {
   return (
     <div>
         <AppBreadcrumbs crntPage='Invoice' prevPage="Invoices Table" path='/invoice'/>
-        <Box sx={{background:"#fff", borderRadius :"20px",  boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", py:3}}>
+        <Box ref={(elem) => componentRef = elem} sx={{background:"#fff", borderRadius :"20px",  boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", py:3}}>
             <Grid container justifyContent = "space-between">
                 <Grid item xs={8}>
                     <Box sx={{pl:4}}>
@@ -160,17 +152,19 @@ export default function InvoicePrintForm() {
                 </Grid>
                 {/* Second Column */}
                 <Grid item xs={6}>
-                    <Grid container>
+                    <Grid sx={{mt:5.5}} container>
                         <Grid item xs={4}>
                             <Box>
                                 <Typography sx={{fontWeight:"700"}}>Invoice#</Typography>
                                 <Typography sx={{fontWeight:"700"}}>Invoice Date</Typography>
+                                <Typography sx={{fontWeight:"700"}}>Contact Number</Typography>
                             </Box>
                         </Grid>
                         <Grid item xs={4}>
                             <Box>
                                 <Typography>{InvoiceNumber}</Typography>
                                 <Typography>{InvoiceGenDate}</Typography>
+                                <Typography>{GuardianNumber}</Typography>
                             </Box>
                         </Grid>
                     </Grid>
@@ -183,31 +177,9 @@ export default function InvoicePrintForm() {
             </Grid>
             <Grid container sx={{ mt:10, px:4}} justifyContent="space-between">
                 <Grid item xs={4}>
-                        {/* <Table>
-                            <TableHead>
-                                <TableRow sx={{borderBottom:0}}>
-                                    <TableCell sx={{borderBottom:0}}>Bank Details</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <tr>
-                                        <th>Account Holder Name :</th><td>Puvan Mani Elansudar</td>
-                                </tr>
-                                <tr>
-                                        <th>Bank Name :</th><td>Puvan Mani Elansudar</td>
-                                </tr>
-                                <tr>
-                                        <th>Account Holder  :</th><td>Puvan Mani Elansudar</td>
-                                </tr>
-                                <tr>
-                                        <th>Account Holder Name :</th><td>Puvan Mani Elansudar</td>
-                                </tr>
-                            </TableBody>
-                        </Table> */}
                     <Box>                        
-                    {/* <Box sx={{borderRight:"1px solid black"}}>                         */}
                         <Typography sx={{fontWeight:"bold", fontSize:"20px"}}>Bank Details</Typography>
-                        <Typography sx={{mt:1}}><b>Account Holder Name:</b> Puvan Mani Elansudar</Typography>
+                        <Typography sx={{mt:1}}><b>Name:</b> Puvan Mani Elansudar</Typography>
                         <Typography sx={{mt:0.5}}><b>Bank :</b>Indian OverSeas Bank</Typography>
                         <Typography sx={{mt:0.5}}><b>Branch :</b>Pavoorchatram</Typography>
                         <Typography sx={{mt:0.5}} ><b>ACC No. :</b>784596555555448</Typography>
@@ -236,7 +208,11 @@ export default function InvoicePrintForm() {
             </Grid>
         </Box>
         <Box sx={{display:"flex", justifyContent:"end", my:4, pr:4}}>
-            <Button endIcon={<PrintOutlinedIcon/>} sx={{"@media print" : {display:"none"}}} style={{ backgroundColor:"#4daaff", marginRight:"20px"}} onClick={print} disableElevation disableRipple  variant='contained'>Print</Button>
+            <ReactToPrint 
+            trigger={() =>
+                <Button endIcon={<PrintOutlinedIcon/>} sx={{"@media print" : {display:"none"}}} style={{ backgroundColor:"#4daaff", marginRight:"20px"}} disableElevation disableRipple  variant='contained'>Print</Button>}
+            content={()=> componentRef}
+            />
             <Link to = "/invoice"><Button sx={{"@media print" : {display:"none"}}} style={{backgroundColor: "#ff726f",}} disableElevation disableRipple  variant='contained'>Back</Button></Link>
         </Box>
     </div>

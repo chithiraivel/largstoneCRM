@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, createTheme, Grid, Modal, TextField, ThemeProvider, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, createTheme, Grid, TextField, ThemeProvider, Typography } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -29,6 +29,7 @@ export default function InvoiceForm(props) {
     const [CourseFee, setCourseFee] = useState("");
     const [Session, setSession] = useState("");
     const [BatchName, setBatchName] = useState("");
+    const [GuardianNumber, setGuardianNumber] = useState("");
     const [Term, setTerm] = useState("");
     const [TermFees, setTermFees] = useState("");
     const [PendingAmount, setPendingAmount] = useState("");
@@ -62,14 +63,6 @@ export default function InvoiceForm(props) {
     const [StudentID, setStudentID] = useState("");
     const params = useParams()
 
-    const validateNumber = (evt, regex) => {
-        // var theEvent = evt || window.event;
-        // if (!regex.test(Discount)) {
-        //     theEvent.returnValue = false;
-        //     if (theEvent.preventDefault) theEvent.preventDefault();
-        // }
-    };
-
     const getStudent = (e, val) =>{
         if(val != null && val.StudentID != null){
             setStudentID(val.StudentID);
@@ -79,6 +72,7 @@ export default function InvoiceForm(props) {
             setBatchName(val.BatchName);
             setPendingAmount(val.CourseFee)
             setSession(val.Session);
+            setGuardianNumber(val.GuardianNumber);
         } else {
             setStudentID(null);
             setStudentName("");
@@ -104,7 +98,7 @@ export default function InvoiceForm(props) {
 
     const PostInvoice = ()=>{         
         let data = {
-            StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, AdditionalDiscountAmount, AdditionalDiscountName, CreatedBy, CreatedDate
+            StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, CreatedBy, CreatedDate
         };
         AxiosInstance.post("invoice/create", data ).then((res) => {
             res.data.result ? props.history.push('/invoice') : alert(res.data.result);
