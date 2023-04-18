@@ -126,7 +126,7 @@ export default function InvoiceForm(props) {
 
     const Update = ()=>{
         let data = {
-            StudentName, CourseName, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, UpdatedBy, UpdatedDate, InvoiceID: params.InvoiceID
+            StudentName, CourseName, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, UpdatedBy, UpdatedDate, InvoiceID: params.InvoiceID
         };
         AxiosInstance.post('invoice/update', data).then((res)=>{
             res.data.result ? props.history.push('/invoice') : alert(res.data.result);

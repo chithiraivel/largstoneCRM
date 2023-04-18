@@ -1,8 +1,11 @@
-import { Box, Button, Checkbox, Divider, FormControlLabel, Grid, IconButton, Link, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
+import { Box, Button, Checkbox, Divider, Grid, IconButton, Link, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
 import {CheckBoxOutlined, CheckBoxOutlineBlankOutlined, VisibilityOutlined, VisibilityOffOutlined} from '@mui/icons-material';
-import React, {useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import Swal from 'sweetalert2'
 import LoginImage from '../../assets/images/footer.png'
+import { Redirect } from 'react-router-dom';
+
+import {context} from '../layout/Layout'
 
 const theme = createTheme({
   components: {
@@ -18,18 +21,21 @@ const theme = createTheme({
   },
 });
 
-export default function LoginForm({onLogin}) {
+export default function LoginForm() {
 
     const [UserName, setUserName] = useState("");
     const [Password, setPassword] = useState("");
     const [ShowPassword, setShowPassword] = useState(false);
     const [Checked, setChecked] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const [Error, setError] = useState({
         username : false,
         password : false,
     });
 
+    const {login, setLogin} = useContext(context)
+console.log(login)
     let user = "Admin";
     let pass = "admin123";
 
@@ -42,10 +48,19 @@ export default function LoginForm({onLogin}) {
         if (Object.values(ValidateUser).some(val => val == true )){}
         else{
           if (UserName == user && Password == pass){
-            localStorage.setItem("LoggedIN", true)
+            localStorage.setItem("LoggedIN", true);
+            setIsLoggedIn(true)  
           }
         }
     };
+
+    if (isLoggedIn){
+      return (
+        <>
+        {setLogin(true)}
+        <Redirect to="/dashboard" /> 
+      </>)
+    } 
 
     const handleCBchange = (e)=>{
       setChecked(e.target.checked)
@@ -85,7 +100,6 @@ export default function LoginForm({onLogin}) {
                 </Grid>
                 <Grid item md={6} sx={{display:"flex", mt:10}} justifyContent='center' xs={2}>
                     <img src={LoginImage} width="80%" height="80%" alt='login Image'/>
-                    {/* </Box> */}
                 </Grid>
             </Grid>
         </ThemeProvider>

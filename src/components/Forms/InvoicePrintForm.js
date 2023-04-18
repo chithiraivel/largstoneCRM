@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import InvoiceImage from '../../assets/images/LSOT_744_291.png';
@@ -79,7 +79,7 @@ export default function InvoicePrintForm() {
         {
             field : "Term",
             headerName:"Paying Term",
-            width: 180,
+            width: 200,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -88,7 +88,7 @@ export default function InvoicePrintForm() {
         {
             field:"UnitPrice",
             headerName:"Unit Price",
-            width: 180,
+            width: 230,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -97,7 +97,7 @@ export default function InvoicePrintForm() {
         {
             field:"Discount",
             headerName:"Discount(%)",
-            width: 200,
+            width: 230,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -106,12 +106,12 @@ export default function InvoicePrintForm() {
         {
             field:"Total",
             headerName:"Total Amount",
-            width: 180,
+            width: 130,
             editable: false,
             headerAlign: "left",
             align: "left",
             sortable:false,
-            valueFormatter: params => (params.id === 5) ? `${params.value}` : params.value
+            valueFormatter: params => (params.id === 5) ? `rs. ${params.value}` : params.value
         },
     ];
 
@@ -126,7 +126,7 @@ export default function InvoicePrintForm() {
   return (
     <div>
         <AppBreadcrumbs crntPage='Invoice' prevPage="Invoices Table" path='/invoice'/>
-        <Box ref={(elem) => componentRef = elem} sx={{background:"#fff", borderRadius :"20px",  boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", py:3}}>
+        <Box ref={(elem) => componentRef = elem} sx={{background:"#fff", borderRadius :"20px",  boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", py:3,}}>
             <Grid container justifyContent = "space-between">
                 <Grid item xs={8}>
                     <Box sx={{pl:4}}>
@@ -145,7 +145,7 @@ export default function InvoicePrintForm() {
                     <Box >
                         <Typography sx={{fontSize:"30px", fontWeight:"700"}}>Bill to </Typography>
                         <Typography>{StudentName},</Typography>
-                        <Typography>{(Address.map((val)=> val.doornum)) == "" ? "(Door Number   ) N/A" : `# ${Address.map((val)=> val.doornum)}` }</Typography>
+                        <Typography>{(Address.map((val)=> val.doornum)) == "" ? "(Door Number) N/A" : `# ${Address.map((val)=> val.doornum)}` }</Typography>
                         <Typography>{(Address.map((val)=> val.street)) == "" ? "(Street) N/A" : Address.map((val)=> val.street)}</Typography>
                         <Typography>{(Address.map((val)=> val.place)) == "" ? "(Place Name) N/A" : Address.map((val)=> val.place)}</Typography>
                     </Box>
@@ -171,12 +171,12 @@ export default function InvoicePrintForm() {
                 </Grid>
             </Grid>
             <Grid container>
-                <Grid item xs={12} sx={{px:4}} >
+                <Grid item xs={12} sx={{px:4,}} >
                     <InvoiceDatagrid columns={columns} rows={rows} id='id' />
                 </Grid>
             </Grid>
-            <Grid container sx={{ mt:10, px:4}} justifyContent="space-between">
-                <Grid item xs={4}>
+            <Grid container sx={{ mt:6, pl:4}}>
+                <Grid item xs={4.5}>
                     <Box>                        
                         <Typography sx={{fontWeight:"bold", fontSize:"20px"}}>Bank Details</Typography>
                         <Typography sx={{mt:1}}><b>Name:</b> Puvan Mani Elansudar</Typography>
@@ -186,34 +186,35 @@ export default function InvoicePrintForm() {
                         <Typography sx={{mt:0.5}}><b>IFSC Code :</b>78455448</Typography>
                     </Box>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                     <Box>
                         <Typography sx={{fontWeight:"bold", fontSize:"20px"}}>Terms and Conditions</Typography>
-                        <ul style={{listStyleType: "disc"}}>
-                            <li style={{marginTop:"8px"}}>some point</li>
+                        <ul style={{listStyleType: "disc", marginLeft:"13px"}}>
+                            <li style={{marginTop:"8px", lineHeight:"1.5", fontSize:"10px"}}>lorem ipsum "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+                            <li style={{marginTop:"4px", lineHeight:"1.5", fontSize:"10px"}}>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+                            {/* <li style={{marginTop:"4px"}}>some point</li>
                             <li style={{marginTop:"4px"}}>some point</li>
-                            <li style={{marginTop:"4px"}}>some point</li>
-                            <li style={{marginTop:"4px"}}>some point</li>
-                            <li style={{marginTop:"4px"}}>some point</li>
+                            <li style={{marginTop:"4px"}}>some point</li> */}
                         </ul>
                     </Box>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={2.5} sx={{pl:6}}>
                     <Box sx={{ display:"flex", flexDirection:"column", alignItems:"center"}}>
                         <Box component= "img" src={Signature} alt="Signature"/>
-                        <Typography>Full Stack Developer</Typography>
-                        <Typography>(Puvan Mani Elansudar)</Typography>
+                        <Typography sx={{fontSize:"16px"}}>Full Stack Developer</Typography>
+                        <Typography sx={{fontSize:"12px"}}>(Puvan Mani Elansudar)</Typography>
                     </Box>
                 </Grid>
             </Grid>
         </Box>
+
         <Box sx={{display:"flex", justifyContent:"end", my:4, pr:4}}>
             <ReactToPrint 
             trigger={() =>
-                <Button endIcon={<PrintOutlinedIcon/>} sx={{"@media print" : {display:"none"}}} style={{ backgroundColor:"#4daaff", marginRight:"20px"}} disableElevation disableRipple  variant='contained'>Print</Button>}
+                <Button endIcon={<PrintOutlinedIcon/>} style={{ backgroundColor:"#4daaff", marginRight:"20px"}} disableElevation disableRipple  variant='contained'>Print</Button>}
             content={()=> componentRef}
             />
-            <Link to = "/invoice"><Button sx={{"@media print" : {display:"none"}}} style={{backgroundColor: "#ff726f",}} disableElevation disableRipple  variant='contained'>Back</Button></Link>
+            <Link to = "/invoice"><Button style={{backgroundColor: "#ff726f",}} disableElevation disableRipple  variant='contained'>Back</Button></Link>
         </Box>
     </div>
   )

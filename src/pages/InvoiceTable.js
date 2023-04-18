@@ -27,16 +27,6 @@ export default function InvoiceTable() {
 
     const columns = [
         {
-            field: "id",
-            headerName: "",
-            width: 60,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false,
-            
-        },
-        {
             field: "StudentName",
             headerName: "Student Name",
             width: 160,
