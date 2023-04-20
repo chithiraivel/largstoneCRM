@@ -25,30 +25,27 @@ const Layout = () => {
         dispatch(ThemeAction.setColor(colorClass));
     }, [dispatch]);
 
-    // useEffect(() => {
-    //     const isLoggedIn = localStorage.getItem('LoggedIN');
-    // }, []);
-
     return (
         <BrowserRouter>
             <context.Provider value={{ login, setLogin }}>
-                {(login || localStorage.getItem('LoggedIN')) ? (
-                    <Route render={(props) => (
-                        <div>
-                            <Sidebar {...props} />
-                            <div className="layout__content">
-                                <TopNav />
-                                <div className="layout__content-main">
-                                    <Routes />
+                {
+                    (localStorage.getItem('LoggedIN') || login) ? (
+                        <Route render={(props) => (
+                            <div>
+                                <Sidebar {...props} />
+                                <div className="layout__content">
+                                    <TopNav />
+                                    <div className="layout__content-main">
+                                        <Routes />
+                                    </div>
                                 </div>
+                                {console.log("if")}
                             </div>
-                        </div>
-                    )} />) : (
-                    <div>
-                        <Redirect to='/login' />
-                        <Route exact path="/login" component={LoginForm} />
-                    </div>
-                )
+                        )} />) : (<div>
+                            {console.log("else")}
+                            <Redirect to='/login' />
+                            <Route exact path="/login" component={LoginForm} />
+                        </div>)
                 }
             </context.Provider>
         </BrowserRouter>

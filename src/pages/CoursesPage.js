@@ -30,7 +30,7 @@ export default function CoursesPage() {
         {
             field: "CourseName",
             headerName: "Course Name",
-            width: 250,
+            width: 220,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -48,7 +48,7 @@ export default function CoursesPage() {
         {
             field: "Subjects",
             headerName: "Portions Covered",
-            width: 330,
+            width: 400,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -58,7 +58,7 @@ export default function CoursesPage() {
         {
             field: "CourseDuration",
             headerName: "Course Duration",
-            width: 160,
+            width: 150,
             editable: false,
             headerAlign: "left", 
             align: "left",
@@ -101,7 +101,7 @@ export default function CoursesPage() {
             <AppBreadcrumbs crntPage='Courses Table' path='/' />
             <div style={{ background: "#FFF", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", padding: "20px", borderRadius: "20px" }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography sx={{ fontWeight: "bold" }}>Courses Table</Typography>
+                    <Typography sx={{ fontWeight: "bold", color:"black !Important"}}>Courses Table</Typography>
                     <Link to='/courses/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
                 </Box>
                 <StyledDataGrid columns={columns} rows={rows} id='CourseID' />

@@ -23,6 +23,10 @@
     padding: 0 20px;
 }
 
+/* .sidebar__item :hover {
+    color: blue;
+} */
+
 .sidebar__item-inner {
     padding: 15px 25px;
     display: flex;
@@ -34,7 +38,7 @@
 .sidebar__item-inner>i {
     margin-right: 10px;
     font-size: 1.5rem;
-    color: red;
+    color: crimson;
 }
 
 .sidebar__item-inner>span {
@@ -42,8 +46,8 @@
 }
 
 .sidebar__item-inner:hover {
-    /* color: red; */
-    color: var(--main-color);
+    color: crimson;
+    /* color: var(--main-color); */
 }
 
 .sidebar__item-inner.active {

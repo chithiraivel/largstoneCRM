@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import { useEffect } from 'react';
 import AxiosInstance from '../../axiosinstance';
+import Swal from 'sweetalert2';
 
 const theme = createTheme({
   components: {
@@ -101,7 +102,12 @@ export default function InvoiceForm(props) {
             StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, CreatedBy, CreatedDate
         };
         AxiosInstance.post("invoice/create", data ).then((res) => {
-            res.data.result ? props.history.push('/invoice') : alert(res.data.result);
+            res.data.result ? props.history.push('/invoice') : 
+            Swal.fire({title: "Some Error!!",
+            text: res.data.result,
+            icon: "error",
+            confirmButtonText:"ok"
+        });
         });
     };
 
@@ -129,7 +135,12 @@ export default function InvoiceForm(props) {
             StudentName, CourseName, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, UpdatedBy, UpdatedDate, InvoiceID: params.InvoiceID
         };
         AxiosInstance.post('invoice/update', data).then((res)=>{
-            res.data.result ? props.history.push('/invoice') : alert(res.data.result);
+            res.data.result ? props.history.push('/invoice') : 
+            Swal.fire({title: "Some Error!!",
+            text: res.data.result,
+            icon: "error",
+            confirmButtonText:"ok"
+        });
         })
     }
  
@@ -154,12 +165,12 @@ export default function InvoiceForm(props) {
             studentName: StudentName === "",
             courseName: CourseName ==="",
             session: Session ==="",
-            batchName: BatchName ==="",
+            batchName: BatchName.trim() ==="",
             termFees: TermFees ==="",
             term: Term === "",
             pendingAmount: PendingAmount ==="",
-            totalAmount: TotalAmount ==="",
-            paymentMethod: PaymentMethod ==="",
+            totalAmount: TotalAmount ==="" || TotalAmount == "0",
+            paymentMethod: PaymentMethod.trim() ==="",
         };    
         setError(GenInvoice)
         if (Object.values(GenInvoice).some(val => val == true )){}
@@ -246,7 +257,6 @@ export default function InvoiceForm(props) {
                         onChange={(e)=>{
                             const reg = /^[0-9\b]+$/;
                             if (e.target.value == "" || reg.test(e.target.value) && (e.target.value <= 100)){
-                            // setValid(reg.test(e.target.value));
                             setDiscount(e.target.value)
                             setTotalAmount( e.target.value =="" ? TermFees :(TermFees - ((e.target.value/100) * TermFees)))}}} />
                     </Grid>

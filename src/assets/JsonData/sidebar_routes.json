@@ -12,16 +12,16 @@
     {
         "display_name": "Invoice",
         "route": "/invoice",
-        "icon": "bx bx-package"
+        "icon": "bx bx-rupee"
     },
     {
         "display_name": "Courses",
         "route": "/courses",
-        "icon": "bx bx-list-ol"
+        "icon": "bx bx-book"
     },
     {
         "display_name": "Batches",
         "route": "/batches",
-        "icon": "bx bx-store-alt"
+        "icon": "bx bxs-group"
     }
 ]

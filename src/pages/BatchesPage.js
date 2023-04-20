@@ -133,7 +133,7 @@ export default function BatchesPage() {
             <AppBreadcrumbs crntPage='Batches Table' path='/' />
             <div style={{ background: "#FFF", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", padding: "20px", borderRadius: "20px" }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography sx={{ fontWeight: "bold" }}>Batches Table</Typography>
+                    <Typography sx={{ fontWeight: "bold", color:"black !Important"  }}>Batches Table</Typography>
                     <Link to='/batches/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
                 </Box>
                 <StyledDataGrid columns={columns} rows={rows} id="BatchID" />

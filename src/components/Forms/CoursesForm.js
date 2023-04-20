@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import AxiosInstance from '../../axiosinstance';
 import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const theme = createTheme({
   components: {
@@ -44,12 +45,18 @@ export default function BatchForm(props) {
     const params = useParams()
 
     const PostCourses = ()=>{
+        console.log(Error.subjects);
         let data = {
             CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, CreatedBy, CreatedDate
         };
         
         AxiosInstance.post("courses/create",data ).then((res) => {
-            res.data.result ? props.history.push('/courses') : alert(res.data.result);
+            res.data.result ? props.history.push('/courses') : 
+            Swal.fire({title: "Some Error!!",
+            text: `The Result shows something Like${res.data.result}`,
+            icon: "error",
+            confirmButtonText:"ok"
+        });
             
         });
     };
@@ -59,7 +66,12 @@ export default function BatchForm(props) {
             CourseID: params.CourseID, CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, UpdatedBy, UpdatedDate
         };
         AxiosInstance.post('courses/update', data).then((res)=>{
-            res.data.result ? props.history.push('/courses') : alert(res.data.result);
+            res.data.result ? props.history.push('/courses') : 
+            Swal.fire({title: "Some Error!!",
+            text: `The Result shows something Like${res.data.result}`,
+            icon: "error",
+            confirmButtonText:"ok"
+        });
         })
     };
 
@@ -78,11 +90,11 @@ export default function BatchForm(props) {
     const handleSubmit = () => {
 
         const CreateCourse = {
-            courseName: CourseName === "",
-            courseFee: CourseFee === "",
-            subjects: Subjects.map((obj, ind) => (obj.Subject)).some(val => val == ""),
+            courseName: CourseName.trim() === "",
+            courseFee: CourseFee === "" || CourseFee == "0",
+            subjects: Subjects.map((obj, ind) => (obj.Subject)).some(val => val.trim() === ""),
             courseDuration: CourseDuration ==="",
-            admissionFee: AdmissionFee === "",
+            admissionFee: AdmissionFee == "0" || AdmissionFee === "",
         };
         setError(CreateCourse)
         if (Object.values(CreateCourse).some(val => val == true )){console.log(CreateCourse)}
@@ -135,7 +147,7 @@ export default function BatchForm(props) {
                                     <Typography sx={{fontWeight:"bold", verticalAlign:"center"}}>Subjects </Typography>
                                 </Grid>
                                 <Grid item xs={1}>
-                                    <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} onClick={() => setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "" }])}>Add</Button>
+                                    <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} onClick={() => Subjects.map((val)=> val.Subject.trim() == "" ? setError(prevState => ({...prevState, subjects:true}))  : setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "" }]) ) }>Add</Button>
                                 </Grid>
                                 <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setSubjects(Subjects.slice(0, -1))} variant='contained' sx={{display: (Subjects.length > 1) ? "block" : "none"}}>Cancel</Button>

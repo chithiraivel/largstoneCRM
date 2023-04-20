@@ -35,7 +35,6 @@ export default function LoginForm() {
     });
 
     const {login, setLogin} = useContext(context)
-console.log(login)
     let user = "Admin";
     let pass = "admin123";
 
@@ -60,7 +59,7 @@ console.log(login)
         {setLogin(true)}
         <Redirect to="/dashboard" /> 
       </>)
-    } 
+    }
 
     const handleCBchange = (e)=>{
       setChecked(e.target.checked)

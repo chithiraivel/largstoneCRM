@@ -30,7 +30,7 @@ export default function Students() {
         { 
             field: "StudentName", 
             headerName: "Student Name", 
-            width: 170, 
+            width: 200, 
             editable: false, 
             headerAlign: "left", 
             align: "left",
@@ -110,7 +110,7 @@ export default function Students() {
             <AppBreadcrumbs crntPage='Students' path='/' />
             <div style={{ background: "#FFF", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", padding: "20px", borderRadius: "20px" }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography sx={{ fontWeight: "bold" }}>Student Table</Typography>
+                    <Typography sx={{ fontWeight: "bold", color:"black !Important" }}>Student Table</Typography>
                     <Link to='/students/forms' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
                 </Box>
                 <StyledDataGrid columns={columns} rows={rows} id='StudentID' />

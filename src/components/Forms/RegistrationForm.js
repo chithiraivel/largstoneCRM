@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import moment from 'moment/moment';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import AxiosInstance from '../../axiosinstance';
+import Swal from 'sweetalert2';
 
 const theme = createTheme({
   components: {
@@ -127,7 +128,12 @@ export default function Form(props) {
             HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), CreatedBy, CreatedDate
         };
         AxiosInstance.post("registration/register", data ).then((res) => {     
-            res.data.result ? props.history.push('/students') : alert(res.data.result);   
+            res.data.result ? props.history.push('/students') :
+            Swal.fire({title: "Some Error!!",
+            text: res.data.result,
+            icon: "error",
+            confirmButtonText:"ok"
+        });  
         });
     };
 
@@ -168,6 +174,7 @@ export default function Form(props) {
     }
 
     const Update = ()=>{
+        console.log("herer");
 
         let HSC = JSON.stringify({HSCboard, HSCSchoolName, HSCPassedYear, HSCPercentage});
         let SSLC = JSON.stringify({SSLCboard, SSLCSchoolName, SSLCPassedYear, SSLCPercentage});
@@ -176,7 +183,12 @@ export default function Form(props) {
             HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), Address: JSON.stringify(Address), UpdatedBy, UpdatedDate, StudentID: params.StudentID
         };
         AxiosInstance.post('registration/update', data).then((res)=>{
-            res.data.result ? props.history.push('/students') : alert(res.data.result);
+            res.data.result ? props.history.push('/students') : 
+            Swal.fire({title: "Some Error!!",
+            text: res.data.result,
+            icon: "error",
+            confirmButtonText:"ok"
+        });
         })
     };
 
@@ -214,43 +226,42 @@ export default function Form(props) {
 
     const handleSubmit = () => {
         const RegisterStudent = {
-            studentName: StudentName === "",
-            studentContactNumber: StudentContactNumber === "",
-            studentEmail: Email === "",
+            studentName: StudentName.trim() === "",
+            studentContactNumber: StudentContactNumber.trim() === "",
+            studentEmail: Email.trim() === "" ? true :  !( /^([a-z0-9._%-]+@[a-z0-9.-]+\.[a-z]{3})$/.test(Email)) ? "wrongpattern" : false,
             DOB: DOB ===" ",
             regDate: RegDate === " ",
-            sslcBoard: SSLCboard === "",
-            sslcSchoolName: SSLCSchoolName === "",
-            sslcPassedYear: SSLCPassedYear === "",
-            sslcPercentage: SSLCPercentage === "",
-            hscBoard: HSCboard === "",
-            hscSchoolName: HSCSchoolName === "",
-            hscPassedYear: HSCPassedYear === "",
-            hscPercentage: HSCPercentage === "",
-            degreeCollege :Degree.map((obj, ind) => (obj.College)).some(val => val == ""),
-            degreeName :Degree.map((obj, ind) => (obj.degree)).some(val => val == ""),
-            degreePercentage :Degree.map((obj, ind) => (obj.Percentage)).some(val => val == ""),
-            degreePassingYear :Degree.map((obj, ind) => (obj.yearOfPass)).some(val => val == ""),
-            guardianNumber: GuardianNumber === "",
-            guardianName: GuardianName === "",
-            batchName : BatchName === "",
+            sslcBoard: SSLCboard.trim() === "",
+            sslcSchoolName: SSLCSchoolName.trim() === "",
+            sslcPassedYear: SSLCPassedYear.trim() === "",
+            sslcPercentage: SSLCPercentage.trim() === "",
+            hscBoard: HSCboard.trim() === "",
+            hscSchoolName: HSCSchoolName.trim() === "",
+            hscPassedYear: HSCPassedYear.trim() === "",
+            hscPercentage: HSCPercentage.trim() === "",
+            degreeCollege :Degree.map((obj) => (obj.College)).some(val => val.trim() === ""),
+            degreeName :Degree.map((obj) => (obj.degree)).some(val => val.trim() === ""),
+            degreePercentage :Degree.map((obj) => (obj.Percentage)).some(val => val.trim() === ""),
+            degreePassingYear :Degree.map((obj) => (obj.yearOfPass)).some(val => val.trim() === ""),
+            guardianNumber: GuardianNumber.trim() === "",
+            guardianName: GuardianName.trim() === "",
+            batchName : BatchName.trim() === "",
             batchStartingDate: BatchStartingDate === " ",
             batchEndDate : BatchEndDate ===" ",
-            session : Session === "",
+            session : Session.trim() === "",
             sessionStartTime : SessionStartTime === " ",
             sessionEndtime : SessionEndTime === " ",
             courseAdmissionFee : AdmissionFee === "",
-            courseName: CourseName === "",
-            addressDN : Address.map((obj)=> (obj.doornum)).some(val => val ==""),
-            addressStreet : Address.map((obj)=> (obj.street)).some(val => val ==""),
-            addressPlace : Address.map((obj)=> (obj.place)).some(val => val ==""),
+            courseName: CourseName.trim() === "",
+            addressDN : Address.map((obj)=> (obj.doornum)).some(val => val.trim() ===""),
+            addressStreet : Address.map((obj)=> (obj.street)).some(val => val.trim() ===""),
+            addressPlace : Address.map((obj)=> (obj.place)).some(val => val.trim() ===""),
         };
         setError(RegisterStudent)
-        console.log("cer", AdditionalCertificate);
-         console.log("reg",RegisterStudent);
-        if (Object.values(RegisterStudent).some(val => val == true )){}
+        if (Object.values(RegisterStudent).some(val => val == true || val == "wrongpattern")){console.log(RegisterStudent)}
         else{
             if(params.action == "update"){
+                console.log("url check");
                 Update()
             } else {
                 PostStudents()
@@ -281,13 +292,14 @@ export default function Form(props) {
                         <Typography variant='h6'>Student Details</Typography>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} error={Error.studentName} helperText={Error.studentName ? "* Student Name is required" : ""} value={StudentName} fullWidth onChange={(e) => setStudentName(e.target.value)} size='small' label="Student Name" />
+                        <TextField disabled={Disable} error={Error.studentName} helperText={Error.studentName ? "Student Name is required" : ""} value={StudentName} fullWidth onChange={(e) => setStudentName(e.target.value)} size='small' label="Student Name" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} error={Error.studentContactNumber} helperText={Error.studentContactNumber ? "*  Contact number is required" : ""} value={StudentContactNumber} fullWidth onChange={(e) => setStudentContactNumber(e.target.value)} size='small' label="Student contact Number" />
+                        <TextField disabled={Disable} error={Error.studentContactNumber} helperText={Error.studentContactNumber ? "Contact number is required" : ""} value={StudentContactNumber} fullWidth onChange={(e) => setStudentContactNumber(e.target.value)} size='small' label="Student contact Number" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} value={Email} error={Error.studentEmail} helperText={Error.studentEmail ? "Student E-mail field cannot be empty" : ""} fullWidth onChange={(e) => setEmail(e.target.value)} size='small' label="Email" />
+                        <TextField disabled={Disable} value={Email} error={Error.studentEmail} helperText={
+                           Error.studentEmail == "wrongpattern" ? "Enter valid Email" :  Error.studentEmail ? "Student E-mail field cannot be empty" :  "" } fullWidth size='small' label="Email" onChange={(e) =>{setEmail(e.target.value)}} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disable} value={DOB} error={Error.DOB} helperText={Error.DOB ? "Date of Birth needed!" : ""} type='date' fullWidth onChange={(e) => setDOB(e.target.value)} size='small' label="Date of Birth" />
@@ -344,7 +356,7 @@ export default function Form(props) {
                                 </Grid>
                                 <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} 
-                                    onClick={() => setDegree([...Degree, { "id": Degree.length + 1, "degree": "", "College":"", "yearOfPass":"", "Percentage":"" }])}>Add<AddCircleOutlineIcon /></Button>
+                                    onClick={() => Degree.some((val)=> val.College == "" ? setError(prevState => ({...prevState, degreeCollege : true })) : setDegree([...Degree, { "id": Degree.length + 1, "degree": "", "College":"", "yearOfPass":"", "Percentage":"" }])  ) }>Add<AddCircleOutlineIcon /></Button>
                                 </Grid>
                                 <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setDegree(Degree.slice(0, -1))} variant='contained' sx={{display: (Degree.length > 1) ? "block" : "none"}}>Cancel</Button>

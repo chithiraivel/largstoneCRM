@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import './topnav.css';
 
@@ -14,10 +14,15 @@ import user_image from '../../assets/images/tuat.png';
 
 import user_menu from '../../assets/JsonData/user_menus.json';
 
+import { context } from '../layout/Layout';
+
+
+
 const curr_user = {
     display_name: 'Tuat Tran',
     image: user_image
 };
+
 
 const renderNotificationItem = (item, index) => (
     <div className="notification-item" key={index}>
@@ -37,16 +42,35 @@ const renderUserToggle = (user) => (
     </div>
 );
 
-const renderUserMenu = (item, index) => (
-    <Link to='/' key={index}>
-        <div className="notification-item">
-            <i className={item.icon}></i>
-            <span>{item.content}</span>
-        </div>
-    </Link>
-);
 
 const Topnav = () => {
+    const { login, setLogin } = useContext(context);
+
+    const renderUserMenu = (item, index) => (
+        <>
+            {
+                item.content == "Logout" ?
+                    <div className="notification-item" onClick={handleLogOut}>
+                        <i className={item.icon}></i>
+                        <span>{item.content}</span>
+                    </div>
+                    :
+                    <Link to='/' key={index}>
+                        <div className="notification-item">
+                            <i className={item.icon}></i>
+                            <span>{item.content}</span>
+                        </div>
+                    </Link>
+            }
+        </>
+
+    );
+
+    const handleLogOut = () => {
+        setLogin(false);
+        localStorage.removeItem('LoggedIN');
+    };
+
     return (
         <div className='topnav'>
             {/* <div className="topnav__search">

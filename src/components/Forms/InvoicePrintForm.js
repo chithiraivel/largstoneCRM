@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import InvoiceImage from '../../assets/images/LSOT_744_291.png';
@@ -56,66 +56,70 @@ export default function InvoicePrintForm() {
     const GSTAmount = ((12/100) * SubTotal);
     const GrandTotal = (GSTAmount + SubTotal);
 
-    const columns = [
-        {
-            field: "id",
-            headerName: "No",
-            width: 40,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false,
-            valueFormatter: params => (params.id <=2) ? params.id : ""
-        },
-        {
-            field : "Description",
-            headerName:"Description",
-            width: 250,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false,
-        },
-        {
-            field : "Term",
-            headerName:"Paying Term",
-            width: 200,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false,
-        },
-        {
-            field:"UnitPrice",
-            headerName:"Unit Price",
-            width: 230,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false,
-        },
-        {
-            field:"Discount",
-            headerName:"Discount(%)",
-            width: 230,
-            editable: false,
-            headerAlign: "left", 
-            align: "left",
-            sortable:false,
-        },
-        {
-            field:"Total",
-            headerName:"Total Amount",
-            width: 130,
-            editable: false,
-            headerAlign: "left",
-            align: "left",
-            sortable:false,
-            valueFormatter: params => (params.id === 5) ? `rs. ${params.value}` : params.value
-        },
-    ];
+    // const columns = [    
+    //     {
+    //         field: "id",
+    //         headerName: "No",
+    //         width: 40,
+    //         editable: false,
+    //         headerAlign: "left", 
+    //         align: "left",
+    //         sortable:false,
+    //         valueFormatter: params => (params.id <=2) ? params.id : ""
+    //     },
+    //     {
+    //         field : "Description",
+    //         headerName:"Description",
+    //         width: 250,
+    //         editable: false,
+    //         headerAlign: "left", 
+    //         align: "left",
+    //         sortable:false,
+    //     },
+    //     {
+    //         field : "Term",
+    //         headerName:"Paying Term",
+    //         width: 200,
+    //         editable: false,
+    //         headerAlign: "left", 
+    //         align: "left",
+    //         sortable:false,
+    //     },
+    //     {
+    //         field:"UnitPrice",
+    //         headerName:"Unit Price",
+    //         width: 230,
+    //         editable: false,
+    //         headerAlign: "left", 
+    //         align: "left",
+    //         sortable:false,
+    //     },
+    //     {
+    //         field:"Discount",
+    //         headerName:"Discount(%)",
+    //         width: 230,
+    //         editable: false,
+    //         headerAlign: "left", 
+    //         align: "left",
+    //         sortable:false,
+    //     },
+    //     {
+    //         field:"Total",
+    //         headerName:"Total Amount",
+    //         width: 130,
+    //         editable: false,
+    //         headerAlign: "left",
+    //         align: "left",
+    //         sortable:false,
+    //         valueFormatter: params => (params.id === 5) ? `rs. ${params.value}` : params.value
+    //     },
+    // ];
 
-    const rows = [{id:1,Description : CourseName, Term: Term, Discount: Discount, UnitPrice: TermFees, Total: TotalAmount}, {id: 2, Description : AdditionalDiscountName, Total: AdditionalDiscountAmount}, {id:3, Discount: "Sub Total", Total: SubTotal}, {id:4, Discount: "GST 12%", Total: GSTAmount}, {id:5, Discount: "Total", Total: GrandTotal}]
+    // const rows = [{id:1,Description : CourseName, Term: Term, Discount: Discount, UnitPrice: TermFees, Total: TotalAmount}, 
+    //     {id: 2, Description : AdditionalDiscountName, Total: AdditionalDiscountAmount}, 
+    //     {id:3, Discount: "Sub Total", Total: SubTotal}, 
+    //     {id:4, Discount: "GST 12%", Total: GSTAmount}, 
+    //     {id:5, Discount: "Total", Total: GrandTotal}]
 
     let componentRef = useRef();
 
@@ -126,7 +130,7 @@ export default function InvoicePrintForm() {
   return (
     <div>
         <AppBreadcrumbs crntPage='Invoice' prevPage="Invoices Table" path='/invoice'/>
-        <Box ref={(elem) => componentRef = elem} sx={{background:"#fff", borderRadius :"20px",  boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", py:3,}}>
+        <Box ref={(elem) => componentRef = elem} sx={{background:"#fff", borderRadius :"20px", py:3, "@media print":{m:3, pt:2}}}>
             <Grid container justifyContent = "space-between">
                 <Grid item xs={8}>
                     <Box sx={{pl:4}}>
@@ -134,8 +138,8 @@ export default function InvoicePrintForm() {
                         {OfficeAddress}
                     </Box>
                 </Grid>
-                <Grid item xs={3}>
-                    <Box component='img' src={InvoiceImage} sx={{height:"60%", width:"100%", mt:2, pr:2}} alt='invoice' />
+                <Grid item xs={4} sx={{display:"flex", justifyContent:"end"}}>
+                    <Box component='img' src={InvoiceImage} sx={{height:"60%", width:"80%", mt:2, "@media print":{width:"110%"} }} alt='invoice' />
                 </Grid>
             </Grid>
              {/*main  */}
@@ -153,7 +157,7 @@ export default function InvoicePrintForm() {
                 {/* Second Column */}
                 <Grid item xs={6}>
                     <Grid sx={{mt:5.5}} container>
-                        <Grid item xs={4}>
+                        <Grid item xs={5}>
                             <Box>
                                 <Typography sx={{fontWeight:"700"}}>Invoice#</Typography>
                                 <Typography sx={{fontWeight:"700"}}>Invoice Date</Typography>
@@ -172,10 +176,65 @@ export default function InvoicePrintForm() {
             </Grid>
             <Grid container>
                 <Grid item xs={12} sx={{px:4,}} >
-                    <InvoiceDatagrid columns={columns} rows={rows} id='id' />
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold", backgroundColor: 'rgb(250,250,251)', color:"#455560",}}>No.</TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold", backgroundColor: 'rgb(250,250,251)', color:"#455560", width:"2   50px"}}>Description</TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold", backgroundColor: 'rgb(250,250,251)', color:"#455560",}}>Paying Term</TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold", backgroundColor: 'rgb(250,250,251)', color:"#455560",}}>Unit Price</TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold", backgroundColor: 'rgb(250,250,251)', color:"#455560",}}>Discount (%)</TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold", backgroundColor: 'rgb(250,250,251)', color:"#455560", width:"130px"}}>Total Amount</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell sx={{borderBottom:0}}>1</TableCell>
+                                    <TableCell sx={{borderBottom:0}}>{CourseName}</TableCell>
+                                    <TableCell sx={{borderBottom:0}}>{Term}</TableCell>
+                                    <TableCell sx={{borderBottom:0}}>{TermFees}</TableCell>
+                                    <TableCell sx={{borderBottom:0}}>{Discount}</TableCell>
+                                    <TableCell sx={{borderBottom:0}}>{TotalAmount}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell sx={{borderBottom:1}}>2</TableCell>
+                                    <TableCell sx={{borderBottom:1}}>{AdditionalDiscountName}</TableCell>
+                                    <TableCell sx={{borderBottom:1}}></TableCell>
+                                    <TableCell sx={{borderBottom:1}}></TableCell>
+                                    <TableCell sx={{borderBottom:1}}></TableCell>
+                                    <TableCell sx={{borderBottom:1}}>{AdditionalDiscountAmount}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell sx={{borderBottom:0}}></TableCell>
+                                    <TableCell sx={{borderBottom:0}}></TableCell>
+                                    <TableCell sx={{borderBottom:0}}></TableCell>
+                                    <TableCell sx={{borderBottom:0}}></TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold"}}>Sub Total</TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold"}}>{SubTotal}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell sx={{borderBottom:1}}></TableCell>
+                                    <TableCell sx={{borderBottom:1}}></TableCell>
+                                    <TableCell sx={{borderBottom:1}}></TableCell>
+                                    <TableCell sx={{borderBottom:1}}></TableCell>
+                                    <TableCell sx={{borderBottom:1, fontWeight:"bold"}}>GST 12%</TableCell>
+                                    <TableCell sx={{borderBottom:1, fontWeight:"bold"}}>{GSTAmount}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell sx={{borderBottom:0}}></TableCell>
+                                    <TableCell sx={{borderBottom:0}}></TableCell>
+                                    <TableCell sx={{borderBottom:0}}></TableCell>
+                                    <TableCell sx={{borderBottom:0}}></TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold", fontSize:"18px"}}>Total</TableCell>
+                                    <TableCell sx={{borderBottom:0, fontWeight:"bold", fontSize:"18px"}}>{GrandTotal}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
             </Grid>
-            <Grid container sx={{ mt:6, pl:4}}>
+            <Grid container sx={{ mt:15, pl:4}}>
                 <Grid item xs={4.5}>
                     <Box>                        
                         <Typography sx={{fontWeight:"bold", fontSize:"20px"}}>Bank Details</Typography>
@@ -186,19 +245,16 @@ export default function InvoicePrintForm() {
                         <Typography sx={{mt:0.5}}><b>IFSC Code :</b>78455448</Typography>
                     </Box>
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                     <Box>
                         <Typography sx={{fontWeight:"bold", fontSize:"20px"}}>Terms and Conditions</Typography>
-                        <ul style={{listStyleType: "disc", marginLeft:"13px"}}>
-                            <li style={{marginTop:"8px", lineHeight:"1.5", fontSize:"10px"}}>lorem ipsum "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-                            <li style={{marginTop:"4px", lineHeight:"1.5", fontSize:"10px"}}>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-                            {/* <li style={{marginTop:"4px"}}>some point</li>
-                            <li style={{marginTop:"4px"}}>some point</li>
-                            <li style={{marginTop:"4px"}}>some point</li> */}
+                        <ul style={{listStyleType: "disc", marginLeft:"15   px"}}>
+                            <li style={{marginTop:"8px", lineHeight:"1.5", fontSize:"10px"}}>lorem ipsum "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </li>
+                            <li style={{marginTop:"4px", lineHeight:"1.5", fontSize:"10px"}}>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </li>
                         </ul>
                     </Box>
                 </Grid>
-                <Grid item xs={2.5} sx={{pl:6}}>
+                <Grid item xs={3.5} sx={{pl:6}}>
                     <Box sx={{ display:"flex", flexDirection:"column", alignItems:"center"}}>
                         <Box component= "img" src={Signature} alt="Signature"/>
                         <Typography sx={{fontSize:"16px"}}>Full Stack Developer</Typography>

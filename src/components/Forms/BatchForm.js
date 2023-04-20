@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const theme = createTheme({
   components: {
@@ -56,7 +57,12 @@ export default function BatchForm(props) {
             BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, CreatedBy, CreatedDate, BatchStatus: "Active", BatchCountLimit
         };
         AxiosInstance.post("batches/create", data ).then((res) => {
-            res.data.status ? props.history.push('/batches') : alert(res.data.result);
+            res.data.status ? props.history.push('/batches') : 
+            Swal.fire({title: "Some Error!!",
+            text: `The Result shows something Like ${res.data.result}`,
+            icon: "error",
+            confirmButtonText:"ok"
+        });
         });
     };
 
@@ -77,19 +83,24 @@ export default function BatchForm(props) {
             BatchID: params.BatchID, BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, UpdatedBy, UpdatedDate, BatchStatus: "Active", BatchCountLimit
         };
         AxiosInstance.post("batches/update", data).then((res)=>{
-            res.data.status ? props.history.push('/batches') : alert(res.data.result);
+            res.data.status ? props.history.push('/batches') : 
+            Swal.fire({title: "Some Error!!",
+            text: `The Result shows something Like ${res.data.result}`,
+            icon: "error",
+            confirmButtonText:"ok"
+        });
         })
     };
     
     const handleSubmit = () => {
         const CreateBatch = {
-            BatchName: BatchName === "",
+            BatchName: BatchName.trim() === "",
             BatchStartDate: BatchStartDate === " ",
             BatchEndDate: BatchEndDate ===" ",
             session: Session === "",
             sessionStartTime: SessionStartTime ===" ",
             sessionEndTime: SessionEndTime ===" ",
-            BatchCountLimit: BatchCountLimit ==="",
+            BatchCountLimit: BatchCountLimit.toString().trim() ==="" || BatchCountLimit == "0",
         };    
         setError(CreateBatch)
         if (Object.values(CreateBatch).some(val => val == true )){}
@@ -132,16 +143,20 @@ export default function BatchForm(props) {
                         <TextField disabled={Disabled} error={Error.BatchEndDate} helperText={ Error.BatchEndDate ? "Batch End Time is required" :""}  type='date' label='Batch Ending Date' value={BatchEndDate} size='small' fullWidth onChange={(e)=>setBatchEndDate(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete disabled={Disabled} size='small' disablePortal options={CourseSession} onChange={((e, val)=> setSession(val.label))} value={{label :Session}} renderInput={(params) => <TextField {...params} error={Error.session} helperText={ Error.session ? "Session is required" : ""} label=" Select the Session" />} />
+                        <Autocomplete disabled={Disabled} size='small' disablePortal options={CourseSession} onChange={((e, val)=> val != null ? setSession(val.label) : setSession(""))} value={{label :Session}} renderInput={(params) => <TextField {...params} error={Error.session} helperText={ Error.session ? "Session is required" : ""} label=" Select the Session" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} error={Error.sessionStartTime} helperText={ Error.sessionStartTime ? "Session Start Time is required" :""} type='time' label="Session Starting Time" value={SessionStartTime} size='small' fullWidth onChange={(e)=>setSessionStartTime(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime ? "Session End Time is required" :""} type='time' label="SessionEndTime" value={SessionEndTime} size='small' fullWidth onChange={(e)=>setSessionEndTime(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime ? "Session End Time is required" :""} type='time' label="Session End Time" value={SessionEndTime} size='small' fullWidth onChange={(e)=>setSessionEndTime(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchCountLimit} helperText={ Error.BatchCountLimit ? "Total Seats Count required" :""} type='tel' label="Maximum Seats"  value={BatchCountLimit} size='small' fullWidth onChange={(e)=>setBatchCountLimit(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.BatchCountLimit} helperText={ Error.BatchCountLimit ? "Total Seats Count required" :""} type='tel' label="Maximum Seats"  value={BatchCountLimit} size='small' fullWidth onChange={(e)=>{
+                                                                                                                                                                                                                                    const reg = /^[0-9\b]+$/;
+                                                                                                                                                                                                                                    if (e.target.value == "" || reg.test(e.target.value)){
+                                                                                                                                                                                                                                    setBatchCountLimit(e.target.value)
+                                                                                                                                                                                                                                    }}} />
                     </Grid>
                 </Grid> 
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>

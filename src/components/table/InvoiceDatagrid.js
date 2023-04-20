@@ -7,7 +7,8 @@ export default function InvoiceDatagrid(props) {
   return (
     <Box>
       <DataGrid sx={{
-        border: 0, 
+        width:"100%",
+        border: 0,
         '.MuiDataGrid-columnSeparator': { display: 'none' },
         '& .MuiDataGrid-row:nth-child(2)':{ borderBottom:"1px solid black",},
         '& .MuiDataGrid-row:nth-child(3)':{ fontWeight:"bold"},
