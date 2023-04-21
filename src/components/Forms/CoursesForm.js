@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, createTheme, Grid, MenuItem, TextField, ThemeProvider, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, CircularProgress, createTheme, Grid, MenuItem, TextField, ThemeProvider, Typography } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -42,10 +42,10 @@ export default function BatchForm(props) {
         admissionFee:false,
     });
     const [Disable, setDisable] = useState(false);
+    const [Loading, setLoading] = useState(false);
     const params = useParams()
 
     const PostCourses = ()=>{
-        console.log(Error.subjects);
         let data = {
             CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, CreatedBy, CreatedDate
         };
@@ -77,18 +77,26 @@ export default function BatchForm(props) {
 
     const Read = ()=>{
         AxiosInstance.post('courses/read', {CourseID: params.CourseID}).then((res)=>{
-            if (res.data.status){
+            setLoading(true)   
+            if (res.data.status && res.data.result.length > 0){
+                setLoading(false)
                 setCourseName(res.data.result[0].CourseName ? res.data.result[0].CourseName :"")
                 setCourseFee(res.data.result[0].CourseFee ? res.data.result[0].CourseFee :"")
                 setCourseDuration(res.data.result[0].CourseDuration ? res.data.result[0].CourseDuration :"")
                 setAdmissionFee(res.data.result[0].AdmissionFee ? res.data.result[0].AdmissionFee :"")
                 setSubjects(res.data.result[0].Subjects ? JSON.parse(res.data.result[0].Subjects) :"")
+            } 
+            else{
+                props.history.push('/courses')
             }
         })
     };
 
-    const handleSubmit = () => {
+    if (Loading){
+        <CircularProgress variant="soft" />
+    }
 
+    const handleSubmit = () => {
         const CreateCourse = {
             courseName: CourseName.trim() === "",
             courseFee: CourseFee === "" || CourseFee == "0",
@@ -108,7 +116,9 @@ export default function BatchForm(props) {
     };
 
     useEffect(() => {
+        if(params.action == "read" || params.action == "update"){
         Read()
+        }
         if(params.action == "read"){
             setDisable(true)
         }

@@ -6,11 +6,9 @@ import { Link } from 'react-router-dom';
 
 import Dropdown from '../dropdown/Dropdown';
 
-import ThemeMenu from '../thememenu/ThemeMenu';
-
 import notifications from '../../assets/JsonData/notification.json';
 
-import user_image from '../../assets/images/tuat.png';
+import user_image from '../../assets/images/logo1.png';
 
 import user_menu from '../../assets/JsonData/user_menus.json';
 
@@ -19,7 +17,7 @@ import { context } from '../layout/Layout';
 
 
 const curr_user = {
-    display_name: 'Tuat Tran',
+    display_name: 'SK',
     image: user_image
 };
 
@@ -42,32 +40,25 @@ const renderUserToggle = (user) => (
     </div>
 );
 
-
 const Topnav = () => {
     const { login, setLogin } = useContext(context);
 
     const renderUserMenu = (item, index) => (
         <>
             {
-                item.content == "Logout" ?
-                    <div className="notification-item" onClick={handleLogOut}>
+                <Link to={item.content == "Logout" ? '/login' : "/dashboard"} key={index} onClick={() => item.content == "Logout" ? handleLogOut() : ""}>
+                    <div className="notification-item">
                         <i className={item.icon}></i>
                         <span>{item.content}</span>
                     </div>
-                    :
-                    <Link to='/' key={index}>
-                        <div className="notification-item">
-                            <i className={item.icon}></i>
-                            <span>{item.content}</span>
-                        </div>
-                    </Link>
+                </Link>
             }
         </>
 
     );
 
     const handleLogOut = () => {
-        setLogin(false);
+        setLogin("loggedOut");
         localStorage.removeItem('LoggedIN');
     };
 

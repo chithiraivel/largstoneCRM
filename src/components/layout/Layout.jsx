@@ -10,7 +10,7 @@ import LoginForm from '../Forms/LoginForm';
 
 export const context = React.createContext();
 
-const Layout = () => {
+const Layout = (props) => {
 
     const [login, setLogin] = React.useState(false);
 
@@ -23,13 +23,13 @@ const Layout = () => {
         const colorClass = localStorage.getItem('colorMode', 'theme-mode-light');
         dispatch(ThemeAction.setMode(themeClass));
         dispatch(ThemeAction.setColor(colorClass));
-    }, [dispatch]);
+    }, [dispatch, login]);
 
     return (
         <BrowserRouter>
             <context.Provider value={{ login, setLogin }}>
                 {
-                    (localStorage.getItem('LoggedIN') || login) ? (
+                    (localStorage.getItem('LoggedIN')) ? (
                         <Route render={(props) => (
                             <div>
                                 <Sidebar {...props} />
@@ -39,10 +39,8 @@ const Layout = () => {
                                         <Routes />
                                     </div>
                                 </div>
-                                {console.log("if")}
                             </div>
                         )} />) : (<div>
-                            {console.log("else")}
                             <Redirect to='/login' />
                             <Route exact path="/login" component={LoginForm} />
                         </div>)

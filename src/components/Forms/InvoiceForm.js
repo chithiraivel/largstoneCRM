@@ -113,6 +113,7 @@ export default function InvoiceForm(props) {
 
     const Read = ()=>{
         AxiosInstance.post('invoice/read', {InvoiceID : params.InvoiceID}).then((res)=>{
+            if(res.data.result.length > 0) {
             setBatchName(res.data.result[0].BatchName ? res.data.result[0].BatchName : "");
             setCourseName(res.data.result[0].CourseName ? res.data.result[0].CourseName : "");
             // setCourseFee(res.data.result[0].CourseFee ? res.data.result[0].CourseFee : "");
@@ -127,6 +128,10 @@ export default function InvoiceForm(props) {
             setPendingAmount(res.data.result[0].PendingAmount ? res.data.result[0].PendingAmount : "");
             setAdditionalDiscountAmount(res.data.result[0].AdditionalDiscountAmount ? res.data.result[0].AdditionalDiscountAmount : "");
             setAdditionalDiscountName(res.data.result[0].AdditionalDiscountName ? res.data.result[0].AdditionalDiscountName : "");
+            }
+            else {
+                props.history.push('/invoice')
+            }
         })
     };
 

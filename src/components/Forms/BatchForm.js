@@ -68,6 +68,7 @@ export default function BatchForm(props) {
 
     const Read = ()=>{
         AxiosInstance.post("batches/read", {BatchID: params.BatchID}).then((res)=>{
+            if (res.data.status && res.data.result.length > 0 ){
             setBatchName(res.data.result[0].BatchName ? res.data.result[0].BatchName : "");
             setBatchStartDate(res.data.result[0].BatchStartDate ? moment(res.data.result[0].BatchStartDate).format("YYYY-MM-DD") : "");
             setBatchEndDate(res.data.result[0].BatchEndDate ? moment(res.data.result[0].BatchEndDate).format("YYYY-MM-DD") : "");
@@ -75,6 +76,15 @@ export default function BatchForm(props) {
             setSessionStartTime(res.data.result[0].SessionStartTime ? res.data.result[0].SessionStartTime : "");
             setSessionEndTime(res.data.result[0].SessionEndTime ? res.data.result[0].SessionEndTime : "");
             setBatchCountLimit(res.data.result[0].BatchCountLimit ? res.data.result[0].BatchCountLimit : "");
+            }
+            else {
+            //     Swal.fire({title: "404",
+            //     text:   'Not Found',
+            //     icon: "error",
+            //     confirmButtonText:"ok"
+            // });
+            {props.history.push('/batches')}
+            }
         })
     };
  

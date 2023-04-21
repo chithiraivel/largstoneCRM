@@ -1,16 +1,15 @@
-import { Box, Button, Grid, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import InvoiceImage from '../../assets/images/LSOT_744_291.png';
 import AxiosInstance from '../../axiosinstance';
-import InvoiceDatagrid from '../table/InvoiceDatagrid';
 import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
 import moment from 'moment';
 import Signature from '../../assets/images/signature.png'; 
 import { Link, useParams } from 'react-router-dom';
 import ReactToPrint from 'react-to-print';
 
-export default function InvoicePrintForm() {
+export default function InvoicePrintForm(props) {
 
     const [InvoiceGenDate, setInvoiceGenDate] = useState(" ");
     const [StudentName, setStudentName] = useState("");
@@ -37,89 +36,29 @@ export default function InvoicePrintForm() {
 
     const Read = ()=>{
         AxiosInstance.post('invoice/read', {InvoiceID : params.InvoiceID}).then((res)=>{
-            setInvoiceNumber(res.data.result[0].InvoiceID ? res.data.result[0].InvoiceID : "");
-            setCourseName(res.data.result[0].CourseName ? res.data.result[0].CourseName : "");
-            setStudentName(res.data.result[0].StudentName ? res.data.result[0].StudentName : "");
-            setTerm(res.data.result[0].Term ? res.data.result[0].Term : "");
-            setTermFees(res.data.result[0].TermFees ? res.data.result[0].TermFees : "");
-            setDiscount(res.data.result[0].Discount ? res.data.result[0].Discount : "");
-            setTotalAmount(res.data.result[0].TotalAmount ? res.data.result[0].TotalAmount : "");
-            setInvoiceGenDate(res.data.result[0].InvoiceGenDate ? moment(res.data.result[0].InvoiceGenDate).format("YYYY-MM-DD") : "");
-            setAddress(res.data.result[0].Address ? JSON.parse(res.data.result[0].Address) : Address);
-            setAdditionalDiscountName(res.data.result[0].AdditionalDiscountName ? res.data.result[0].AdditionalDiscountName : "");
-            setAdditionalDiscountAmount(res.data.result[0].AdditionalDiscountAmount ? res.data.result[0].AdditionalDiscountAmount : "");
-            setGuardianNumber(res.data.result[0].GuardianNumber ? res.data.result[0].GuardianNumber : "");
+            if(res.data.result.length > 0) {
+                setInvoiceNumber(res.data.result[0].InvoiceID ? res.data.result[0].InvoiceID : "");
+                setCourseName(res.data.result[0].CourseName ? res.data.result[0].CourseName : "");
+                setStudentName(res.data.result[0].StudentName ? res.data.result[0].StudentName : "");
+                setTerm(res.data.result[0].Term ? res.data.result[0].Term : "");
+                setTermFees(res.data.result[0].TermFees ? res.data.result[0].TermFees : "");
+                setDiscount(res.data.result[0].Discount ? res.data.result[0].Discount : "");
+                setTotalAmount(res.data.result[0].TotalAmount ? res.data.result[0].TotalAmount : "");
+                setInvoiceGenDate(res.data.result[0].InvoiceGenDate ? moment(res.data.result[0].InvoiceGenDate).format("YYYY-MM-DD") : "");
+                setAddress(res.data.result[0].Address ? JSON.parse(res.data.result[0].Address) : Address);
+                setAdditionalDiscountName(res.data.result[0].AdditionalDiscountName ? res.data.result[0].AdditionalDiscountName : "");
+                setAdditionalDiscountAmount(res.data.result[0].AdditionalDiscountAmount ? res.data.result[0].AdditionalDiscountAmount : "");
+                setGuardianNumber(res.data.result[0].GuardianNumber ? res.data.result[0].GuardianNumber : "");
+            }
+            else{
+                props.history.push('/invoice')
+            }
         })
     };
 
     const SubTotal = TotalAmount - AdditionalDiscountAmount;
     const GSTAmount = ((12/100) * SubTotal);
     const GrandTotal = (GSTAmount + SubTotal);
-
-    // const columns = [    
-    //     {
-    //         field: "id",
-    //         headerName: "No",
-    //         width: 40,
-    //         editable: false,
-    //         headerAlign: "left", 
-    //         align: "left",
-    //         sortable:false,
-    //         valueFormatter: params => (params.id <=2) ? params.id : ""
-    //     },
-    //     {
-    //         field : "Description",
-    //         headerName:"Description",
-    //         width: 250,
-    //         editable: false,
-    //         headerAlign: "left", 
-    //         align: "left",
-    //         sortable:false,
-    //     },
-    //     {
-    //         field : "Term",
-    //         headerName:"Paying Term",
-    //         width: 200,
-    //         editable: false,
-    //         headerAlign: "left", 
-    //         align: "left",
-    //         sortable:false,
-    //     },
-    //     {
-    //         field:"UnitPrice",
-    //         headerName:"Unit Price",
-    //         width: 230,
-    //         editable: false,
-    //         headerAlign: "left", 
-    //         align: "left",
-    //         sortable:false,
-    //     },
-    //     {
-    //         field:"Discount",
-    //         headerName:"Discount(%)",
-    //         width: 230,
-    //         editable: false,
-    //         headerAlign: "left", 
-    //         align: "left",
-    //         sortable:false,
-    //     },
-    //     {
-    //         field:"Total",
-    //         headerName:"Total Amount",
-    //         width: 130,
-    //         editable: false,
-    //         headerAlign: "left",
-    //         align: "left",
-    //         sortable:false,
-    //         valueFormatter: params => (params.id === 5) ? `rs. ${params.value}` : params.value
-    //     },
-    // ];
-
-    // const rows = [{id:1,Description : CourseName, Term: Term, Discount: Discount, UnitPrice: TermFees, Total: TotalAmount}, 
-    //     {id: 2, Description : AdditionalDiscountName, Total: AdditionalDiscountAmount}, 
-    //     {id:3, Discount: "Sub Total", Total: SubTotal}, 
-    //     {id:4, Discount: "GST 12%", Total: GSTAmount}, 
-    //     {id:5, Discount: "Total", Total: GrandTotal}]
 
     let componentRef = useRef();
 
@@ -130,7 +69,7 @@ export default function InvoicePrintForm() {
   return (
     <div>
         <AppBreadcrumbs crntPage='Invoice' prevPage="Invoices Table" path='/invoice'/>
-        <Box ref={(elem) => componentRef = elem} sx={{background:"#fff", borderRadius :"20px", py:3, "@media print":{m:3, pt:2}}}>
+        <Box ref={(elem) => componentRef = elem} sx={{background:"#fff", borderRadius :"20px", py:3, "@media print":{m:3, pt:2, }}}>
             <Grid container justifyContent = "space-between">
                 <Grid item xs={8}>
                     <Box sx={{pl:4}}>

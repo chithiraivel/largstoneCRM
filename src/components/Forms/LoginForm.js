@@ -76,7 +76,6 @@ export default function LoginForm() {
                 <Grid item sx={{backgroundColor:"white", p:3, py:6, borderRadius:"20px"}} xs={12} md={4.5} >
                     <Box>
                         <Typography variant='h3' sx={{fontWeight:"bold", pb:2}}>Login</Typography>
-                        <Typography variant='paragraph' sx={{color:"#696969", lineHeight:1.5}}>Login with data that you entered during your registration</Typography>
                         <Box sx={{pt:3}} >
                           <Typography sx={{py:1}}>Enter your Username</Typography>
                           <TextField placeholder='username' error={Error.username} helperText={Error.username ? "User Name is required" : ""} value={UserName} onChange={(e)=> setUserName(e.target.value)} fullWidth type='text' size='small' />
@@ -86,22 +85,13 @@ export default function LoginForm() {
                           <TextField placeholder='atleast 8 characters' error={Error.password} helperText={Error.password ? "Password is required" : ""} value={Password} onChange={(e)=> setPassword(e.target.value)} fullWidth type={ShowPassword ? "text" : "password"} size='small' InputProps={{endAdornment: ( <IconButton disableRipple onClick={handleTogglePassword}> {ShowPassword ? <VisibilityOutlined /> : <VisibilityOffOutlined />} </IconButton> ), }} />
                         </Box>
                         <Button fullWidth disableElevation disableRipple size='large' style={{marginRight:"10px", backgroundColor:"#4daaff", marginTop:"15px"}} variant='contained' onClick={handleSubmit}>Login</Button>
-                        <Box sx={{display:"flex", justifyContent:"center", mt:2, color:"#696969"}}>
-                          <Checkbox icon={<CheckBoxOutlineBlankOutlined style={{color:"#4daaff"}}/>} checkedIcon={<CheckBoxOutlined style={{color:"#4daaff"}}/>} sx={{ p:0, }} disableRipple size='small' onChange={handleCBchange}></Checkbox>
-                          <Typography >Remember me</Typography>
-                        </Box>
-                        <Link sx={{textDecoration:"none", color:"#4daaff", cursor:"pointer"}}><Typography sx={{textAlign:"center", my:2,}}>Forget your password?</Typography></Link>
-                        <Divider/>
-                        <Box sx={{display:"flex", justifyContent:"center", mt:3}}>
-                          <Button disableElevation disableRipple variant='outlined' style={{borderColor:"#4daaff", color:"#4daaff", borderRadius:"40px"}} >Signup Now</Button>
-                        </Box>
                     </Box>
                 </Grid>
-                <Grid item md={6} sx={{display:"flex", mt:10}} justifyContent='center' xs={2}>
-                    <img src={LoginImage} width="80%" height="80%" alt='login Image'/>
+                <Grid item md={6} sx={{display:"flex"}} justifyContent='center' xs={2}>
+                    <img src={LoginImage} width="80%" height="100%" alt='login Image'/>
                 </Grid>
             </Grid>
         </ThemeProvider>
     </div>
-  )
+  ) 
 }

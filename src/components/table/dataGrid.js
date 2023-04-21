@@ -52,8 +52,8 @@ export default function QuickFilteringGrid(props) {
           },
         }}
       />
-      <Box sx={{display:'flex', justifyContent:'end'}} >
-        <Pagination count={count} hideNextButton hidePrevButton page={page} onChange={handleChange} sx={{ mr:5, mt:2, '& .MuiButtonBase-root':{":hover":{backgroundColor:'#4daaff', color:"white"}},'& .MuiButtonBase-root.Mui-selected':{backgroundColor:'#62b4ff', color:"white",},}}/>
+      <Box sx={{display:'flex', justifyContent:'end'}}>
+        <Pagination count={count} hideNextButton hidePrevButton page={page} onChange={handleChange} sx={{ mr:5, mt:2, '& .MuiButtonBase-root':{":hover":{backgroundColor:'#4daaff !important', color:"white"}},'& .MuiButtonBase-root.Mui-selected':{backgroundColor:'#62b4ff', color:"white",},}}/>
       </Box>
     </Box>
   );

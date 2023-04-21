@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField, Typography, createTheme, ThemeProvider, Autocomplete } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography, createTheme, ThemeProvider, Autocomplete, CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Link, useParams } from 'react-router-dom';
@@ -67,6 +67,8 @@ export default function Form(props) {
 
     const [CreatedDate, setCreatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
     const [UpdatedDate, setUpdatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+
+    const [Loading, setLoading] = useState(false);
 
     const [Error, setError] = useState({
         regDate: false,
@@ -138,9 +140,9 @@ export default function Form(props) {
     };
 
     const Read = ()=>{
+        setLoading(true)
         AxiosInstance.put('registration/read',{StudentID: params.StudentID} ).then((res)=>{
-            if (res.data.status){
-                
+            if (res.data.result.length > 0){         
                 setStudentName(res.data.result[0].StudentName ? res.data.result[0].StudentName :"")
                 setStudentContactNumber(res.data.result[0].MobileNumber ? res.data.result[0].MobileNumber :"")
                 setEmail(res.data.result[0].Email ? res.data.result[0].Email :"")
@@ -169,12 +171,14 @@ export default function Form(props) {
                 setAddress(res.data.result[0].Address ? JSON.parse(res.data.result[0].Address) : Address)
                 setCourseID(res.data.result[0].CourseID ? res.data.result[0].CourseID : "")
                 setBatchID(res.data.result[0].BatchID ? res.data.result[0].BatchID : "")
-            };
-        })
+            }
+            else {
+                props.history.push('/students')
+            }
+        }).finally(()=>{setLoading(false)})
     }
 
     const Update = ()=>{
-        console.log("herer");
 
         let HSC = JSON.stringify({HSCboard, HSCSchoolName, HSCPassedYear, HSCPercentage});
         let SSLC = JSON.stringify({SSLCboard, SSLCSchoolName, SSLCPassedYear, SSLCPercentage});
@@ -253,15 +257,14 @@ export default function Form(props) {
             sessionEndtime : SessionEndTime === " ",
             courseAdmissionFee : AdmissionFee === "",
             courseName: CourseName.trim() === "",
-            addressDN : Address.map((obj)=> (obj.doornum)).some(val => val.trim() ===""),
-            addressStreet : Address.map((obj)=> (obj.street)).some(val => val.trim() ===""),
-            addressPlace : Address.map((obj)=> (obj.place)).some(val => val.trim() ===""),
+            addressDN : Address.map((obj)=> (obj.doornum)).some(val => val.trim() === ""),
+            addressStreet : Address.map((obj)=> (obj.street)).some(val => val.trim() === ""),
+            addressPlace : Address.map((obj)=> (obj.place)).some(val => val.trim() === ""),
         };
         setError(RegisterStudent)
         if (Object.values(RegisterStudent).some(val => val == true || val == "wrongpattern")){console.log(RegisterStudent)}
         else{
             if(params.action == "update"){
-                console.log("url check");
                 Update()
             } else {
                 PostStudents()
@@ -276,17 +279,19 @@ export default function Form(props) {
     useEffect(() => {
         ListBatches()
         ListCourses()
-        Read()
+        if(params.action == "read" || params.action == "update"){
+            Read()
+        }
         if(params.action == "read"){
             setDisable(true)
         }
     }, []);
 
     return (
-        <ThemeProvider theme = {theme}>
-            <AppBreadcrumbs crntPage='Student Form' prevPage='Students Table' path='/students' />
+        <>
+         { Loading ?<div style={{display:"flex", justifyContent:"center", height:"50vh", verticalAlign:"center",}}> <CircularProgress size='lg' variant='soft' /></div>:(<ThemeProvider theme = {theme}>
+           <AppBreadcrumbs crntPage='Student Form' prevPage='Students Table' path='/students' />
             <Box sx={{ background: "#fff", pb: 3, borderRadius:"25px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}>
-                {/* Student Details */}
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
                         <Typography variant='h6'>Student Details</Typography>
@@ -308,6 +313,7 @@ export default function Form(props) {
                         <TextField disabled={Disable} error={Error.regDate} helperText={Error.regDate ? "Registration Date Cannot be Empty" : ""} value={RegDate} type='date' fullWidth onChange={(e) => setRegDate(e.target.value)} size='small' label="Registration Date" />
                     </Grid>
                 </Grid>
+                {/* <CircularProgress /> */}
 
                 {/* Education Details */}
                 <Box>
@@ -556,6 +562,7 @@ export default function Form(props) {
                     <Link to='/students'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
-        </ThemeProvider>
+        </ThemeProvider>)}
+        </>
     )
 }
