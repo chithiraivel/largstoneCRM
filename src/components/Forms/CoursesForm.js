@@ -27,7 +27,6 @@ export default function BatchForm(props) {
     const [CourseFee, setCourseFee] = useState("");
     const [Subjects, setSubjects] = useState([{ "id": 1, "Subject": "",}]);
     const [CourseDuration, setCourseDuration] = useState("");
-    const [Terms, setTerms] = useState("");
     const [AdmissionFee, setAdmissionFee] = useState("");
     const [CreatedBy, setCreatedBy] = useState("Admin");
     const [CreatedDate, setCreatedDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
@@ -100,9 +99,9 @@ export default function BatchForm(props) {
         const CreateCourse = {
             courseName: CourseName.trim() === "",
             courseFee: CourseFee === "" || CourseFee == "0",
-            subjects: Subjects.map((obj, ind) => (obj.Subject)).some(val => val.trim() === ""),
+            subjects: Subjects.map((obj, ind) => (Subjects[ind].Subject.trim()=="" ? Error({...Error, Subjects}) : "")),
             courseDuration: CourseDuration ==="",
-            admissionFee: AdmissionFee == "0" || AdmissionFee === "",
+            admissionFee: AdmissionFee <= 0 || AdmissionFee === "",
         };
         setError(CreateCourse)
         if (Object.values(CreateCourse).some(val => val == true )){console.log(CreateCourse)}
@@ -159,9 +158,9 @@ export default function BatchForm(props) {
                                 <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} onClick={() => Subjects.map((val)=> val.Subject.trim() == "" ? setError(prevState => ({...prevState, subjects:true}))  : setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "" }]) ) }>Add</Button>
                                 </Grid>
-                                <Grid item xs={1}>
+                                {/* <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setSubjects(Subjects.slice(0, -1))} variant='contained' sx={{display: (Subjects.length > 1) ? "block" : "none"}}>Cancel</Button>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </Grid>
                         {Subjects.map((val, ind) => {
@@ -171,15 +170,19 @@ export default function BatchForm(props) {
                                 setSubjects(newSubjects);
                             }
                             return (
-                            <Grid key={ind} item xs={10} md={3.5}>
-                                <TextField disabled={Disable} error={Error.subjects} helperText={ Error.subjects ? "Subject is required" :""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
-                            </Grid>
+                                <Grid container key={ind}>
+                                    <Grid item xs={10} md={4}>
+                                        <TextField disabled={Disable} error={Error.subjects} helperText={ Error.subjects ? "Subject is required" :""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff",}} onClick={() => setSubjects(Subjects.slice(0, -1))} variant='contained' sx={{display: (ind == 0 ) ? "none" : "block",}}>x</Button>
+                                    </Grid>
+                                </Grid>
                             
                             )
                         })}
                     </Grid> 
                     <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
-                        
                         {params.action == "read" ? "" : <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action == "update"? "Update" : "Create"}</Button>}
                         <Link to='/courses'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                     </Box>

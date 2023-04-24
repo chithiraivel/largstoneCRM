@@ -47,7 +47,7 @@ const Topnav = () => {
         <>
             {
                 <Link to={item.content == "Logout" ? '/login' : "/dashboard"} key={index} onClick={() => item.content == "Logout" ? handleLogOut() : ""}>
-                    <div className="notification-item">
+                    <div className="notification-item" key={index}>
                         <i className={item.icon}></i>
                         <span>{item.content}</span>
                     </div>

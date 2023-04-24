@@ -51,7 +51,7 @@ export default function InvoicePrintForm(props) {
                 setGuardianNumber(res.data.result[0].GuardianNumber ? res.data.result[0].GuardianNumber : "");
             }
             else{
-                props.history.push('/invoice')
+                props.history.push('/invoices')
             }
         })
     };
@@ -209,7 +209,7 @@ export default function InvoicePrintForm(props) {
                 <Button endIcon={<PrintOutlinedIcon/>} style={{ backgroundColor:"#4daaff", marginRight:"20px"}} disableElevation disableRipple  variant='contained'>Print</Button>}
             content={()=> componentRef}
             />
-            <Link to = "/invoice"><Button style={{backgroundColor: "#ff726f",}} disableElevation disableRipple  variant='contained'>Back</Button></Link>
+            <Link to = "/invoices"><Button style={{backgroundColor: "#ff726f",}} disableElevation disableRipple  variant='contained'>Back</Button></Link>
         </Box>
     </div>
   )

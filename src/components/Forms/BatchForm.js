@@ -57,7 +57,17 @@ export default function BatchForm(props) {
             BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, CreatedBy, CreatedDate, BatchStatus: "Active", BatchCountLimit
         };
         AxiosInstance.post("batches/create", data ).then((res) => {
-            res.data.status ? props.history.push('/batches') : 
+            res.data.status ?
+            <>
+            {
+            Swal.fire({
+                title:"Added",
+                text:"Added successfully",
+                icon:"success",
+                confirmButtonText:"ok"
+            }) }
+            {props.history.push('/batches')} 
+            </>: 
             Swal.fire({title: "Some Error!!",
             text: `The Result shows something Like ${res.data.result}`,
             icon: "error",
@@ -93,7 +103,17 @@ export default function BatchForm(props) {
             BatchID: params.BatchID, BatchName, BatchStartDate, BatchEndDate, Session, SessionStartTime, SessionEndTime, UpdatedBy, UpdatedDate, BatchStatus: "Active", BatchCountLimit
         };
         AxiosInstance.post("batches/update", data).then((res)=>{
-            res.data.status ? props.history.push('/batches') : 
+            res.data.status ? 
+            <>
+            {
+            Swal.fire({
+                title:"Updated",
+                text:"Updated successfully",
+                icon:"success",
+                confirmButtonText:"ok"
+            }) }
+            {props.history.push('/batches')} 
+            </>:  
             Swal.fire({title: "Some Error!!",
             text: `The Result shows something Like ${res.data.result}`,
             icon: "error",
@@ -110,16 +130,66 @@ export default function BatchForm(props) {
             session: Session === "",
             sessionStartTime: SessionStartTime ===" ",
             sessionEndTime: SessionEndTime ===" ",
-            BatchCountLimit: BatchCountLimit.toString().trim() ==="" || BatchCountLimit == "0",
+            BatchCountLimit: BatchCountLimit.toString().trim() ==="" || BatchCountLimit <= 0,
         };    
         setError(CreateBatch)
-        if (Object.values(CreateBatch).some(val => val == true )){}
+        if (Object.values(CreateBatch).some(val => val == true )){console.log(CreateBatch)}
         else {
             if(params.action == "update"){
                 Update()
             } else {
                 Post()
             }
+        }
+    };
+
+    const CourseSession = [
+        {label:"Morning", start: '10:00', end: '01:00'},
+        {label:"AfterNoon", start: '13:30', end: '15:30'}, 
+        {label:"Evening", start: '16:00', end: '18:00'}, 
+        {label:"Full Day", start: '10:00', end: '16:00'}]
+
+    const handleSessionChange = (event, value) => {
+        setSession(value ? value.label : '');
+        setSessionStartTime(value ? value.start : '');
+        setSessionEndTime(value ? value.end : '');
+    };
+
+    const handleSessionStartTimeChange = (event) => {
+        setSessionStartTime(event.target.value);
+        if (event.target.value < SessionStartTime || event.target.value > SessionEndTime) {
+            setError({ ...Error, sessionStartTime: "true" });
+        } else {
+            setError({ ...Error, sessionStartTime: false });
+        }
+    };
+
+    const handleSessionEndTimeChange = (event) => {
+        setSessionEndTime(event.target.value);
+        if (event.target.value < SessionEndTime) {
+            setError({ ...Error, sessionEndTime: "true" });
+        } else {
+            setError({ ...Error, sessionEndTime: false });
+        }
+    };
+
+    const handleBatchStartDate = (event) =>{
+        setBatchStartDate(event.target.value);
+        if (event.target.value < moment(new Date()).format("YYYY-MM-DD")){
+            setError({ ...Error, BatchStartDate: "true" });
+        }
+        else {
+            setError({ ...Error, BatchStartDate: false });
+        }
+    };
+
+    const handleBatchEndDate = (event) =>{
+        setBatchEndDate(event.target.value);
+        if (event.target.value <= BatchStartDate){
+            setError({ ...Error, BatchStartDate: "true" });
+        }
+        else {
+            setError({ ...Error, BatchStartDate: false });
         }
     };
 
@@ -131,8 +201,6 @@ export default function BatchForm(props) {
             setDisabled(true)
         }
     }, []);
-
-    const CourseSession = [{label:"Morning"},{ label:"AfterNoon"}, {label:"Evening"}, {label:"Full Day",}]
 
     return (
         <ThemeProvider theme={theme}>
@@ -146,27 +214,22 @@ export default function BatchForm(props) {
                         <TextField disabled={Disabled} error={Error.BatchName} helperText={ Error.BatchName ? "Batch Name is required" :""} type='text' label="Batch Name" value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchStartDate} helperText={ Error.BatchStartDate ? "Batch Start Time is required" :""} type='date' label="Batch Starting Date" value={BatchStartDate} size='small' fullWidth onChange={(e) => setBatchStartDate(e.target.value)}>
-                        </TextField>
+                        <TextField disabled={Disabled} error={Error.BatchStartDate} helperText={ Error.BatchStartDate == "true" ? "batch start time cannot set to be past date" : Error.BatchStartDate ? "Batch Start Time is required" :""} type='date' label="Batch Starting Date" value={BatchStartDate} size='small' fullWidth onChange={handleBatchStartDate} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchEndDate} helperText={ Error.BatchEndDate ? "Batch End Time is required" :""}  type='date' label='Batch Ending Date' value={BatchEndDate} size='small' fullWidth onChange={(e)=>setBatchEndDate(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.BatchEndDate} helperText={ Error.BatchEndDate == "true" ? "Batch End Date cannot be past than Start Date" : Error.BatchEndDate ? "Batch End Time is required" :""}  type='date' label='Batch Ending Date' value={BatchEndDate} size='small' fullWidth onChange={handleBatchEndDate} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete disabled={Disabled} size='small' disablePortal options={CourseSession} onChange={((e, val)=> val != null ? setSession(val.label) : setSession(""))} value={{label :Session}} renderInput={(params) => <TextField {...params} error={Error.session} helperText={ Error.session ? "Session is required" : ""} label=" Select the Session" />} />
+                        <Autocomplete disabled={Disabled} size='small' disablePortal options={CourseSession} onChange={handleSessionChange} value={{label :Session}} renderInput={(params) => <TextField {...params} error={Error.session} helperText={ Error.session ? "Session is required" : ""} label=" Select the Session" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.sessionStartTime} helperText={ Error.sessionStartTime ? "Session Start Time is required" :""} type='time' label="Session Starting Time" value={SessionStartTime} size='small' fullWidth onChange={(e)=>setSessionStartTime(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.sessionStartTime} helperText={Error.sessionStartTime == "true" ? `Set valid time` : Error.sessionStartTime ? "Session Start Time is required" :""} type='time' label="Session Starting Time" value={SessionStartTime} size='small' fullWidth inputProps={{min: SessionStartTime, max:Session.end}} onChange={handleSessionStartTimeChange} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime ? "Session End Time is required" :""} type='time' label="Session End Time" value={SessionEndTime} size='small' fullWidth onChange={(e)=>setSessionEndTime(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime == "true" ? `Set valid time` : Error.sessionEndTime ? "Session End Time is required" :""} type='time' label="Session End Time" value={SessionEndTime} size='small' fullWidth onChange={handleSessionEndTimeChange} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchCountLimit} helperText={ Error.BatchCountLimit ? "Total Seats Count required" :""} type='tel' label="Maximum Seats"  value={BatchCountLimit} size='small' fullWidth onChange={(e)=>{
-                                                                                                                                                                                                                                    const reg = /^[0-9\b]+$/;
-                                                                                                                                                                                                                                    if (e.target.value == "" || reg.test(e.target.value)){
-                                                                                                                                                                                                                                    setBatchCountLimit(e.target.value)
-                                                                                                                                                                                                                                    }}} />
+                        <TextField disabled={Disabled} error={Error.BatchCountLimit} helperText={ Error.BatchCountLimit ? "Total Seats Count required" :""} type='tel' label="Maximum Seats"  value={BatchCountLimit} size='small' fullWidth onChange={(e)=>{if (e.target.value == "" || /^[0-9\b]+$/.test(e.target.value)){setBatchCountLimit(e.target.value)}}} />
                     </Grid>
                 </Grid> 
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>

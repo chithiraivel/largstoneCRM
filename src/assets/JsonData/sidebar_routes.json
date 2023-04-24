@@ -11,7 +11,7 @@
     },
     {
         "display_name": "Invoice",
-        "route": "/invoice",
+        "route": "/invoices",
         "icon": "bx bx-rupee"
     },
     {

@@ -6,6 +6,7 @@ import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-
 
 import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+import Swal from 'sweetalert2';
 
 export default function BatchesPage() {
 
@@ -17,11 +18,18 @@ export default function BatchesPage() {
     }
 
     const handleRowDelete = (BatchID)=>{
-        instance.post(`batches/delete`, {BatchID: BatchID}).then((res)=>{
-            if (res.data.status == true){
-                Listbatch()
-            }
+        Swal.fire({
+            title:"Are you Sure ?",
+            text:"You want to delete it?",
+            icon:"question",
+            confirmButtonText:"Yes Delete it",
+            denyButtonText:"No",
         })
+        // instance.post(`batches/delete`, {BatchID: BatchID}).then((res)=>{
+        //     if (res.data.status == true){
+        //         Listbatch()
+        //     }
+        // })
     };
 
     const columns = [

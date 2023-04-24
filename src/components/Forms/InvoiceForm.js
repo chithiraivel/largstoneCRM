@@ -102,7 +102,25 @@ export default function InvoiceForm(props) {
             StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, CreatedBy, CreatedDate
         };
         AxiosInstance.post("invoice/create", data ).then((res) => {
-            res.data.result ? props.history.push('/invoice') : 
+            res.data.result ? 
+            // Swal.fire({
+            //     title:"Print Form?",
+            //     text:"Are you sure you want to print this form?",
+            //     icon:"question",
+            //     showCancelButton: true,
+            //     confirmButtonText: 'Print',
+            //     cancelButtonText: 'No',
+            // }).then((result) => {
+            //     if (result.value == true){
+            //         Read()
+            //        props.history.push(`/invoices/generate/${params.InvoiceID}`)
+            //     }
+            //     else{
+            //         props.history.push('/invoices')
+            //     }
+            // }) 
+            props.history.push('/invoices')
+            : 
             Swal.fire({title: "Some Error!!",
             text: res.data.result,
             icon: "error",
@@ -130,7 +148,7 @@ export default function InvoiceForm(props) {
             setAdditionalDiscountName(res.data.result[0].AdditionalDiscountName ? res.data.result[0].AdditionalDiscountName : "");
             }
             else {
-                props.history.push('/invoice')
+                props.history.push('/invoices')
             }
         })
     };
@@ -140,7 +158,24 @@ export default function InvoiceForm(props) {
             StudentName, CourseName, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, UpdatedBy, UpdatedDate, InvoiceID: params.InvoiceID
         };
         AxiosInstance.post('invoice/update', data).then((res)=>{
-            res.data.result ? props.history.push('/invoice') : 
+            res.data.result ?
+            Swal.fire({
+                title:"Print Form?",
+                text:"Are you sure you want to print this form?",
+                icon:"question",
+                showCancelButton: true,
+                confirmButtonText: 'Print',
+                cancelButtonText: 'No',
+            }).then((result) => {
+                if (result.isConfirmed){
+                     console.log("confirem");
+                   props.history.push(`/invoices/generate/${params.InvoiceID}`)
+                }
+                else{
+                    props.history.push('/invoices')
+                }
+            })
+            : 
             Swal.fire({title: "Some Error!!",
             text: res.data.result,
             icon: "error",
@@ -201,7 +236,7 @@ export default function InvoiceForm(props) {
     }, []);
     return (
         <ThemeProvider theme={theme}>
-            <AppBreadcrumbs crntPage='Invoice Form' prevPage="Invoice Table" path='/invoice' />
+            <AppBreadcrumbs crntPage='Invoice Form' prevPage="Invoice Table" path='/invoices' />
             <Box sx={{ background: "#fff", pb: 3, boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", borderRadius:"25px" }}>
                 <Grid container rowGap={5} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
@@ -284,7 +319,7 @@ export default function InvoiceForm(props) {
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
                     {params.action == "read" ?  "":
                     <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action=="update"? "Update" : "Create"}</Button>}
-                    <Link to='/invoice'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
+                    <Link to='/invoices'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
         </ThemeProvider>
