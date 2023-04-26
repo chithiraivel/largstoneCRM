@@ -19,7 +19,7 @@ export default function Students() {
 
     const handleRowDelete = (StudentID)=>{
         instance.post(`registration/delete`, {StudentID: StudentID}).then((res)=>{
-            if (res.data.status == true){
+            if (res.data.status === true){
                 ListStudents()
             }
         })

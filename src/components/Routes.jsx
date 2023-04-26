@@ -3,7 +3,6 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import Dashboard from '../pages/Dashboard';
-import Customers from '../pages/Customers';
 import Students from '../pages/Students';
 import RegistrationForm from './Forms/RegistrationForm';
 import InvoiceTable from '../pages/InvoiceTable';

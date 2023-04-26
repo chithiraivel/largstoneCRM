@@ -41,12 +41,12 @@ const renderUserToggle = (user) => (
 );
 
 const Topnav = () => {
-    const { login, setLogin } = useContext(context);
+    const { setLogin } = useContext(context);
 
     const renderUserMenu = (item, index) => (
         <>
             {
-                <Link to={item.content == "Logout" ? '/login' : "/dashboard"} key={index} onClick={() => item.content == "Logout" ? handleLogOut() : ""}>
+                <Link to={item.content === "Logout" ? '/login' : "/dashboard"} key={index} onClick={() => item.content === "Logout" ? handleLogOut() : ""}>
                     <div className="notification-item" key={index}>
                         <i className={item.icon}></i>
                         <span>{item.content}</span>

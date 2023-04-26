@@ -103,14 +103,16 @@ export default function InvoiceForm(props) {
         };
         AxiosInstance.post("invoice/create", data ).then((res) => {
             res.data.result ? 
-            // Swal.fire({
-            //     title:"Print Form?",
-            //     text:"Are you sure you want to print this form?",
-            //     icon:"question",
-            //     showCancelButton: true,
-            //     confirmButtonText: 'Print',
-            //     cancelButtonText: 'No',
-            // }).then((result) => {
+            <>{
+            Swal.fire({
+                title:"Created",
+                text:"Invoice Created Successfully",
+                icon:"success",
+            })
+            }
+            {props.history.push('/invoices')}
+            </>
+            // .then((result) => {
             //     if (result.value == true){
             //         Read()
             //        props.history.push(`/invoices/generate/${params.InvoiceID}`)
@@ -119,7 +121,7 @@ export default function InvoiceForm(props) {
             //         props.history.push('/invoices')
             //     }
             // }) 
-            props.history.push('/invoices')
+
             : 
             Swal.fire({title: "Some Error!!",
             text: res.data.result,
@@ -171,7 +173,12 @@ export default function InvoiceForm(props) {
                      console.log("confirem");
                    props.history.push(`/invoices/generate/${params.InvoiceID}`)
                 }
-                else{
+                else if (result.dismiss){
+                    Swal.fire({
+                        title:"Updated",
+                        text:"Invoice updated successfully",
+                        icon: "success",
+                    })
                     props.history.push('/invoices')
                 }
             })
@@ -206,10 +213,10 @@ export default function InvoiceForm(props) {
             courseName: CourseName ==="",
             session: Session ==="",
             batchName: BatchName.trim() ==="",
-            termFees: TermFees ==="",
-            term: Term === "",
+            termFees: TermFees ==="" || TermFees <= 0,
+            // term: Term === "",
             pendingAmount: PendingAmount ==="",
-            totalAmount: TotalAmount ==="" || TotalAmount == "0",
+            totalAmount: TotalAmount ==="" || TotalAmount <= 0,
             paymentMethod: PaymentMethod.trim() ==="",
         };    
         setError(GenInvoice)
@@ -289,16 +296,16 @@ export default function InvoiceForm(props) {
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} error={Error.termFees} helperText={ Error.termFees ? "Term Fee Amount required" :""} type='tel' label="Term Fees" value={TermFees} size='small' fullWidth 
-                        onChange={(e)=>
-                         {setTermFees(e.target.value)}} />
+                        onChange={(e)=>{
+                            setTotalAmount(e.target.value)
+                            setTermFees(e.target.value)} }/>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} type='text' label="Discount" value={Discount} size='small' fullWidth 
                         onChange={(e)=>{
-                            const reg = /^[0-9\b]+$/;
-                            if (e.target.value == "" || reg.test(e.target.value) && (e.target.value <= 100)){
+                            if (e.target.value == "" || /^\d*\.?\d*$/.test(e.target.value) && (e.target.value <= 100)){
                             setDiscount(e.target.value)
-                            setTotalAmount( e.target.value =="" ? TermFees :(TermFees - ((e.target.value/100) * TermFees)))}}} />
+                            setTotalAmount( e.target.value == "" ? TermFees :(TermFees - ((e.target.value/100) * TermFees)))}}} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} error={Error.totalAmount} helperText={ Error.totalAmount ? "Total Amount field is required" :""} type='tel' label="Payable Amount" value={TotalAmount} size='small' fullWidth onChange={(e)=>setTotalAmount(e.target.value)} />

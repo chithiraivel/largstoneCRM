@@ -21,15 +21,33 @@ export default function BatchesPage() {
         Swal.fire({
             title:"Are you Sure ?",
             text:"You want to delete it?",
-            icon:"question",
+            icon:"warning",
             confirmButtonText:"Yes Delete it",
-            denyButtonText:"No",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if(result.isConfirmed){
+                instance.post(`batches/delete`, {BatchID: BatchID}).then((res)=>{
+                    if (res.data.status === true){
+                        Listbatch()
+                    }
+                });
+                Swal.fire({
+                    title:"Deleted",
+                    text :"The data deleted successfully",
+                    icon:"success"
+                })
+            }
+            else if(result.dismiss){
+                Swal.fire({
+                    title:"Cancelled",
+                    text :"The data is safe",
+                    icon:"error"
+                })
+            }
         })
-        // instance.post(`batches/delete`, {BatchID: BatchID}).then((res)=>{
-        //     if (res.data.status == true){
-        //         Listbatch()
-        //     }
-        // })
+
     };
 
     const columns = [

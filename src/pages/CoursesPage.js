@@ -5,10 +5,9 @@ import { Link } from 'react-router-dom';
 import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
 import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material'
-
+import Swal from 'sweetalert2';
 
 export default function CoursesPage() {
-
 
     const [rows, setRows] = useState([]);
 
@@ -19,11 +18,36 @@ export default function CoursesPage() {
     }
 
     const handleRowDelete = (CourseID)=>{
-        instance.post(`courses/delete`, {CourseID: CourseID}).then((res)=>{
-            if (res.data.status == true){
-                ListCourses()
+        Swal.fire({
+            title:"Are you Sure ?",
+            text:"You want to delete it?",
+            icon:"warning",
+            confirmButtonText:"Yes Delete it",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if(result.isConfirmed){
+                instance.post(`courses/delete`, {CourseID: CourseID}).then((res)=>{
+                    if (res.data.status === true){
+                        ListCourses()
+                    }
+                })
+                Swal.fire({
+                    title:"Deleted",
+                    text :"The data deleted successfully",
+                    icon:"success"
+                })
+            }
+            else if(result.dismiss){
+                Swal.fire({
+                    title:"Cancelled",
+                    text :"The data is safe",
+                    icon:"error"
+                })
             }
         })
+
     };
 
     const columns = [

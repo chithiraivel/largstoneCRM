@@ -3,8 +3,8 @@ import './layout.css';
 import Sidebar from '../sidebar/Sidebar';
 import TopNav from '../topnav/TopNav';
 import Routes from '../Routes';
-import { BrowserRouter, Redirect, Route, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { BrowserRouter, Redirect, Route, } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import ThemeAction from '../../redux/actions/ThemeAction';
 import LoginForm from '../Forms/LoginForm';
 
@@ -14,7 +14,7 @@ const Layout = (props) => {
 
     const [login, setLogin] = React.useState(false);
 
-    const themeReducer = useSelector(state => state.ThemeReducer);
+    // const themeReducer = useSelector(state => state.ThemeReducer);
 
     const dispatch = useDispatch();
 

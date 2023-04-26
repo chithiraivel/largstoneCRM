@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, CircularProgress, createTheme, Grid, MenuItem, TextField, ThemeProvider, Typography } from '@mui/material';
+import { Autocomplete, Box, Button, CircularProgress, createTheme, Grid, IconButton, MenuItem, TextField, ThemeProvider, Typography } from '@mui/material';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -6,6 +6,7 @@ import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import AxiosInstance from '../../axiosinstance';
 import { useEffect } from 'react';
 import Swal from 'sweetalert2';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const theme = createTheme({
   components: {
@@ -48,15 +49,24 @@ export default function BatchForm(props) {
         let data = {
             CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, CreatedBy, CreatedDate
         };
-        
         AxiosInstance.post("courses/create",data ).then((res) => {
-            res.data.result ? props.history.push('/courses') : 
+            res.data.result ? 
+            <>
+            {
+            Swal.fire({
+                title:"Created",
+                text:"New Course Created successfully",
+                icon:"success",
+                confirmButtonText:"ok"
+            }) }
+            {props.history.push('/courses')} 
+            </> 
+            : 
             Swal.fire({title: "Some Error!!",
             text: `The Result shows something Like${res.data.result}`,
             icon: "error",
             confirmButtonText:"ok"
-        });
-            
+        });   
         });
     };
 
@@ -65,7 +75,19 @@ export default function BatchForm(props) {
             CourseID: params.CourseID, CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, UpdatedBy, UpdatedDate
         };
         AxiosInstance.post('courses/update', data).then((res)=>{
-            res.data.result ? props.history.push('/courses') : 
+            res.data.result ? 
+            <>
+            {
+            Swal.fire({
+                title:"Updated",
+                text:"Updated successfully",
+                icon:"success",
+                showConfirmButton:false,
+                timer: 1200
+            }) }
+            {props.history.push('/courses')} 
+            </>
+            : 
             Swal.fire({title: "Some Error!!",
             text: `The Result shows something Like${res.data.result}`,
             icon: "error",
@@ -97,14 +119,14 @@ export default function BatchForm(props) {
 
     const handleSubmit = () => {
         const CreateCourse = {
-            courseName: CourseName.trim() === "",
-            courseFee: CourseFee === "" || CourseFee == "0",
-            subjects: Subjects.map((obj, ind) => (Subjects[ind].Subject.trim()=="" ? Error({...Error, Subjects}) : "")),
+            courseName: CourseName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{2,29}$/.test(CourseName)) ? "wrong" : false,
+            courseFee: CourseFee === "" || CourseFee <= 0 ,
+            subjects: Subjects.map((obj) => (obj.Subject)).some(val => val.trim() === "" ),
             courseDuration: CourseDuration ==="",
-            admissionFee: AdmissionFee <= 0 || AdmissionFee === "",
+            admissionFee: AdmissionFee <= 0 || AdmissionFee === "" ? true : AdmissionFee > (30/100 * CourseFee) ? "wrong" : false,
         };
         setError(CreateCourse)
-        if (Object.values(CreateCourse).some(val => val == true )){console.log(CreateCourse)}
+        if (Object.values(CreateCourse).some(val => val == true || val == "wrong" )){console.log(Subjects.map((obj, ind) => obj.Subject).filter((val)=> val == "" ) ? true : false)}
         else{
             if(params.action == "update"){
                 Update()
@@ -135,11 +157,14 @@ export default function BatchForm(props) {
                             <Typography sx={{ fontWeight: "bold" }}>Course Details</Typography>
                         </Grid>                        
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} inputProps={{pattern : "[A-Z]{1}"}} error={Error.courseName} helperText={ Error.courseName ? "Course Name is required" :""} type='text' label="Course Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
+                            <TextField disabled={Disable} error={Error.courseName} helperText={ Error.courseName == "wrong" ? "Name must begin with caps and have min 3 characters" : Error.courseName ? "Course Name is required" : ""} type='text' label="Course Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} error={Error.courseFee} helperText={ Error.courseFee ? "Course Fee is required" :""} type='tel' label="Course Fee" value={CourseFee} size='small' fullWidth onChange={(e) => setCourseFee(e.target.value)}>
-                            </TextField>
+                            <TextField disabled={Disable} error={Error.courseFee} helperText={ Error.courseFee ? "Course Fee is required" : ""} type='tel' label="Course Fee" value={CourseFee} size='small' fullWidth onChange={(e)=>{
+                                                                                                                                                                                                                    if (e.target.value == "" || /^\d*\.?\d*$/.test(e.target.value)){
+                                                                                                                                                                                                                        setCourseFee(e.target.value);
+                                                                                                                                                                                                                        setAdmissionFee(30/100 * e.target.value)
+                                                                                                                                                                                                                        }}} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                         <Autocomplete disabled={Disable} size='small'  value={{title:CourseDuration}} disablePortal options={CourseDura} getOptionLabel={(option) => option.title}
@@ -147,16 +172,15 @@ export default function BatchForm(props) {
                                         if (val != null){setCourseDuration(val.title)} else{setCourseDuration("")}}} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} error={Error.admissionFee} helperText={ Error.admissionFee ? " Admission Fee required" :""} type='tel' label="Admission Fee" value={AdmissionFee} size='small' fullWidth onChange={(e)=>setAdmissionFee(e.target.value)} />
+                            <TextField disabled={Disable} error={Error.admissionFee} helperText={  Error.admissionFee == "wrong" ? "Admission Fee must be 30% of CourseFee" : Error.admissionFee ? " Admission Fee required" :""} type='tel' label="Admission Fee" value={AdmissionFee} size='small' fullWidth onChange={(e)=>{if (e.target.value == "" || /^\d*\.?\d*$/.test(e.target.value)){setAdmissionFee(e.target.value)}}} />
                         </Grid>
                         <Grid item xs={10}>
-                            {/* Add Subjects for the courses */}
                             <Grid container>
                                 <Grid item xs={1}>
                                     <Typography sx={{fontWeight:"bold", verticalAlign:"center"}}>Subjects </Typography>
                                 </Grid>
-                                <Grid item xs={1}>
-                                    <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} onClick={() => Subjects.map((val)=> val.Subject.trim() == "" ? setError(prevState => ({...prevState, subjects:true}))  : setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "" }]) ) }>Add</Button>
+                                <Grid item xs={0.5}>
+                                    <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff", padding:"2px"}} onClick={() => Subjects.map((val)=> val.Subject.trim() == "" ? setError(prevState => ({...prevState, subjects:true})) : setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "" }]) ) }>Add</Button>
                                 </Grid>
                                 {/* <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setSubjects(Subjects.slice(0, -1))} variant='contained' sx={{display: (Subjects.length > 1) ? "block" : "none"}}>Cancel</Button>
@@ -167,17 +191,22 @@ export default function BatchForm(props) {
                             const handleSubjectsChange = (e) =>{
                                 const newSubjects = [...Subjects];
                                 newSubjects[ind] = { ...val, Subject: e.target.value };
+                                console.log(newSubjects[ind]);
                                 setSubjects(newSubjects);
                             }
                             return (
-                                <Grid container key={ind}>
-                                    <Grid item xs={10} md={4}>
-                                        <TextField disabled={Disable} error={Error.subjects} helperText={ Error.subjects ? "Subject is required" :""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
+                                    <Grid item  key={ind} xs={12} md={3.5}>
+                                        <Box sx={{display:"flex"}}>
+                                            <TextField disabled={Disable} error={Error.subjects} helperText={(Error.subjects) ? "Subject is required" :""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
+                                            <IconButton  disabled={Disable} disableElevation disableRipple variant='contained' sx={{display: (ind == 0 ) ? "none" : "block", p:0}} onClick={() =>{
+                                                                                                                                                                                                                                        const updatedSubjects = [...Subjects];
+                                                                                                                                                                                                                                        updatedSubjects.splice(ind, 1);
+                                                                                                                                                                                                                                        setSubjects(updatedSubjects)
+                                                                                                                                                                                                                                    }}>
+                                                <ClearIcon/>
+                                            </IconButton>
+                                        </Box>
                                     </Grid>
-                                    <Grid item xs={2}>
-                                        <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff",}} onClick={() => setSubjects(Subjects.slice(0, -1))} variant='contained' sx={{display: (ind == 0 ) ? "none" : "block",}}>x</Button>
-                                    </Grid>
-                                </Grid>
                             
                             )
                         })}
