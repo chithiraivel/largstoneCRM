@@ -26,7 +26,7 @@ export default function BatchForm(props) {
 
     const [CourseName, setCourseName] = useState("");
     const [CourseFee, setCourseFee] = useState("");
-    const [Subjects, setSubjects] = useState([{ "id": 1, "Subject": "",}]);
+    const [Subjects, setSubjects] = useState([{ "id": 1, "Subject": "", "err": false}]);
     const [CourseDuration, setCourseDuration] = useState("");
     const [AdmissionFee, setAdmissionFee] = useState("");
     const [CreatedBy, setCreatedBy] = useState("Admin");
@@ -36,7 +36,7 @@ export default function BatchForm(props) {
     const [Error, setError] = useState({
         courseName: false,
         courseFee: false,
-        subjects: false,
+        subjects: [{ err :false }],
         courseDuration: false,
         terms: false,
         admissionFee:false,
@@ -82,10 +82,13 @@ export default function BatchForm(props) {
                 title:"Updated",
                 text:"Updated successfully",
                 icon:"success",
-                showConfirmButton:false,
-                timer: 1200
+                confirmButtonText:"ok",
+
+            }).then((res)=>{
+                if(res.isConfirmed){
+                    {props.history.push('/courses')} 
+                }
             }) }
-            {props.history.push('/courses')} 
             </>
             : 
             Swal.fire({title: "Some Error!!",
@@ -121,14 +124,27 @@ export default function BatchForm(props) {
         const CreateCourse = {
             courseName: CourseName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{2,29}$/.test(CourseName)) ? "wrong" : false,
             courseFee: CourseFee === "" || CourseFee <= 0 ,
-            subjects: Subjects.map((obj) => (obj.Subject)).some(val => val.trim() === "" ),
-            courseDuration: CourseDuration ==="",
+            courseDuration: CourseDuration === "",
             admissionFee: AdmissionFee <= 0 || AdmissionFee === "" ? true : AdmissionFee > (30/100 * CourseFee) ? "wrong" : false,
         };
+
+        Subjects.map((val)=> {
+                    if(val.Subject.trim() === ""){
+                        val.err = true 
+                    }else if(!/^[A-Z][A-Za-z_\s]{2,29}$/.test(val.Subject)){
+                    val.err = "false"
+                    console.log("else");
+                    }else{
+                        val.err = false
+                    }
+                })
+
         setError(CreateCourse)
-        if (Object.values(CreateCourse).some(val => val == true || val == "wrong" )){console.log(Subjects.map((obj, ind) => obj.Subject).filter((val)=> val == "" ) ? true : false)}
+        if (Object.values(CreateCourse).some(val => val === true || val === "wrong" )){
+        
+        }
         else{
-            if(params.action == "update"){
+            if(params.action === "update"){
                 Update()
             } else {
                 PostCourses()
@@ -137,10 +153,10 @@ export default function BatchForm(props) {
     };
 
     useEffect(() => {
-        if(params.action == "read" || params.action == "update"){
+        if(params.action === "read" || params.action === "update"){
         Read()
         }
-        if(params.action == "read"){
+        if(params.action === "read"){
             setDisable(true)
         }
     }, []);
@@ -172,7 +188,7 @@ export default function BatchForm(props) {
                                         if (val != null){setCourseDuration(val.title)} else{setCourseDuration("")}}} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} error={Error.admissionFee} helperText={  Error.admissionFee == "wrong" ? "Admission Fee must be 30% of CourseFee" : Error.admissionFee ? " Admission Fee required" :""} type='tel' label="Admission Fee" value={AdmissionFee} size='small' fullWidth onChange={(e)=>{if (e.target.value == "" || /^\d*\.?\d*$/.test(e.target.value)){setAdmissionFee(e.target.value)}}} />
+                            <TextField disabled={Disable} error={Error.admissionFee} helperText={  Error.admissionFee === "wrong" ? "Admission Fee must be 30% of CourseFee" : Error.admissionFee ? "Admission Fee required" : ""} type='tel' label="Admission Fee" value={AdmissionFee} size='small' fullWidth onChange={(e)=>{if (e.target.value === "" || /^\d*\.?\d*$/.test(e.target.value)){setAdmissionFee(e.target.value)}}} />
                         </Grid>
                         <Grid item xs={10}>
                             <Grid container>
@@ -180,29 +196,43 @@ export default function BatchForm(props) {
                                     <Typography sx={{fontWeight:"bold", verticalAlign:"center"}}>Subjects </Typography>
                                 </Grid>
                                 <Grid item xs={0.5}>
-                                    <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff", padding:"2px"}} onClick={() => Subjects.map((val)=> val.Subject.trim() == "" ? setError(prevState => ({...prevState, subjects:true})) : setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "" }]) ) }>Add</Button>
+                                    <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff", padding:"2px"}}
+                                     onClick={() => {
+                                            Subjects.map((val)=> {
+                                                if(val.Subject.trim() === ""){
+                                                    val.err = true 
+                                                }else if(!/^[A-Z][A-Za-z_\s]{2,29}$/.test(val.Subject)){
+                                                val.err = "false"
+                                                console.log("else");
+                                                }else{
+                                                    val.err = false
+                                                }
+                                            })
+                                            setSubjects([...Subjects]);
+                                            let a = Subjects.map((val)=>  val.Subject.trim() === "" ? true : (!/^[A-Z][A-Za-z_\s]{2,29}$/.test(val.Subject) ? true :false)).every(val => val === false) ? setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "", "err": false }]) : "" 
+                                        }
+                                        }>
+                                        Add
+                                    </Button>
                                 </Grid>
-                                {/* <Grid item xs={1}>
-                                    <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setSubjects(Subjects.slice(0, -1))} variant='contained' sx={{display: (Subjects.length > 1) ? "block" : "none"}}>Cancel</Button>
-                                </Grid> */}
                             </Grid>
                         </Grid>
                         {Subjects.map((val, ind) => {
                             const handleSubjectsChange = (e) =>{
                                 const newSubjects = [...Subjects];
                                 newSubjects[ind] = { ...val, Subject: e.target.value };
-                                console.log(newSubjects[ind]);
                                 setSubjects(newSubjects);
                             }
                             return (
                                     <Grid item  key={ind} xs={12} md={3.5}>
                                         <Box sx={{display:"flex"}}>
-                                            <TextField disabled={Disable} error={Error.subjects} helperText={(Error.subjects) ? "Subject is required" :""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
-                                            <IconButton  disabled={Disable} disableElevation disableRipple variant='contained' sx={{display: (ind == 0 ) ? "none" : "block", p:0}} onClick={() =>{
-                                                                                                                                                                                                                                        const updatedSubjects = [...Subjects];
-                                                                                                                                                                                                                                        updatedSubjects.splice(ind, 1);
-                                                                                                                                                                                                                                        setSubjects(updatedSubjects)
-                                                                                                                                                                                                                                    }}>
+                                            <TextField disabled={Disable} error={val.err} helperText={ val.err == "false" ? "Subject name must have 3 letters and Begin with caps" : val.err ? "Subject is required" : ""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
+                                            <IconButton  disabled={Disable} disableElevation disableRipple variant='contained' sx={{display: (ind === 0 ) ? "none" : "block", p:0}} 
+                                                                onClick={() =>{
+                                                                                const updatedSubjects = [...Subjects];
+                                                                                updatedSubjects.splice(ind, 1);
+                                                                                setSubjects(updatedSubjects)
+                                                                            }}>
                                                 <ClearIcon/>
                                             </IconButton>
                                         </Box>

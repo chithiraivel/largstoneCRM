@@ -107,8 +107,8 @@ export default function BatchesPage() {
             sortable:false
         },
         {
-            field: "SeatsTaken",
-            headerName: "Students Joined",
+            field: "BatchCountLimit",
+            headerName: "Total Seats",
             width: 150,
             editable: false,
             headerAlign: "left", 

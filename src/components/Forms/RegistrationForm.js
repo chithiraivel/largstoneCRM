@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField, Typography, createTheme, ThemeProvider, Autocomplete, CircularProgress } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography, createTheme, ThemeProvider, Autocomplete, CircularProgress, IconButton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { Link, useParams } from 'react-router-dom';
@@ -6,6 +6,8 @@ import moment from 'moment/moment';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
 import AxiosInstance from '../../axiosinstance';
 import Swal from 'sweetalert2';
+import {Clear,Add} from '@mui/icons-material';
+// import AddIcon from '@mui/icons-material/Add';
 
 const theme = createTheme({
   components: {
@@ -46,14 +48,14 @@ export default function Form(props) {
     const [HSCPassedYear, setHSCPassedYear] = useState('');
     const [HSCPercentage, setHSCPercentage] = useState('');
 
-    const [Degree, setDegree] = useState([{"id": 1, "degree": "", "College": "", "yearOfPass": "", "Percentage": ""}]);
+    const [Degree, setDegree] = useState([{"id": 1, "degree": "", "College": "", "yearOfPass": "", "Percentage": "", "collegeErr" : false, "degreeErr": false, "yearOfPassErr": false, "PercentageErr": false, }]);
 
     const [GuardianName, setGuardianName] = useState("");
     const [GuardianNumber, setGaurdianNumber] = useState("");
 
     const [Address, setAddress] = useState([{"doornum": "", "street": "", "place":""}]);
     
-    const [AdditionalCertificate, setAdditionalCertificate] = useState([{ "id": 1, "academy": "", "course": "", "time" :"", "days": ""}]);
+    const [AdditionalCertificate, setAdditionalCertificate] = useState([{ "id": 1, "academy": "", "course": "", "time" :"", "days": "", "academyErr" : false, "courseErr" : false, "timeErr" : false, "daysErr" : false,}]);
 
     const [AdmissionFee, setAdmissionFee] = useState("");
     const [Session, setSession] = useState("");
@@ -84,11 +86,6 @@ export default function Form(props) {
         hscSchoolName: false,
         hscPassedYear: false,
         hscPercentage: false,
-        ugDegreeName: false,
-        degreeCollege: false,
-        degreeName: false,
-        degreePercentage: false,
-        degreePassingYear: false,
         guardianName: false,
         guardianNumber: false,
         additionalCertificate: false,
@@ -132,7 +129,17 @@ export default function Form(props) {
             HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), CreatedBy, CreatedDate
         };
         AxiosInstance.post("registration/register", data ).then((res) => {     
-            res.data.result ? props.history.push('/students') :
+            res.data.result ?
+            <>
+            {
+            Swal.fire({
+                title:"Registered",
+                text:"Registration success",
+                icon:"success",
+                confirmButtonText:"ok"
+            }) }
+            {props.history.push('/students')} 
+            </>: 
             Swal.fire({title: "Some Error!!",
             text: res.data.result,
             icon: "error",
@@ -189,7 +196,21 @@ export default function Form(props) {
             HSC, Certification: JSON.stringify(AdditionalCertificate), SSLC, Degree: JSON.stringify(Degree), Address: JSON.stringify(Address), UpdatedBy, UpdatedDate, StudentID: params.StudentID
         };
         AxiosInstance.post('registration/update', data).then((res)=>{
-            res.data.result ? props.history.push('/students') : 
+            res.data.result ?
+            <>
+            {
+            Swal.fire({
+                title:"Updated",
+                text:"Updated successfully",
+                icon:"success",
+                confirmButtonText:"ok"
+            }).then((res)=>{
+                if(res.isConfirmed){
+                    {props.history.push('/students')}
+                }
+            }) }
+             
+            </>: 
             Swal.fire({title: "Some Error!!",
             text: res.data.result,
             icon: "error",
@@ -232,13 +253,15 @@ export default function Form(props) {
         }
     };
 
+    // Validations
+
     const handleSubmit = () => {
         const RegisterStudent = {
             studentName: StudentName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,29}$/.test(StudentName)) ? "wrongpattern" : false,
             studentContactNumber: StudentContactNumber.trim() === "" ? true : !(/^(?:(?:\+|0{0,2})91(\s*|[\-])?|[0]?)?([6789]\d{2}([ -]?)\d{3}([ -]?)\d{4})$/.test(StudentContactNumber)) ? "wrongpattern" : false,
-            studentEmail: Email.trim() === "" ? true : !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(Email)) ? "wrongpattern" : false,
+            studentEmail: Email.trim() === "" ? true : !(/^[a-zA-Z0-9._%+-]+@(gmail|yahoo|mail|outlook)\.(com|org|in)$/.test(Email)) ? "wrongpattern" : false,
             DOB: DOB === " " ? true : DOB > "2008-12-31" || DOB >= moment(new Date()).format("YYYY-MM-DD") ? "wrongpattern" : false,
-            regDate: RegDate === " " || RegDate <= DOB ? true : false,
+            regDate: RegDate === " " ? true : (RegDate > moment(new Date()).format("YYYY-MM-DD") || RegDate <= DOB) ? "wrongpattern"  : false,
             sslcBoard: SSLCboard.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,29}$/.test(SSLCboard)) ? "wrongpattern" : false,
             sslcSchoolName: SSLCSchoolName.trim()=== "" ? true : !(/^[A-Z][A-Za-z_\s]{3,100}$/.test(SSLCSchoolName)) ? "wrongpattern" : false,
             sslcPassedYear: SSLCPassedYear.trim() === "" ? true : !(/^(19|20)\d{2}$/.test(SSLCPassedYear)) ? "wrongpattern" : false,
@@ -247,10 +270,6 @@ export default function Form(props) {
             hscSchoolName: HSCSchoolName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,100}$/.test(HSCSchoolName)) ? "wrongpattern" : false,
             hscPassedYear: HSCPassedYear.trim() === "" ? true :  HSCPassedYear < parseInt(SSLCPassedYear) +2 || !( /^(19|20)\d{2}$/.test(HSCPassedYear))  ? "wrongpattern" : false,
             hscPercentage: HSCPercentage.trim() === "",
-            degreeCollege :Degree.map((obj) => (obj.College)).some(val => val.trim() === "" ),
-            degreeName :Degree.map((obj) => (obj.degree)).some(val => val.trim() === ""),
-            degreePercentage :Degree.map((obj) => (obj.Percentage)).some(val => val.trim() === ""),
-            degreePassingYear :Degree.map((obj) => (obj.yearOfPass)).some(val => val.trim() === ""),
             guardianNumber: GuardianNumber.trim() === "" ? true : !(/^(?:(?:\+|0{0,2})91(\s*|[\-])?|[0]?)?([6789]\d{2}([ -]?)\d{3}([ -]?)\d{4})$/.test(GuardianNumber)) ? "wrongpattern" : false,
             guardianName: GuardianName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,29}$/.test(GuardianName)) ? "wrongpattern" : false,
             batchName : BatchName.trim() === "",
@@ -266,8 +285,40 @@ export default function Form(props) {
             addressPlace : Address[0].place.trim() === "",
             
         };
+
+        let a = Degree.map((Obj) =>{
+                            return (Object.entries(Obj).map(val=>{
+                                if((val[0] == "yearOfPass" && val[1].toString().trim() == "") || (val[0] == "Percentage" && val[1].toString().trim() == "")||(val[0] == "degree" && val[1].toString().trim() == "")||(val[0] == "College" && val[1].toString().trim() == "")){
+                                    let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"]=true : val[0]=='Percentage' ? Obj["PercentageErr"] = true : val[0] == 'degree' ? Obj["degreeErr"] = true : val[0] =='College' ? Obj["collegeErr"] = true : ""
+                                    setDegree([...Degree])
+                                    return true
+                                }else{
+                                    let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"] = false : val[0] == 'Percentage' ? Obj["PercentageErr"] = false : val[0] == 'degree' ? Obj["degreeErr"] = false : val[0] == 'College' ? Obj["collegeErr"] = false : ""
+                                    setDegree([...Degree])
+                                    return false
+                                }
+                                
+                            }))
+                        })
+        if(AdditionalCertificate.length>1  ){
+            let b = AdditionalCertificate.map((Obj) =>{
+                    return (Object.entries(Obj).map(val=>{
+                        if((val[0] == "academy" && val[1].trim() == "") || (val[0] == "days" && val[1].toString().trim() == "")||(val[0] == "course" && val[1].toString().trim() == "")||(val[0].toString().trim() == "time" && val[1] == "")){
+                            let x = val[0] == "academy" ? Obj["academyErr"]=true : val[0]=='days' ? Obj["daysErr"] = true : val[0] == 'course' ? Obj["courseErr"] = true : val[0] == 'time' ? Obj["timeErr"] = true : ""
+                            setAdditionalCertificate([...AdditionalCertificate])
+                            return true
+                        }else{
+                            let x = val[0] == "academy" ? Obj["academyErr"] = false : val[0] == 'days' ? Obj["daysErr"] = false : val[0] == 'course' ? Obj["courseErr"] = false : val[0] == 'time' ? Obj["timeErr"] = false : ""
+                            setAdditionalCertificate([...AdditionalCertificate])
+                            return false
+                        }
+                        
+                    }))
+                })
         setError(RegisterStudent)
-        if (Object.values(RegisterStudent).some(val => val === true || val === "wrongpattern")){console.log(RegisterStudent)}
+        if (Object.values(RegisterStudent).some(val => val === true || val === "wrongpattern") || (a.flat(Infinity).some(val=>val==true)) || (b.flat(Infinity).some(val=>val==true)) ){
+
+        }
         else{
             if(params.action === "update"){
                 Update()
@@ -275,6 +326,20 @@ export default function Form(props) {
                 PostStudents()
             }
         };
+        } 
+        else {
+            setError(RegisterStudent)
+            if (Object.values(RegisterStudent).some(val => val === true || val === "wrongpattern") || (a.flat(Infinity).some(val=>val==true)) ){
+
+            }
+            else{
+                if(params.action === "update"){
+                    Update()
+                } else {
+                    PostStudents()
+                }
+            };
+    }
     };
 
     const Duration = [
@@ -297,6 +362,7 @@ export default function Form(props) {
          { Loading ?<div style={{display:"flex", justifyContent:"center", height:"50vh", verticalAlign:"center",}}> <CircularProgress size='lg' variant='soft' /></div>:(<ThemeProvider theme = {theme}>
            <AppBreadcrumbs crntPage='Student Form' prevPage='Students Table' path='/students' />
             <Box sx={{ background: "#fff", pb: 3, borderRadius:"25px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }}>
+                {/* General Infos */}
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
                         <Typography variant='h6'>Student Details</Typography>
@@ -311,13 +377,12 @@ export default function Form(props) {
                         <TextField disabled={Disable} value={Email} error={Error.studentEmail} helperText={Error.studentEmail === "wrongpattern" ? "Enter valid Email" :  Error.studentEmail ? "Student E-mail is required" :  "" } fullWidth size='small' label="Email" onChange={(e) =>{setEmail(e.target.value)}} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} value={DOB} error={Error.DOB} helperText={Error.DOB === "wrongpattern" ? "check the DOB" : Error.DOB ? "Date of Birth is required" : ""} type='date' fullWidth onChange={(e) => setDOB(e.target.value)} size='small' label="Date of Birth" />
+                        <TextField disabled={Disable} value={DOB} error={Error.DOB} helperText={Error.DOB === "wrongpattern" ? "DOB 01-01-2009 and above students not permitted :) " : Error.DOB ? "Date of Birth is required" : ""} type='date' fullWidth onChange={(e) => setDOB(e.target.value)} size='small' label="Date of Birth" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} error={Error.regDate} helperText={Error.regDate ? "Registration Date is required" : ""} value={RegDate} type='date' fullWidth onChange={(e) => setRegDate(e.target.value)} size='small' label="Registration Date" />
+                        <TextField disabled={Disable} error={Error.regDate} helperText={ Error.regDate == "wrongpattern" ? "Registration date must be present date" : Error.regDate ? "Registration Date is required" : ""} value={RegDate} type='date' fullWidth onChange={(e) => setRegDate(e.target.value)} size='small' label="Registration Date" />
                     </Grid>
                 </Grid>
-                {/* <CircularProgress /> */}
 
                 {/* Education Details */}
                 <Box>
@@ -366,39 +431,63 @@ export default function Form(props) {
                                 </Grid>
                                 <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} 
-                                    onClick={() => Degree.some((val)=> val.College === "" ? setError(prevState => ({...prevState, degreeCollege : true })) : setDegree([...Degree, { "id": Degree.length + 1, "degree": "", "College":"", "yearOfPass":"", "Percentage":"" }])  ) }>Add<AddCircleOutlineIcon /></Button>
+                                    onClick={()=>{let a = Degree.map((Obj) =>{
+                                       return (Object.entries(Obj).map(val=>{
+                                            if((val[0] == "yearOfPass" && val[1].toString().trim() == "") || (val[0] == "Percentage" && val[1].toString().trim() == "")||(val[0] == "degree" && val[1].toString().trim() == "")||(val[0] == "College" && val[1].toString().trim() == "")){
+                                                let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"]=true : val[0]=='Percentage' ? Obj["PercentageErr"] = true : val[0] == 'degree' ? Obj["degreeErr"] = true : val[0] == 'College' ? Obj["collegeErr"] = true : ""
+                                                setDegree([...Degree])
+                                                return true
+                                            }else{
+                                               let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"] = false : val[0] == 'Percentage' ? Obj["PercentageErr"] = false : val[0] == 'degree' ? Obj["degreeErr"] = false : val[0] == 'College' ? Obj["collegeErr"] = false : ""
+                                               setDegree([...Degree])
+                                               return false
+                                            }
+                                           
+                                        }))
+                                    })
+                                    if(a.flat(Infinity).some(val=>val==true)){
+                                    }else{
+                                        setDegree([...Degree, {"id": Degree.length + 1, "degree": "", "College": "", "yearOfPass": "", "Percentage": "", "collegeErr" : false, "degreeErr": false, "yearOfPassErr": false, "PercentageErr": false, }])
+                                    }
+                                    }}>
+                                        Add
+                                        <AddCircleOutlineIcon />
+                                    </Button>
                                 </Grid>
-                                <Grid item xs={1}>
+                                {/* <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setDegree(Degree.slice(0, -1))} variant='contained' sx={{display: (Degree.length > 1) ? "block" : "none"}}>Cancel</Button>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </Grid>
                         {Degree.map((val, ind)=>{
                             return(
                                 <Grid container rowGap={3} columnGap={5} key={ind}>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField error={Error.degreeName} helperText={Error.degreeName ? "Degree Name is required" : ""} disabled={Disable} value={val.degree}  onChange={(e) => {
+                                        <TextField error={val.degreeErr} helperText={val.degreeErr ? "Degree Name is required" : ""} disabled={Disable} value={val.degree}  onChange={(e) => {
                                             const newDegree = [...Degree];
                                             newDegree[ind].degree = e.target.value;
                                             setDegree(newDegree)
                                         }} fullWidth label="Degree Name" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField error={Error.degreeCollege} helperText={Error.degreeCollege ? "College Name is required" : ""} disabled={Disable} value={val.College} onChange={(e) => {
+                                        <TextField error={val.collegeErr} helperText={val.collegeErr? "College Name is required" : ""} disabled={Disable} value={val.College} onChange={(e) => {
                                             const newDegree = [...Degree];
                                             newDegree[ind].College = e.target.value;
                                             setDegree(newDegree)
                                         }} fullWidth label="College Name" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField error={Error.degreePassingYear} helperText={Error.degreePassingYear ? "Year of Passing is required" : ""} disabled={Disable} value={val.yearOfPass} onChange={(e) => {
+                                        <TextField error={val.yearOfPassErr} helperText={val.yearOfPassErr ? "Year of Passing is required" : ""} disabled={Disable} value={val.yearOfPass} onChange={(e) => {
                                             const newDegree = [...Degree];
-                                            newDegree[ind].yearOfPass = e.target.value;
-                                            setDegree(newDegree)
+                                            if(/^\d*\.?\d*$/.test(e.target.value ) && e.target.value <= (moment(new Date()).format("YYYY"))){
+                                                newDegree[ind].yearOfPass = e.target.value;
+                                                setDegree(newDegree)
+                                            }
+
                                         }} fullWidth label="Year of Passing" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField error={Error.degreePercentage} helperText={Error.degreePercentage ? "Percentage of Marks is required" : ""} disabled={Disable} value={val.Percentage} onChange={(e) => {
+                                        <TextField error={val.PercentageErr} helperText={val.PercentageErr ? "Percentage of Marks is required" : ""} disabled={Disable} value={val.Percentage} onChange={(e) => {
                                             const newDegree = [...Degree];
                                             if(/^\d*\.?\d*$/.test(e.target.value ) && e.target.value <= 100){
                                                 newDegree[ind].Percentage = e.target.value;
@@ -406,6 +495,14 @@ export default function Form(props) {
                                             }
                                         }} fullWidth label="Percentage of Marks" size='small' />
                                     </Grid>
+                                    <IconButton disabled={Disable} disableElevation disableRipple variant='contained' sx={{display: ( ind > 0) ? "block" : "none"}}
+                                                onClick={() =>{
+                                                    const updatedDegree = [...Degree];
+                                                    updatedDegree.splice(ind, 1);
+                                                    setDegree(updatedDegree)
+                                                }}>
+                                        <Clear/>
+                                    </IconButton>
                                 </Grid>
                             )
                         })}
@@ -471,10 +568,31 @@ export default function Form(props) {
                             </Grid>
                             <Grid item xs={1}>
                                 <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} 
-                                onClick={() => setAdditionalCertificate([...AdditionalCertificate, { "id": AdditionalCertificate.length + 1, "description": "" }])}>Add<AddCircleOutlineIcon /></Button>
-                            </Grid>
-                            <Grid item xs={1}>
-                                <Button disabled={Disable} disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} onClick={() => setAdditionalCertificate(AdditionalCertificate.slice(0, -1))} variant='contained' sx={{display: (AdditionalCertificate.length > 1) ? "block" : "none"}}>Cancel</Button>
+                                onClick={() => 
+                                {
+                                let a = AdditionalCertificate.map((Obj) =>{
+                                       return (Object.entries(Obj).map(val=>{
+                                            if((val[0] == "academy" && val[1].trim() == "") || (val[0] == "days" && val[1].toString().trim() == "")||(val[0] == "course" && val[1].toString().trim() == "")||(val[0].toString().trim() == "time" && val[1] == "")){
+                                                let x = val[0] == "academy" ? Obj["academyErr"]=true : val[0]=='days' ? Obj["daysErr"] = true : val[0] == 'course' ? Obj["courseErr"] = true : val[0] == 'time' ? Obj["timeErr"] = true : ""
+                                                setAdditionalCertificate([...AdditionalCertificate])
+                                                return true
+                                            }else{
+                                               let x = val[0] == "academy" ? Obj["academyErr"] = false : val[0] == 'days' ? Obj["daysErr"] = false : val[0] == 'course' ? Obj["courseErr"] = false : val[0] == 'time' ? Obj["timeErr"] = false : ""
+                                               setAdditionalCertificate([...AdditionalCertificate])
+                                               return false
+                                            }
+                                           
+                                        }))
+                                    })
+  
+                                    if(a.flat(Infinity).some(val=>val==true)){
+                                    }else{
+                                        setAdditionalCertificate([...AdditionalCertificate, {"id": AdditionalCertificate.length + 1,  "academy": "", "course": "", "time" :"", "days": "", "academyErr" : false, "courseErr" : false, "timeErr" : false, "daysErr" : false, }])
+                                    }
+                                    }
+                                }>
+                                    Add<AddCircleOutlineIcon />
+                                </Button>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -482,46 +600,59 @@ export default function Form(props) {
                         return (
                             <Grid container key={ind} rowGap={3} columnGap={5}>
                                 <Grid item xs={10} md={3.5}>
-                                    <TextField disabled={Disable} value={val.academy} onChange={(e) => {
+                                    <TextField disabled={Disable} value={val.academy} error={val.academyErr} helperText={val.academyErr ? "Academy Name is required" : ""}
+                                     onChange={(e) => {
                                         const newCertificate = [...AdditionalCertificate];
                                         newCertificate[ind].academy = e.target.value;
                                         setAdditionalCertificate(newCertificate)
                                     }} fullWidth label="Academy Name" size='small' />
                                 </Grid>
                                 <Grid item xs={10} md={3.5}>
-                                    <TextField disabled={Disable} value={val.course} onChange={(e) => {
+                                    <TextField disabled={Disable} value={val.course}  error={val.courseErr} helperText={val.courseErr ? "Course Name is required" : ""}
+                                    onChange={(e) => {
                                         const newCertificate = [...AdditionalCertificate];
                                         newCertificate[ind].course = e.target.value;
                                         setAdditionalCertificate(newCertificate)
                                     }} fullWidth label="Course Name" size='small' />
                                 </Grid>
-                                <Grid item xs={10} md={3.5}>
+                                <Grid item xs={10} md={4}>
                                     <Grid container columnGap={1}>
-                                        <Grid item xs={5.5}>
-                                            <TextField disabled={Disable} value={val.time} onChange={(e) => {
+                                        <Grid item xs={4}>
+                                            <TextField disabled={Disable} value={val.time}  error={val.timeErr} helperText={val.timeErr ? "Duration of course is required" : ""}
+                                            onChange={(e) => {
                                                 const newCertificate = [...AdditionalCertificate];
-                                                if(newCertificate[ind].academy != "" || newCertificate[ind].course != "" && /^\d*\.?\d*$/.test(e.target.value)){
+                                                if((newCertificate[ind].academy != "" || newCertificate[ind].course != "" ) && /^\d*\.?\d*$/.test(e.target.value)){
                                                     newCertificate[ind].time = e.target.value;
                                                     setAdditionalCertificate(newCertificate)
                                                 }
                                             }} fullWidth label="Duration" size='small' />
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            <Autocomplete 
+                                        <Grid item xs={7} sx={{ display:'flex'}}>
+                                            <Autocomplete sx={{width:"200px"}}
                                             disabled={Disable}
-                                            value={val.days}
+                                            value={val.days}  
                                             onChange={(e, newValue) => {
                                                 const newCertificate = [...AdditionalCertificate];
                                                 if (newCertificate[ind].time != "" ){
                                                     newCertificate[ind].days = newValue;
                                                     setAdditionalCertificate(newCertificate);
+                                                }else if(newCertificate[ind].time == ""){
+                                                    newCertificate[ind].daysErr = "false"
                                                 }
                                             }}
                                             getOptionLabel={(option) => option.title || ''}
                                             size="small"
                                             disablePortal
                                             options={Duration}
-                                            renderInput={(params) => <TextField {...params} label="Period" />} />
+                                            renderInput={(params) => <TextField {...params} label="Period" error={val.daysErr} helperText={ val.daysErr ? "Duration of course required" : ""} />} />
+                                            <IconButton  disabled={Disable} disableElevation disableRipple variant='contained' sx={{display: (ind === 0 ) ? "none" : "block", p:0}} 
+                                                                onClick={() =>{
+                                                                                const UpdatedCertificate = [...AdditionalCertificate];
+                                                                                UpdatedCertificate.splice(ind, 1);
+                                                                                setAdditionalCertificate(UpdatedCertificate)
+                                                                            }}>
+                                                <Clear/>
+                                            </IconButton>
                                         </Grid>
                                     </Grid>
                                 </Grid>

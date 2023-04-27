@@ -178,8 +178,13 @@ export default function InvoiceForm(props) {
                         title:"Updated",
                         text:"Invoice updated successfully",
                         icon: "success",
+                        
+                    }).then((res)=>{
+                        if(res.isConfirmed){
+                            props.history.push('/invoices')
+                        }
                     })
-                    props.history.push('/invoices')
+                    
                 }
             })
             : 
