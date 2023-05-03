@@ -13,6 +13,15 @@ export default function BatchesPage() {
     const [rows, setRows] = useState([]);
     const Listbatch = ()=>{
         instance.post('batches/list').then((res) => {
+            if(res.data.result.length<1){
+                Swal.fire({
+                    title:"Oops!",
+                    text:"There is no relevant Data",
+                    timer:2000,
+                    icon:"info",
+                    showConfirmButton:false
+                })
+            }
             setRows([...res.data.result]);
         });
     }

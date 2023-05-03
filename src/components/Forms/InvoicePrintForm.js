@@ -49,6 +49,8 @@ export default function InvoicePrintForm(props) {
                 setAdditionalDiscountName(res.data.result[0].AdditionalDiscountName ? res.data.result[0].AdditionalDiscountName : "");
                 setAdditionalDiscountAmount(res.data.result[0].AdditionalDiscountAmount ? res.data.result[0].AdditionalDiscountAmount : "");
                 setGuardianNumber(res.data.result[0].GuardianNumber ? res.data.result[0].GuardianNumber : "");
+                console.log(Address);
+                console.log(res.data.result, "res");
             }
             else{
                 props.history.push('/invoices')

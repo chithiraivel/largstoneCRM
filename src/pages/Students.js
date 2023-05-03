@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import {DeleteOutlineOutlined,VisibilityOutlined,EditOutlined} from '@mui/icons-material';
 import instance from '../axiosinstance';
 import AppBreadcrumbs from '../components/breadCrumbs/breadcrumbs';
+import Swal from 'sweetalert2';
 
 export default function Students() {
 
@@ -13,16 +14,52 @@ export default function Students() {
 
     const ListStudents = ()=>{
         instance.post('registration/list').then((res) => {
+            if(res.data.result.length<1){
+                Swal.fire({
+                    title:"Oops!",
+                    text:"There is no relevant Data",
+                    timer:1500,
+                    icon:"info",
+                    showConfirmButton:false
+                })
+            }
             setRows([...res.data.result]);
         });
     }
 
     const handleRowDelete = (StudentID)=>{
-        instance.post(`registration/delete`, {StudentID: StudentID}).then((res)=>{
-            if (res.data.status === true){
-                ListStudents()
+        Swal.fire({
+            title:"Are you Sure ?",
+            text:"You want to delete it?",
+            icon:"warning",
+            confirmButtonText:"Yes Delete it",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if(result.isConfirmed){
+                instance.post(`registration/delete`, {StudentID: StudentID}).then((res)=>{
+                    if (res.data.status === true){
+                        ListStudents()
+                    }
+                })
+                Swal.fire({
+                    title:"Deleted",
+                    text :"The data deleted successfully",
+                    icon:"success"
+                })
+            }
+            else if(result.dismiss){
+                Swal.fire({
+                    title:"Cancelled",
+                    text :"The data is safe",
+                    icon:"error",
+                    showConfirmButton:false,
+                    timer: 1500
+                })
             }
         })
+
     };
 
     const columns = [

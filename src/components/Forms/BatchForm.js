@@ -1,10 +1,9 @@
+import React, { useState, useEffect } from 'react';
 import { Autocomplete, Box, Button, createTheme, Grid, TextField, ThemeProvider, Typography } from '@mui/material';
 import AxiosInstance from '../../axiosinstance';
 import moment from 'moment';
-import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
-import { useEffect } from 'react';
 import Swal from 'sweetalert2';
 
 const theme = createTheme({
@@ -95,6 +94,7 @@ export default function BatchForm(props) {
             setSessionStartTime(res.data.result[0].SessionStartTime ? res.data.result[0].SessionStartTime : "");
             setSessionEndTime(res.data.result[0].SessionEndTime ? res.data.result[0].SessionEndTime : "");
             setBatchCountLimit(res.data.result[0].BatchCountLimit ? res.data.result[0].BatchCountLimit : "");
+
             CourseSession.map((Obj) =>{
                 if(res.data.result[0].Session == Obj.label ){
                     setSessionStartLimit(Obj.start)
@@ -130,8 +130,7 @@ export default function BatchForm(props) {
                 if(res.isConfirmed){
                     {props.history.push('/batches')}
                 }
-            }) }
-             
+            }) }    
             </>:  
             Swal.fire({title: "Some Error!!",
             text: `The Result shows something Like ${res.data.result}`,
@@ -144,18 +143,16 @@ export default function BatchForm(props) {
     const handleSubmit = () => {
 
         const CreateBatch = {
-            BatchName: BatchName.trim() === "" ? true : !/^[A-Z][A-Za-z_\s]{3,29}$/.test(BatchName) ? "wrong" : false,
+            BatchName: BatchName.trim() === "" ? true : !/^[A-Z][A-Za-z0-9_\s/-]{3,29}$/.test(BatchName) ? "wrong" : false,
             BatchStartDate: BatchStartDate === " " ? true :  BatchStartDate < moment(new Date).format("YYYY-MM-DD") ? "wrong" : false,
             BatchEndDate: BatchEndDate ===" " ? true : BatchEndDate <= BatchStartDate ? "wrong" : false,
             session: Session === "",
-            sessionStartTime: SessionStartTime === " " ? true : (SessionStartTime > SessionEndLimit) || (SessionStartTime < SessionStartLimit) || (SessionStartTime > moment(SessionStartLimit, 'h:mm ').add(2, 'hours').format('h:mm ') ) ? "wrong" : false ,
-            sessionEndTime: SessionEndTime === " " ? true : (SessionEndTime < SessionEndLimit) || (SessionEndTime < SessionStartTime) ? "wrong" : false ,
+            sessionStartTime: SessionStartTime === " " ? true : (SessionStartTime > SessionEndLimit) || (SessionStartTime < SessionStartLimit) || (SessionStartTime > moment(SessionStartLimit, 'HH:mm ').add(2, 'hours').format('HH:mm ') ) ? "wrong" : false ,
+            sessionEndTime: SessionEndTime === " " ? true : (SessionEndTime < SessionEndLimit) || (SessionEndTime < SessionStartTime) || (SessionEndTime > moment(SessionEndLimit, 'HH:mm ').add(2, 'hours').format('HH:mm ') ) ? "wrong" : false ,
             BatchCountLimit: BatchCountLimit.toString().trim() === "" || BatchCountLimit <= 0,
         };    
         setError(CreateBatch)
         if (Object.values(CreateBatch).some(val => val == true || val == "wrong" )){
-            // console.log(( moment(SessionStartLimit).add(2, "hours").format("h:m")))
-            console.log(moment(SessionStartLimit, 'h:mm ').add(2, 'hours').format('h:mm '));
         }
         else {
             if(params.action === "update"){
@@ -225,10 +222,10 @@ export default function BatchForm(props) {
                         <Autocomplete disabled={Disabled} size='small' disablePortal options={CourseSession} onChange={handleSessionChange} value={{label :Session}} renderInput={(params) => <TextField {...params} error={Error.session} helperText={ Error.session ? "Session is required" : ""} label=" Select the Session" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.sessionStartTime} helperText={Error.sessionStartTime == "wrong" ? ` Starting Time should be between ${SessionStartLimit} and ${moment(SessionStartLimit, 'h:mm ').add(2, 'hours').format('h:mm ')}` : Error.sessionStartTime ? "Session Start Time is required" :""} type='time' label="Session Starting Time" value={SessionStartTime} size='small' fullWidth inputProps={{min: SessionStartTime, max:SessionEndTime}} onChange={handleSessionStartTimeChange} />
+                        <TextField disabled={Disabled} error={Error.sessionStartTime} helperText={Error.sessionStartTime == "wrong" ? `Session Starting Time should be between ${SessionStartLimit} and ${moment(SessionStartLimit, 'h:mm ').add(2, 'hours').format('h:mm ')}` : Error.sessionStartTime ? "Session Start Time is required" :""} type='time' label="Session Starting Time" value={SessionStartTime} size='small' fullWidth inputProps={{min: SessionStartTime, max:SessionEndTime}} onChange={handleSessionStartTimeChange} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime == "wrong" ? `Set valid time ie) after ${SessionEndLimit} ` : Error.sessionEndTime ? "Session End Time is required" :""} type='time' label="Session End Time" value={SessionEndTime} size='small' fullWidth inputProps={{min: SessionStartTime, max:SessionEndTime}} onChange={handleSessionEndTimeChange} />
+                        <TextField disabled={Disabled} error={Error.sessionEndTime} helperText={ Error.sessionEndTime == "wrong" ? `Session End Time should be between ${SessionEndLimit} and ${moment(SessionEndLimit, 'HH:mm ').add(2, 'hours').format('HH:mm ')} ` : Error.sessionEndTime ? "Session End Time is required" :""} type='time' label="Session End Time" value={SessionEndTime} size='small' fullWidth inputProps={{min: SessionStartTime, max:SessionEndTime}} onChange={handleSessionEndTimeChange} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} error={Error.BatchCountLimit} helperText={ Error.BatchCountLimit ? "Total Seats Count required" :""} type='tel' label="Maximum Seats"  value={BatchCountLimit} size='small' fullWidth onChange={(e)=>{if (e.target.value == "" || /^[0-9\b]+$/.test(e.target.value)){setBatchCountLimit(e.target.value)}}} />

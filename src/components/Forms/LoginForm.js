@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Divider, Grid, IconButton, Link, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
+import { Box, Button, Grid, IconButton, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
 import {CheckBoxOutlined, CheckBoxOutlineBlankOutlined, VisibilityOutlined, VisibilityOffOutlined} from '@mui/icons-material';
 import React, {useContext, useEffect, useState} from 'react'
 import Swal from 'sweetalert2'
@@ -37,6 +37,9 @@ export default function LoginForm() {
     let user = "Admin";
     let pass = "admin123";
 
+    let admin = "Puvan";
+    let adminPass = "puvan123";
+
     const handleSubmit = ()=>{
         const ValidateUser = {
             username: UserName === "" ? true : UserName != user ? "wrong" : '',
@@ -47,7 +50,13 @@ export default function LoginForm() {
         else{
           if (UserName == user && Password == pass){
             localStorage.setItem("LoggedIN", true);
-            setIsLoggedIn(true)  
+            setIsLoggedIn(true) 
+            localStorage.setItem("Name", "SK") 
+          }
+          else if (UserName == admin && Password == adminPass){
+            localStorage.setItem("LoggedIN", true);
+            setIsLoggedIn(true) 
+            localStorage.setItem("Name", "Puvan") 
           }
         }
     };

@@ -13,6 +13,15 @@ export default function CoursesPage() {
 
     const ListCourses = ()=>{
         instance.post('courses/list').then((res) => {
+            if(res.data.result.length<1){
+                Swal.fire({
+                    title:"Oops!",
+                    text:"There is no relevant Data",
+                    timer:2000,
+                    icon:"info",
+                    showConfirmButton:false
+                })
+            }
             setRows([...res.data.result]);
         });
     }
@@ -43,7 +52,9 @@ export default function CoursesPage() {
                 Swal.fire({
                     title:"Cancelled",
                     text :"The data is safe",
-                    icon:"error"
+                    icon:"error",
+                    showConfirmButton:false,
+                    timer: 1500
                 })
             }
         })

@@ -25,9 +25,9 @@ const theme = createTheme({
 
 export default function Form(props) {
 
-    const [Batch, setBatch] = useState("");    
+    const [Batch, setBatch] = useState([]);    
     const [BatchName, setBatchName] = useState("");    
-    const [Courses, setCourses] = useState("");
+    const [Courses, setCourses] = useState([]);
     const [CourseName, setCourseName] = useState("");
     const [CourseID, setCourseID] = useState("");
     const [BatchID, setBatchID] = useState("");
@@ -222,6 +222,7 @@ export default function Form(props) {
     // AutoComplete Onchange
 
     const getCourseDetails = (e, val) => {
+        console.log(Batch);
         if (val != null && val.CourseName != null){
             setCourseName(val.CourseName)
             setCourseID(val.CourseID);
@@ -234,6 +235,7 @@ export default function Form(props) {
     };
 
     const getBatchDetails = (e, val) => {
+        ListBatches()
         if (val != null && val.BatchName != null) {
             setBatchStartingDate(moment(val.BatchStartDate).format("YYYY-MM-DD"));
             setBatchEndDate(moment(val.BatchEndDate).format("YYYY-MM-DD"));
@@ -253,25 +255,55 @@ export default function Form(props) {
         }
     };
 
+        // AxiosInstance.get('/batches/list').then((res)=>{
+        //     if(res.data.result.length > 0){
+        //         setBatch([...res.data.result]);
+        //     }else{
+        //         Swal.fire({
+        //             title:"No Batches had created",
+        //             text:"Want to create new batch before student registration ?",
+        //             confirmButtonText:"Create Batch",
+        //             showCancelButton:true,
+        //             denyButtonText:"No, cancel registration",
+        //             cancelButtonColor:"red",
+        //             confirmButtonColor:"green",
+        //             icon:"error"
+        //         }).then((result)=>{
+        //             if (result.isConfirmed){
+        //                 props.history.push("/batches/form")
+        //             }
+        //             else if(result.isDenied){
+        //                 console.log("cancelled");
+        //             }
+        //         })
+        //     }
+            
+        // })
+
     // Validations
+
+    let ContactNumReg = /^(?:(?:\+|0{0,2})91(\s*|[\-])?|[0]?)?([6789]\d{2}([ -]?)\d{3}([ -]?)\d{4})$/;
+    let NameReg = /^[A-Z][A-Za-z_\s]{3,100}$/;
+    let EmailReg = /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|mail|outlook)\.(com|org|in)$/;
+    
 
     const handleSubmit = () => {
         const RegisterStudent = {
-            studentName: StudentName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,29}$/.test(StudentName)) ? "wrongpattern" : false,
-            studentContactNumber: StudentContactNumber.trim() === "" ? true : !(/^(?:(?:\+|0{0,2})91(\s*|[\-])?|[0]?)?([6789]\d{2}([ -]?)\d{3}([ -]?)\d{4})$/.test(StudentContactNumber)) ? "wrongpattern" : false,
-            studentEmail: Email.trim() === "" ? true : !(/^[a-zA-Z0-9._%+-]+@(gmail|yahoo|mail|outlook)\.(com|org|in)$/.test(Email)) ? "wrongpattern" : false,
+            studentName: StudentName.trim() === "" ? true : !(NameReg.test(StudentName)) ? "wrongpattern" : false,
+            studentContactNumber: StudentContactNumber.trim() === "" ? true : !(ContactNumReg.test(StudentContactNumber)) ? "wrongpattern" : false,
+            studentEmail: Email.trim() === "" ? true : !(EmailReg.test(Email)) ? "wrongpattern" : false,
             DOB: DOB === " " ? true : DOB > "2008-12-31" || DOB >= moment(new Date()).format("YYYY-MM-DD") ? "wrongpattern" : false,
             regDate: RegDate === " " ? true : (RegDate > moment(new Date()).format("YYYY-MM-DD") || RegDate <= DOB) ? "wrongpattern"  : false,
-            sslcBoard: SSLCboard.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,29}$/.test(SSLCboard)) ? "wrongpattern" : false,
-            sslcSchoolName: SSLCSchoolName.trim()=== "" ? true : !(/^[A-Z][A-Za-z_\s]{3,100}$/.test(SSLCSchoolName)) ? "wrongpattern" : false,
+            sslcBoard: SSLCboard.trim() === "" ? true : !(NameReg.test(SSLCboard)) ? "wrongpattern" : false,
+            sslcSchoolName: SSLCSchoolName.trim()=== "" ? true : !(NameReg.test(SSLCSchoolName)) ? "wrongpattern" : false,
             sslcPassedYear: SSLCPassedYear.trim() === "" ? true : !(/^(19|20)\d{2}$/.test(SSLCPassedYear)) ? "wrongpattern" : false,
             sslcPercentage: SSLCPercentage.trim() === "",
-            hscBoard: HSCboard.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,29}$/.test(HSCboard)) ? "wrongpattern" : false,
-            hscSchoolName: HSCSchoolName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,100}$/.test(HSCSchoolName)) ? "wrongpattern" : false,
+            hscBoard: HSCboard.trim() === "" ? true : !(NameReg.test(HSCboard)) ? "wrongpattern" : false,
+            hscSchoolName: HSCSchoolName.trim() === "" ? true : !(NameReg.test(HSCSchoolName)) ? "wrongpattern" : false,
             hscPassedYear: HSCPassedYear.trim() === "" ? true :  HSCPassedYear < parseInt(SSLCPassedYear) +2 || !( /^(19|20)\d{2}$/.test(HSCPassedYear))  ? "wrongpattern" : false,
             hscPercentage: HSCPercentage.trim() === "",
-            guardianNumber: GuardianNumber.trim() === "" ? true : !(/^(?:(?:\+|0{0,2})91(\s*|[\-])?|[0]?)?([6789]\d{2}([ -]?)\d{3}([ -]?)\d{4})$/.test(GuardianNumber)) ? "wrongpattern" : false,
-            guardianName: GuardianName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{3,29}$/.test(GuardianName)) ? "wrongpattern" : false,
+            guardianNumber: GuardianNumber.trim() === "" ? true : !(ContactNumReg.test(GuardianNumber)) ? "wrongpattern" : false,
+            guardianName: GuardianName.trim() === "" ? true : !(NameReg.test(GuardianName)) ? "wrongpattern" : false,
             batchName : BatchName.trim() === "",
             batchStartingDate: BatchStartingDate === " ",
             batchEndDate : BatchEndDate ===" ",
@@ -287,45 +319,45 @@ export default function Form(props) {
         };
 
         let a = Degree.map((Obj) =>{
-                            return (Object.entries(Obj).map(val=>{
-                                if((val[0] == "yearOfPass" && val[1].toString().trim() == "") || (val[0] == "Percentage" && val[1].toString().trim() == "")||(val[0] == "degree" && val[1].toString().trim() == "")||(val[0] == "College" && val[1].toString().trim() == "")){
-                                    let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"]=true : val[0]=='Percentage' ? Obj["PercentageErr"] = true : val[0] == 'degree' ? Obj["degreeErr"] = true : val[0] =='College' ? Obj["collegeErr"] = true : ""
-                                    setDegree([...Degree])
-                                    return true
-                                }else{
-                                    let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"] = false : val[0] == 'Percentage' ? Obj["PercentageErr"] = false : val[0] == 'degree' ? Obj["degreeErr"] = false : val[0] == 'College' ? Obj["collegeErr"] = false : ""
-                                    setDegree([...Degree])
-                                    return false
-                                }
-                                
-                            }))
-                        })
-        if(AdditionalCertificate.length>1  ){
-            let b = AdditionalCertificate.map((Obj) =>{
-                    return (Object.entries(Obj).map(val=>{
-                        if((val[0] == "academy" && val[1].trim() == "") || (val[0] == "days" && val[1].toString().trim() == "")||(val[0] == "course" && val[1].toString().trim() == "")||(val[0].toString().trim() == "time" && val[1] == "")){
-                            let x = val[0] == "academy" ? Obj["academyErr"]=true : val[0]=='days' ? Obj["daysErr"] = true : val[0] == 'course' ? Obj["courseErr"] = true : val[0] == 'time' ? Obj["timeErr"] = true : ""
-                            setAdditionalCertificate([...AdditionalCertificate])
-                            return true
-                        }else{
-                            let x = val[0] == "academy" ? Obj["academyErr"] = false : val[0] == 'days' ? Obj["daysErr"] = false : val[0] == 'course' ? Obj["courseErr"] = false : val[0] == 'time' ? Obj["timeErr"] = false : ""
-                            setAdditionalCertificate([...AdditionalCertificate])
-                            return false
-                        }
-                        
-                    }))
-                })
-        setError(RegisterStudent)
-        if (Object.values(RegisterStudent).some(val => val === true || val === "wrongpattern") || (a.flat(Infinity).some(val=>val==true)) || (b.flat(Infinity).some(val=>val==true)) ){
 
-        }
-        else{
-            if(params.action === "update"){
-                Update()
-            } else {
-                PostStudents()
+            return (Object.entries(Obj).map(val=>{
+                if((val[0] == "yearOfPass" && val[1].toString().trim() == "") || (val[0] == "Percentage" && val[1].toString().trim() == "")||(val[0] == "degree" && val[1].toString().trim() == "")||(val[0] == "College" && val[1].toString().trim() == "")){
+                    let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"]=true : val[0]=='Percentage' ? Obj["PercentageErr"] = true : val[0] == 'degree' ? Obj["degreeErr"] = true : val[0] =='College' ? Obj["collegeErr"] = true : ""
+                    setDegree([...Degree])
+                    return true
+                }else{
+                    let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"] = false : val[0] == 'Percentage' ? Obj["PercentageErr"] = false : val[0] == 'degree' ? Obj["degreeErr"] = false : val[0] == 'College' ? Obj["collegeErr"] = false : ""
+                    setDegree([...Degree])
+                    return false
+                }
+            }))
+        })
+        if(AdditionalCertificate.length>1){
+            let b = AdditionalCertificate.map((Obj) =>{
+                return (Object.entries(Obj).map(val=>{
+                    if((val[0] == "academy" && val[1].trim() == "") || (val[0] == "days" && val[1].toString().trim() == "")||(val[0] == "course" && val[1].toString().trim() == "")||(val[0].toString().trim() == "time" && val[1] == "")){
+                        let x = val[0] == "academy" ? Obj["academyErr"]=true : val[0]=='days' ? Obj["daysErr"] = true : val[0] == 'course' ? Obj["courseErr"] = true : val[0] == 'time' ? Obj["timeErr"] = true : ""
+                        setAdditionalCertificate([...AdditionalCertificate])
+                        return true
+                    }else{
+                        let x = val[0] == "academy" ? Obj["academyErr"] = false : val[0] == 'days' ? Obj["daysErr"] = false : val[0] == 'course' ? Obj["courseErr"] = false : val[0] == 'time' ? Obj["timeErr"] = false : ""
+                        setAdditionalCertificate([...AdditionalCertificate])
+                        return false
+                    }
+                    
+                }))
+            })
+            setError(RegisterStudent)
+            if (Object.values(RegisterStudent).some(val => val === true || val === "wrongpattern") || (a.flat(Infinity).some(val=>val==true)) || (b.flat(Infinity).some(val=>val==true)) ){
+
             }
-        };
+            else{
+                if(params.action === "update"){
+                    Update()
+                } else {
+                    PostStudents()
+                }
+            };
         } 
         else {
             setError(RegisterStudent)
@@ -339,7 +371,7 @@ export default function Form(props) {
                     PostStudents()
                 }
             };
-    }
+        }
     };
 
     const Duration = [
@@ -347,7 +379,7 @@ export default function Form(props) {
     ];
 
     useEffect(() => {
-        ListBatches()
+        // ListBatches()
         ListCourses()
         if(params.action === "read" || params.action === "update"){
             Read()
@@ -431,24 +463,25 @@ export default function Form(props) {
                                 </Grid>
                                 <Grid item xs={1}>
                                     <Button disabled={Disable} disableElevation disableRipple variant='contained' style={{backgroundColor:"#4daaff",}} 
-                                    onClick={()=>{let a = Degree.map((Obj) =>{
-                                       return (Object.entries(Obj).map(val=>{
-                                            if((val[0] == "yearOfPass" && val[1].toString().trim() == "") || (val[0] == "Percentage" && val[1].toString().trim() == "")||(val[0] == "degree" && val[1].toString().trim() == "")||(val[0] == "College" && val[1].toString().trim() == "")){
-                                                let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"]=true : val[0]=='Percentage' ? Obj["PercentageErr"] = true : val[0] == 'degree' ? Obj["degreeErr"] = true : val[0] == 'College' ? Obj["collegeErr"] = true : ""
-                                                setDegree([...Degree])
-                                                return true
-                                            }else{
-                                               let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"] = false : val[0] == 'Percentage' ? Obj["PercentageErr"] = false : val[0] == 'degree' ? Obj["degreeErr"] = false : val[0] == 'College' ? Obj["collegeErr"] = false : ""
-                                               setDegree([...Degree])
-                                               return false
-                                            }
-                                           
-                                        }))
-                                    })
-                                    if(a.flat(Infinity).some(val=>val==true)){
-                                    }else{
-                                        setDegree([...Degree, {"id": Degree.length + 1, "degree": "", "College": "", "yearOfPass": "", "Percentage": "", "collegeErr" : false, "degreeErr": false, "yearOfPassErr": false, "PercentageErr": false, }])
-                                    }
+                                    onClick={()=>{
+                                        let a = Degree.map((Obj) =>{
+                                            return (Object.entries(Obj).map(val=>{
+                                                    if((val[0] == "yearOfPass" && val[1].toString().trim() == "") || (val[0] == "Percentage" && val[1].toString().trim() == "")||(val[0] == "degree" && val[1].toString().trim() == "")||(val[0] == "College" && val[1].toString().trim() == "")){
+                                                        let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"] = true : val[0]=='Percentage' ? Obj["PercentageErr"] = true : val[0] == 'degree' ? Obj["degreeErr"] = true : val[0] == 'College' ? Obj["collegeErr"] = true : ""
+                                                        setDegree([...Degree])
+                                                        return true
+                                                    }else{
+                                                    let x = val[0] == "yearOfPass" ? Obj["yearOfPassErr"] = false : val[0] == 'Percentage' ? Obj["PercentageErr"] = false : val[0] == 'degree' ? Obj["degreeErr"] = false : val[0] == 'College' ? Obj["collegeErr"] = false : ""
+                                                    setDegree([...Degree])
+                                                    return false
+                                                    }
+                                                
+                                                }))
+                                            })
+                                        if(a.flat(Infinity).some(val=>val==true)){
+                                        }else{
+                                            setDegree([...Degree, {"id": Degree.length + 1, "degree": "", "College": "", "yearOfPass": "", "Percentage": "", "collegeErr" : false, "degreeErr": false, "yearOfPassErr": false, "PercentageErr": false, }])
+                                        }
                                     }}>
                                         Add
                                         <AddCircleOutlineIcon />
@@ -618,7 +651,7 @@ export default function Form(props) {
                                 <Grid item xs={10} md={4}>
                                     <Grid container columnGap={1}>
                                         <Grid item xs={4}>
-                                            <TextField disabled={Disable} value={val.time}  error={val.timeErr} helperText={val.timeErr ? "Duration of course is required" : ""}
+                                            <TextField disabled={Disable} value={val.time}  error={val.timeErr} helperText={val.timeErr ? "field required" : ""}
                                             onChange={(e) => {
                                                 const newCertificate = [...AdditionalCertificate];
                                                 if((newCertificate[ind].academy != "" || newCertificate[ind].course != "" ) && /^\d*\.?\d*$/.test(e.target.value)){
@@ -644,13 +677,15 @@ export default function Form(props) {
                                             size="small"
                                             disablePortal
                                             options={Duration}
-                                            renderInput={(params) => <TextField {...params} label="Period" error={val.daysErr} helperText={ val.daysErr ? "Duration of course required" : ""} />} />
+                                            renderInput={(params) => <TextField {...params} label="Period" error={val.daysErr} helperText={ val.daysErr ? "Duration of course required" : ""} />} 
+                                            />
+
                                             <IconButton  disabled={Disable} disableElevation disableRipple variant='contained' sx={{display: (ind === 0 ) ? "none" : "block", p:0}} 
-                                                                onClick={() =>{
-                                                                                const UpdatedCertificate = [...AdditionalCertificate];
-                                                                                UpdatedCertificate.splice(ind, 1);
-                                                                                setAdditionalCertificate(UpdatedCertificate)
-                                                                            }}>
+                                            onClick={() =>{
+                                                            const UpdatedCertificate = [...AdditionalCertificate];
+                                                            UpdatedCertificate.splice(ind, 1);
+                                                            setAdditionalCertificate(UpdatedCertificate)
+                                                        }}>
                                                 <Clear/>
                                             </IconButton>
                                         </Grid>
@@ -663,6 +698,8 @@ export default function Form(props) {
                     })}
                 </Grid>
 
+                
+
                 <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
                     <Grid item xs={12}>
                         <Typography variant='h6'>Course Details</Typography>
@@ -674,7 +711,7 @@ export default function Form(props) {
                         <TextField disabled={Disable} error={Error.courseAdmissionFee} helperText={Error.courseAdmissionFee ? "Admission Fee is required" : ""} name='AdmissionFee' value={AdmissionFee} fullWidth size='small' label="Admission Fee" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <Autocomplete disabled={Disable}  size='small' disablePortal value={{BatchName}} options={Batch} getOptionDisabled={(option) => option.BatchStatus !== 'Active'} onChange={getBatchDetails} getOptionLabel={(option) => option.BatchName} renderInput={(params) => <TextField {...params} error={Error.batchName} helperText={Error.batchName ? "Batch Name is required" : ""} label="Batch" />} />
+                        <Autocomplete disabled={Disable}  size='small' disablePortal value={{BatchName}} options={Batch} getOptionDisabled={(option) => option.BatchStatus !== 'Active'} onChange={getBatchDetails} getOptionLabel={(option) => option.BatchName} onClick={()=> console.log("clicked")} renderInput={(params) => <TextField {...params} error={Error.batchName} helperText={Error.batchName ? "Batch Name is required" : ""} label="Batch" />} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField error={Error.batchStartingDate} helperText={Error.batchStartingDate ? "Batch Start date is required" : ""} disabled={Disable} name='BatchStartDate' type='date' value={BatchStartingDate} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Batch Starting Date" size="small" />
@@ -682,7 +719,6 @@ export default function Form(props) {
                     <Grid item xs={10} md={3.5}>
                         <TextField error={Error.batchEndDate} helperText={Error.batchEndDate ? "Batch End Date is required" : ""} disabled={Disable} name='BatchEndDate' type='date' value={BatchEndDate} inputProps={{readOnly:true}} onChange={(e) => setBatchEndDate(e.target.value)} fullWidth label="Batch Ending Date" size="small" />
                     </Grid>
-                    {/* inputProps={{readOnly:true}} */}
                     <Grid item xs={10} md={3.5}>
                         <TextField error={Error.session} helperText={Error.session ? "Session is required" : ""} disabled={Disable} name='Session' type='text' value={Session} inputProps={{readOnly:true}} onChange={(e) => setBatchStartingDate(e.target.value)} fullWidth label="Session" size="small" />
                     </Grid>

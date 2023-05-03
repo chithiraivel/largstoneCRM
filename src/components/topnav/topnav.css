@@ -2,7 +2,7 @@
     padding: 30px;
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: space-between;
     height: var(--topnav-height);
 }
 

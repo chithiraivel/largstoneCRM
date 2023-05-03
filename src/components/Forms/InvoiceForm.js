@@ -37,6 +37,7 @@ export default function InvoiceForm(props) {
     const [Discount, setDiscount] = useState("");
     const [AdditionalDiscountName, setAdditionalDiscountName] = useState("");
     const [AdditionalDiscountAmount, setAdditionalDiscountAmount] = useState("");
+    const [Address, setAddress] = useState([{"doornum": "", "street": "", "place":""}]);
     const [TotalAmount, setTotalAmount] = useState("");
     const [CreatedBy, setCreatedBy] = useState("Admin");
     const [UpdatedBy, setUpdatedBy] = useState("Admin");
@@ -74,6 +75,7 @@ export default function InvoiceForm(props) {
             setPendingAmount(val.CourseFee)
             setSession(val.Session);
             setGuardianNumber(val.GuardianNumber);
+            setAddress(val.Address)
         } else {
             setStudentID(null);
             setStudentName("");
@@ -82,6 +84,7 @@ export default function InvoiceForm(props) {
             setSession("");
             setPendingAmount("")
             setCourseFee("");
+            setAddress("")
         }
     };
 
@@ -99,7 +102,7 @@ export default function InvoiceForm(props) {
 
     const PostInvoice = ()=>{         
         let data = {
-            StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, CreatedBy, CreatedDate
+            StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, CreatedBy, CreatedDate, Address
         };
         AxiosInstance.post("invoice/create", data ).then((res) => {
             res.data.result ? 
@@ -108,9 +111,12 @@ export default function InvoiceForm(props) {
                 title:"Created",
                 text:"Invoice Created Successfully",
                 icon:"success",
+            }).then((result) =>{
+                if(result.isConfirmed){
+                    {props.history.push('/invoices')}
+                }
             })
             }
-            {props.history.push('/invoices')}
             </>
             // .then((result) => {
             //     if (result.value == true){
@@ -132,7 +138,7 @@ export default function InvoiceForm(props) {
     };
 
     const Read = ()=>{
-        AxiosInstance.post('invoice/read', {InvoiceID : params.InvoiceID}).then((res)=>{
+        AxiosInstance.put('invoice/read', {InvoiceID : params.InvoiceID}).then((res)=>{
             if(res.data.result.length > 0) {
             setBatchName(res.data.result[0].BatchName ? res.data.result[0].BatchName : "");
             setCourseName(res.data.result[0].CourseName ? res.data.result[0].CourseName : "");
@@ -150,14 +156,23 @@ export default function InvoiceForm(props) {
             setAdditionalDiscountName(res.data.result[0].AdditionalDiscountName ? res.data.result[0].AdditionalDiscountName : "");
             }
             else {
-                props.history.push('/invoices')
+                Swal.fire({
+                    title:"OOPS!",
+                    text:"data not found",
+                    icon:"error"
+                }).then((res)=>{
+                    if(res.isConfirmed){
+                        props.history.push('/invoices')
+                    }
+                })
+                
             }
         })
     };
 
     const Update = ()=>{
         let data = {
-            StudentName, CourseName, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, UpdatedBy, UpdatedDate, InvoiceID: params.InvoiceID
+            StudentName, CourseName, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, UpdatedBy, UpdatedDate, InvoiceID: params.InvoiceID, Address
         };
         AxiosInstance.post('invoice/update', data).then((res)=>{
             res.data.result ?

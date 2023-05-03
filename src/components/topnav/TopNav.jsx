@@ -8,16 +8,17 @@ import Dropdown from '../dropdown/Dropdown';
 
 import notifications from '../../assets/JsonData/notification.json';
 
-import user_image from '../../assets/images/logo1.png';
+import user_image from '../../assets/images/administrator.png';
 
 import user_menu from '../../assets/JsonData/user_menus.json';
 
 import { context } from '../layout/Layout';
+import { Typography } from '@mui/material';
 
 
 
 const curr_user = {
-    display_name: 'SK',
+    display_name: localStorage.getItem("Name"),
     image: user_image
 };
 
@@ -60,10 +61,14 @@ const Topnav = () => {
     const handleLogOut = () => {
         setLogin("loggedOut");
         localStorage.removeItem('LoggedIN');
+        localStorage.removeItem('Name');
     };
 
     return (
         <div className='topnav'>
+            <div>
+                <Typography sx={{ fontWeight: "bold", fontSize: "20px", background: "#ffffff", px: 2, borderRadius: "20px", }}>{`hello ${localStorage.getItem("Name")} ${`\u{1F44B}`}`}</Typography>
+            </div>
             {/* <div className="topnav__search">
                 <input type="text" placeholder='Search here...' />
                 <i className='bx bx-search'></i>

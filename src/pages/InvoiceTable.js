@@ -13,8 +13,18 @@ export default function InvoiceTable() {
     const [rows, setRows] = useState([]);
 
     const ListInvoice = ()=>{
-        instance.post('invoice/list').then((res) => {
+        instance.get('invoice/list').then((res) => {
+            if(res.data.result.length<1){
+                Swal.fire({
+                    title:"Oops!",
+                    text:"There is no relevant Data",
+                    timer:2000,
+                    icon:"info",
+                    showConfirmButton:false
+                })
+            }
             setRows([...res.data.result]);
+            console.log(rows);
         });
     };
     
@@ -44,7 +54,9 @@ export default function InvoiceTable() {
                 Swal.fire({
                     title:"Cancelled",
                     text :"The data is safe",
-                    icon:"error"
+                    icon:"error",
+                    showConfirmButton:false,
+                    timer: 1500
                 })
             }
         })
