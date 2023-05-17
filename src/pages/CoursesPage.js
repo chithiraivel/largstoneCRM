@@ -119,8 +119,8 @@ export default function CoursesPage() {
             renderCell: (params) => {
                 return (
                     <Stack direction="row" spacing={2}>
-                        <Link to={`/courses/forms/update/${params.row.CourseID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
-                        <Link to={`/courses/forms/read/${params.row.CourseID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
+                        <Link to={`/courses/forms/update/${params.row.CourseID}`}> <IconButton disableRipple sx={{p:0, color:"gray"}}><EditOutlined/></IconButton></Link>
+                        <Link to={`/courses/forms/read/${params.row.CourseID}`}><IconButton  disableRipple sx={{p:0, color:"orange"}}><VisibilityOutlined/></IconButton></Link>
                         <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.CourseID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
                     </Stack>
                 )
@@ -137,7 +137,7 @@ export default function CoursesPage() {
             <div style={{ background: "#FFF", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", padding: "20px", borderRadius: "20px" }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography sx={{ fontWeight: "bold", color:"black !Important"}}>Courses Table</Typography>
-                    <Link to='/courses/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
+                    <Link to='/courses/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Create Course</Button></Link>
                 </Box>
                 <StyledDataGrid columns={columns} rows={rows} id='CourseID' />
             </div>

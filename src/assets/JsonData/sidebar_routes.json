@@ -23,5 +23,9 @@
         "display_name": "Batches",
         "route": "/batches",
         "icon": "bx bxs-group"
+    },{
+        "display_name": "Customer",
+        "route": "/Customer",
+        "icon": "bx bx-bar-chart-alt"
     }
 ]

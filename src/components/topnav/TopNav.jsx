@@ -8,7 +8,7 @@ import Dropdown from '../dropdown/Dropdown';
 
 import notifications from '../../assets/JsonData/notification.json';
 
-import user_image from '../../assets/images/administrator.png';
+import user_image from '../../assets/images/favicon.png';
 
 import user_menu from '../../assets/JsonData/user_menus.json';
 
@@ -67,7 +67,7 @@ const Topnav = () => {
     return (
         <div className='topnav'>
             <div>
-                <Typography sx={{ fontWeight: "bold", fontSize: "20px", background: "#ffffff", px: 2, borderRadius: "20px", }}>{`hello ${localStorage.getItem("Name")} ${`\u{1F44B}`}`}</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: "20px", background: "#ffffff", px: 2, borderRadius: "20px", }}>{` ${localStorage.getItem("Name")} ${`.`}`}</Typography>
             </div>
             {/* <div className="topnav__search">
                 <input type="text" placeholder='Search here...' />

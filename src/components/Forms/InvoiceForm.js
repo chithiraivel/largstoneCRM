@@ -23,7 +23,7 @@ const theme = createTheme({
 
 export default function InvoiceForm(props) {
 
-    const [InvoiceGenDate, setInvoiceGenDate] = useState(" ");
+    const [InvoiceGenDate, setInvoiceGenDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
     const [StudentName, setStudentName] = useState("");
     const [Courses, setCourses] = useState("");
     const [CourseName, setCourseName] = useState("");
@@ -66,6 +66,7 @@ export default function InvoiceForm(props) {
     const params = useParams()
 
     const getStudent = (e, val) =>{
+        console.log(val);
         if(val != null && val.StudentID != null){
             setStudentID(val.StudentID);
             setStudentName(val.StudentName);
@@ -102,9 +103,11 @@ export default function InvoiceForm(props) {
 
     const PostInvoice = ()=>{         
         let data = {
-            StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, CreatedBy, CreatedDate, Address
+            StudentName, CourseName, StudentID, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, CreatedBy, CreatedDate
         };
+        console.log(data);
         AxiosInstance.post("invoice/create", data ).then((res) => {
+            console.log(res.data);
             res.data.result ? 
             <>{
             Swal.fire({
@@ -172,36 +175,47 @@ export default function InvoiceForm(props) {
 
     const Update = ()=>{
         let data = {
-            StudentName, CourseName, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, UpdatedBy, UpdatedDate, InvoiceID: params.InvoiceID, Address
+            StudentName, CourseName, Session, BatchName, TermFees, Term, PaymentMethod, InvoiceGenDate, Discount, PendingAmount, TotalAmount, GuardianNumber, AdditionalDiscountAmount, AdditionalDiscountName, UpdatedBy, UpdatedDate, InvoiceID: params.InvoiceID,
         };
+        console.log(data);
         AxiosInstance.post('invoice/update', data).then((res)=>{
             res.data.result ?
             Swal.fire({
-                title:"Print Form?",
-                text:"Are you sure you want to print this form?",
-                icon:"question",
-                showCancelButton: true,
-                confirmButtonText: 'Print',
-                cancelButtonText: 'No',
-            }).then((result) => {
-                if (result.isConfirmed){
-                     console.log("confirem");
-                   props.history.push(`/invoices/generate/${params.InvoiceID}`)
-                }
-                else if (result.dismiss){
-                    Swal.fire({
-                        title:"Updated",
-                        text:"Invoice updated successfully",
-                        icon: "success",
+                            title:"Updated",
+                            text:"Invoice updated successfully",
+                            icon: "success",
+                            
+                        }).then((res)=>{
+                            if(res.isConfirmed){
+                                props.history.push('/invoices')
+                            }
+                        })
+            // Swal.fire({
+            //     title:"Print Form?",
+            //     text:"Are you sure you want to print this form?",
+            //     icon:"question",
+            //     showCancelButton: true,
+            //     confirmButtonText: 'Print',
+            //     cancelButtonText: 'No',
+            // }).then((result) => {
+            //     if (result.isConfirmed){
+            //          console.log("confirem");
+            //        props.history.push(`/invoices/generate/${params.InvoiceID}`)
+            //     }
+            //     else if (result.dismiss){
+            //         Swal.fire({
+            //             title:"Updated",
+            //             text:"Invoice updated successfully",
+            //             icon: "success",
                         
-                    }).then((res)=>{
-                        if(res.isConfirmed){
-                            props.history.push('/invoices')
-                        }
-                    })
+            //         }).then((res)=>{
+            //             if(res.isConfirmed){
+            //                 props.history.push('/invoices')
+            //             }
+            //         })
                     
-                }
-            })
+            //     }
+            // })
             : 
             Swal.fire({title: "Some Error!!",
             text: res.data.result,
@@ -225,18 +239,19 @@ export default function InvoiceForm(props) {
 
     const TermList = [
         {title:"Full Term", amnt:"70000"}, {title:"First Term", amnt:"35000"}, {title:"Second Term", amnt:"35000"}, ];
+        let NameReg = /^[-a-zA-Z-()]+(\s+[-a-zA-Z-()]+)*$/
 
     const handleSubmit = () => {
         const GenInvoice = { 
+            session: Session.trim() === "" ? true : !(NameReg.test(Session)) ? "wrongpattern" : false,
             invoiceGenDate: InvoiceGenDate === " ",
             studentName: StudentName === "",
             courseName: CourseName ==="",
-            session: Session ==="",
             batchName: BatchName.trim() ==="",
-            termFees: TermFees ==="" || TermFees <= 0,
-            // term: Term === "",
-            pendingAmount: PendingAmount ==="",
-            totalAmount: TotalAmount ==="" || TotalAmount <= 0,
+            termFees: TermFees =="" || TermFees <=0? true :!(/^[1-9]\d*\.?[0-9]*$/.test(TermFees)) ? "wrongpattern" : false,
+            term: Term === "",
+            pendingAmount: PendingAmount =="" ? true :!(/^[1-9]\d*\.?[0-9]*$/.test(PendingAmount)) ? "wrongpattern" : false,
+            totalAmount: TotalAmount ==""  || TotalAmount <= 0? true :!(/^[1-9]\d*\.?[0-9]*$/.test(TotalAmount)) ? "wrongpattern" : false,
             paymentMethod: PaymentMethod.trim() ==="",
         };    
         setError(GenInvoice)
@@ -277,13 +292,13 @@ export default function InvoiceForm(props) {
                         {/* <TextField disabled={Disabled} error={Error.courseName} helperText={ Error.courseName ? "Course Name is required" :""}  type='text' label='Course Name' value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} /> */}
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.batchName} helperText={ Error.batchName ? "Batch Name is required" :""}  type='text' label='Batch Name' value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
+                        <TextField disabled={true} error={Error.batchName} helperText={ Error.batchName ? "Batch Name is required" :""}  type='text' label='Batch Name' value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.session} helperText={ Error.session ? "Session is required" :""}  type='text' label='Session' value={Session} size='small' fullWidth onChange={(e)=>setSession(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.session} helperText={Error.session === "wrongpattern" ? "Starting and space,letter zero not allowed" : Error.session ?"Field cannot be empty ":""}  type='text' label='Session' value={Session} size='small' fullWidth onChange={(e)=>setSession(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.pendingAmount} helperText={ Error.pendingAmount ? "Pending Amount is required" :""} type='tel' label="Pending Amount" value={PendingAmount} size='small' fullWidth onChange={(e, value)=>setPendingAmount(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.pendingAmount} helperText={Error.pendingAmount === "wrongpattern" ? "Starting and space,letter zero not allowed" : Error.pendingAmount ?"Field cannot be empty ":""} type='tel' label="Pending Amount" value={PendingAmount} size='small' fullWidth onChange={(e, value)=>setPendingAmount(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <Autocomplete disabled={Disabled} value={{title:Term}}
@@ -315,7 +330,7 @@ export default function InvoiceForm(props) {
                         />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.termFees} helperText={ Error.termFees ? "Term Fee Amount required" :""} type='tel' label="Term Fees" value={TermFees} size='small' fullWidth 
+                        <TextField disabled={Disabled} error={Error.termFees} helperText={Error.termFees === "wrongpattern" ? "Starting and space,letter zero not allowed" : Error.termFees ?"Field cannot be empty ":""} type='tel' label="Term Fees" value={TermFees} size='small' fullWidth 
                         onChange={(e)=>{
                             setTotalAmount(e.target.value)
                             setTermFees(e.target.value)} }/>
@@ -327,26 +342,26 @@ export default function InvoiceForm(props) {
                             setDiscount(e.target.value)
                             setTotalAmount( e.target.value == "" ? TermFees :(TermFees - ((e.target.value/100) * TermFees)))}}} />
                     </Grid>
-                    <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.totalAmount} helperText={ Error.totalAmount ? "Total Amount field is required" :""} type='tel' label="Payable Amount" value={TotalAmount} size='small' fullWidth onChange={(e)=>setTotalAmount(e.target.value)} />
-                    </Grid>
+                    {/* <Grid item xs={10} md={3.5}>
+                        <TextField disabled={Disabled} error={Error.totalAmount} helperText={Error.totalAmount === "wrongpattern" ? "Starting and space,letter zero not allowed" : Error.totalAmount ?"Field cannot be empty ":""} type='tel' label="Payable Amount" value={TotalAmount} size='small' fullWidth onChange={(e)=>setTotalAmount(e.target.value)} />
+                    </Grid> */}
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} error={Error.paymentMethod} helperText={ Error.paymentMethod ? "Payment method field is required" :""} type='text' label="Payment Method" value={PaymentMethod} size='small' fullWidth onChange={(e)=>setPaymentMethod(e.target.value)} />
                     </Grid>
-                    <Grid item xs={10} md={3.5}>
+                    {/* <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} type='text' label="Other Discounts" value={AdditionalDiscountName} size='small' fullWidth onChange={(e)=>setAdditionalDiscountName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} type='text' label="Discount Amount" value={AdditionalDiscountAmount} size='small' fullWidth onChange={(e)=>setAdditionalDiscountAmount(e.target.value)} />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.invoiceGenDate} helperText={ Error.invoiceGenDate ? "Invoice Generating Date reqiured" :""} type='date' label="Invoice Generating Date" value={InvoiceGenDate} size='small' fullWidth onChange={(e)=>setInvoiceGenDate(moment(e.target.value).format("YYYY-MM-DD"))} />
+                        <TextField disabled={true} error={Error.invoiceGenDate} helperText={ Error.invoiceGenDate ? "Invoice Generating Date reqiured" :""}  label="Invoice Generating Date" value={InvoiceGenDate} size='small' fullWidth onChange={(e)=>setInvoiceGenDate(moment(e.target.value).format("YYYY-MM-DD"))} />
                     </Grid>
                 </Grid> 
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
                     {params.action == "read" ?  "":
-                    <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action=="update"? "Update" : "Create"}</Button>}
-                    <Link to='/invoices'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
+                    <Button disableElevation disableRipple style={{marginRight:"10px", }} color='primary' variant='contained' onClick={handleSubmit}>{params.action=="update"? "Update" : "Create"}</Button>}
+                    <Link to='/invoices'><Button disableElevation color='secondary' disableRipple style={{ color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
         </ThemeProvider>

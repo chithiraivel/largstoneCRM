@@ -1,11 +1,11 @@
 import { Box, Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import AppBreadcrumbs from '../breadCrumbs/breadcrumbs';
-import InvoiceImage from '../../assets/images/LSOT_744_291.png';
+import InvoiceImage from '../../assets/images/larg.png';
 import AxiosInstance from '../../axiosinstance';
 import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
 import moment from 'moment';
-import Signature from '../../assets/images/signature.png'; 
+import Signature from '../../assets/images/sign.png'; 
 import { Link, useParams } from 'react-router-dom';
 import ReactToPrint from 'react-to-print';
 
@@ -80,7 +80,7 @@ export default function InvoicePrintForm(props) {
                     </Box>
                 </Grid>
                 <Grid item xs={4} sx={{display:"flex", justifyContent:"end"}}>
-                    <Box component='img' src={InvoiceImage} sx={{height:"60%", width:"80%", mt:2, "@media print":{width:"110%"} }} alt='invoice' />
+                    <Box component='img' src={InvoiceImage} sx={{height:"70%", width:"60%", mt:2, "@media print":{width:"110%"} }} alt='invoice' />
                 </Grid>
             </Grid>
              {/*main  */}
@@ -90,9 +90,12 @@ export default function InvoicePrintForm(props) {
                     <Box >
                         <Typography sx={{fontSize:"30px", fontWeight:"700"}}>Bill to </Typography>
                         <Typography>{StudentName},</Typography>
-                        <Typography>{(Address.map((val)=> val.doornum)) == "" ? "(Door Number) N/A" : `# ${Address.map((val)=> val.doornum)}` }</Typography>
-                        <Typography>{(Address.map((val)=> val.street)) == "" ? "(Street) N/A" : Address.map((val)=> val.street)}</Typography>
-                        <Typography>{(Address.map((val)=> val.place)) == "" ? "(Place Name) N/A" : Address.map((val)=> val.place)}</Typography>
+                        {/* <Typography>{(Address.map((val)=> val.doornum)) == "" ? "(Door Number) N/A" : `# ${Address.map((val)=> val.doornum)}` }</Typography> */}
+                        <Typography>1/195,subramaniyapuram</Typography>
+                        {/* <Typography>{(Address.map((val)=> val.street)) == "" ? "(Street) N/A" : Address.map((val)=> val.street)}</Typography> */}
+                        <Typography>Vembar Street</Typography>
+                        {/* <Typography>{(Address.map((val)=> val.place)) == "" ? "(Place Name) N/A" : Address.map((val)=> val.place)}</Typography> */}
+                        <Typography>Thoothukudi</Typography>
                     </Box>
                 </Grid>
                 {/* Second Column */}
@@ -179,11 +182,11 @@ export default function InvoicePrintForm(props) {
                 <Grid item xs={4.5}>
                     <Box>                        
                         <Typography sx={{fontWeight:"bold", fontSize:"20px"}}>Bank Details</Typography>
-                        <Typography sx={{mt:1}}><b>Name:</b> Puvan Mani Elansudar</Typography>
-                        <Typography sx={{mt:0.5}}><b>Bank :</b>Indian OverSeas Bank</Typography>
-                        <Typography sx={{mt:0.5}}><b>Branch :</b>Pavoorchatram</Typography>
-                        <Typography sx={{mt:0.5}} ><b>ACC No. :</b>784596555555448</Typography>
-                        <Typography sx={{mt:0.5}}><b>IFSC Code :</b>78455448</Typography>
+                        <Typography sx={{mt:1}}><b>Name:</b> Chithiraivel</Typography>
+                        <Typography sx={{mt:0.5}}><b>Bank :</b>TMB</Typography>
+                        <Typography sx={{mt:0.5}}><b>Branch :</b>Vembar</Typography>
+                        <Typography sx={{mt:0.5}} ><b>ACC No. :</b>3110747378</Typography>
+                        <Typography sx={{mt:0.5}}><b>IFSC Code :</b>TMBL001</Typography>
                     </Box>
                 </Grid>
                 <Grid item xs={4}>
@@ -197,9 +200,9 @@ export default function InvoicePrintForm(props) {
                 </Grid>
                 <Grid item xs={3.5} sx={{pl:6}}>
                     <Box sx={{ display:"flex", flexDirection:"column", alignItems:"center"}}>
-                        <Box component= "img" src={Signature} alt="Signature"/>
+                        <Box component= "img" src={Signature} alt="Signature" width="150px"/>
                         <Typography sx={{fontSize:"16px"}}>Full Stack Developer</Typography>
-                        <Typography sx={{fontSize:"12px"}}>(Puvan Mani Elansudar)</Typography>
+                        <Typography sx={{fontSize:"12px"}}>(vel)</Typography>
                     </Box>
                 </Grid>
             </Grid>

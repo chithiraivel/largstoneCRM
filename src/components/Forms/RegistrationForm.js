@@ -32,7 +32,7 @@ export default function Form(props) {
     const [CourseID, setCourseID] = useState("");
     const [BatchID, setBatchID] = useState("");
 
-    const [RegDate, setRegDate] = useState(" ");
+    const [RegDate, setRegDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
     const [StudentName, setStudentName] = useState("");
     const [StudentContactNumber, setStudentContactNumber] = useState("");
     const [Email, setEmail] = useState('');
@@ -42,7 +42,7 @@ export default function Form(props) {
     const [SSLCSchoolName, setSSLCSchool] = useState('');
     const [SSLCPassedYear, setSSLCPassedYear] = useState('');
     const [SSLCPercentage, setSSLCPercentage] = useState('');
-
+console.log(typeof SSLCPercentage);
     const [HSCboard, setHSCboard] = useState('');
     const [HSCSchoolName, setHSCSchoolName] = useState('');
     const [HSCPassedYear, setHSCPassedYear] = useState('');
@@ -235,7 +235,7 @@ export default function Form(props) {
     };
 
     const getBatchDetails = (e, val) => {
-        ListBatches()
+        // ListBatches()
         if (val != null && val.BatchName != null) {
             setBatchStartingDate(moment(val.BatchStartDate).format("YYYY-MM-DD"));
             setBatchEndDate(moment(val.BatchEndDate).format("YYYY-MM-DD"));
@@ -283,25 +283,25 @@ export default function Form(props) {
     // Validations
 
     let ContactNumReg = /^(?:(?:\+|0{0,2})91(\s*|[\-])?|[0]?)?([6789]\d{2}([ -]?)\d{3}([ -]?)\d{4})$/;
-    let NameReg = /^[A-Z][A-Za-z_\s]{3,100}$/;
+    let NameReg = /^[-a-zA-Z0-9-()]+(\s+[-a-zA-Z0-9-()]+)*$/
     let EmailReg = /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|mail|outlook)\.(com|org|in)$/;
     
-
+  
     const handleSubmit = () => {
         const RegisterStudent = {
             studentName: StudentName.trim() === "" ? true : !(NameReg.test(StudentName)) ? "wrongpattern" : false,
             studentContactNumber: StudentContactNumber.trim() === "" ? true : !(ContactNumReg.test(StudentContactNumber)) ? "wrongpattern" : false,
             studentEmail: Email.trim() === "" ? true : !(EmailReg.test(Email)) ? "wrongpattern" : false,
-            DOB: DOB === " " ? true : DOB > "2008-12-31" || DOB >= moment(new Date()).format("YYYY-MM-DD") ? "wrongpattern" : false,
+            DOB: DOB === " " ? true : new Date('2009-01-01').toLocaleDateString() > new Date(DOB).toLocaleDateString() || DOB > moment(new Date()).format("YYYY-MM-DD") ? "wrongpattern" : false,
             regDate: RegDate === " " ? true : (RegDate > moment(new Date()).format("YYYY-MM-DD") || RegDate <= DOB) ? "wrongpattern"  : false,
             sslcBoard: SSLCboard.trim() === "" ? true : !(NameReg.test(SSLCboard)) ? "wrongpattern" : false,
             sslcSchoolName: SSLCSchoolName.trim()=== "" ? true : !(NameReg.test(SSLCSchoolName)) ? "wrongpattern" : false,
             sslcPassedYear: SSLCPassedYear.trim() === "" ? true : !(/^(19|20)\d{2}$/.test(SSLCPassedYear)) ? "wrongpattern" : false,
-            sslcPercentage: SSLCPercentage.trim() === "",
+            sslcPercentage: SSLCPercentage =="" ? true :!(/^[1-9]\d*\.?[0-9]*$/.test(SSLCPercentage)) ? "wrongpattern" : false,
             hscBoard: HSCboard.trim() === "" ? true : !(NameReg.test(HSCboard)) ? "wrongpattern" : false,
             hscSchoolName: HSCSchoolName.trim() === "" ? true : !(NameReg.test(HSCSchoolName)) ? "wrongpattern" : false,
             hscPassedYear: HSCPassedYear.trim() === "" ? true :  HSCPassedYear < parseInt(SSLCPassedYear) +2 || !( /^(19|20)\d{2}$/.test(HSCPassedYear))  ? "wrongpattern" : false,
-            hscPercentage: HSCPercentage.trim() === "",
+            hscPercentage: HSCPercentage == "" ? true :!(/^[1-9]\d*\.?[0-9]*$/.test(HSCPercentage)) ? "wrongpattern" : false,
             guardianNumber: GuardianNumber.trim() === "" ? true : !(ContactNumReg.test(GuardianNumber)) ? "wrongpattern" : false,
             guardianName: GuardianName.trim() === "" ? true : !(NameReg.test(GuardianName)) ? "wrongpattern" : false,
             batchName : BatchName.trim() === "",
@@ -379,7 +379,7 @@ export default function Form(props) {
     ];
 
     useEffect(() => {
-        // ListBatches()
+        ListBatches()
         ListCourses()
         if(params.action === "read" || params.action === "update"){
             Read()
@@ -400,7 +400,7 @@ export default function Form(props) {
                         <Typography variant='h6'>Student Details</Typography>
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} error={Error.studentName} helperText={Error.studentName === "wrongpattern" ? "Name should start with Caps and have minimum 4 letters" : Error.studentName ? "Student Name is required" : ""} value={StudentName} fullWidth onChange={(e) => setStudentName(e.target.value)} size='small' label="Student Name" />
+                        <TextField disabled={Disable} error={Error.studentName} helperText={Error.studentName === "wrongpattern" ? "Starting Space not allowed" : Error.studentName ? "Student Name is required" : ""} value={StudentName} fullWidth onChange={(e) => setStudentName(e.target.value)} size='small' label="Student Name" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disable} error={Error.studentContactNumber} helperText={Error.studentContactNumber === "wrongpattern" ? "Enter valid Number" : Error.studentContactNumber ? "Contact number is required" : ""} value={StudentContactNumber} fullWidth onChange={(e) => setStudentContactNumber(e.target.value)} size='small' label="Student contact Number" />
@@ -409,10 +409,10 @@ export default function Form(props) {
                         <TextField disabled={Disable} value={Email} error={Error.studentEmail} helperText={Error.studentEmail === "wrongpattern" ? "Enter valid Email" :  Error.studentEmail ? "Student E-mail is required" :  "" } fullWidth size='small' label="Email" onChange={(e) =>{setEmail(e.target.value)}} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} value={DOB} error={Error.DOB} helperText={Error.DOB === "wrongpattern" ? "DOB 01-01-2009 and above students not permitted :) " : Error.DOB ? "Date of Birth is required" : ""} type='date' fullWidth onChange={(e) => setDOB(e.target.value)} size='small' label="Date of Birth" />
+                        <TextField disabled={Disable} value={DOB} error={Error.DOB} helperText={Error.DOB === "wrongpattern" ? "Enter correct format " : Error.DOB ? "Date of Birth is required" : ""} type='date' fullWidth onChange={(e) => setDOB(e.target.value)} size='small' label="Date of Birth" />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disable} error={Error.regDate} helperText={ Error.regDate == "wrongpattern" ? "Registration date must be present date" : Error.regDate ? "Registration Date is required" : ""} value={RegDate} type='date' fullWidth onChange={(e) => setRegDate(e.target.value)} size='small' label="Registration Date" />
+                        <TextField disabled={true} error={Error.regDate}  helperText={ Error.regDate == "wrongpattern" ? "Registration date must be present date" : Error.regDate ? "Registration Date is required" : ""} value={RegDate}  fullWidth onChange={(e) => setRegDate(e.target.value)} size='small' label="Registration Date" />
                     </Grid>
                 </Grid>
 
@@ -426,16 +426,16 @@ export default function Form(props) {
                             <Typography sx={{ fontWeight: "bold" }}>SSLC</Typography>
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} value={SSLCboard} error={Error.sslcBoard} helperText={ Error.sslcBoard === "wrongpattern" ? "begin with caps" :Error.sslcBoard ? "Board of Learning field is required" : ""} fullWidth onChange={(e) => setSSLCboard(e.target.value)} size='small' label="Board" />
+                            <TextField disabled={Disable} value={SSLCboard} error={Error.sslcBoard} helperText={ Error.sslcBoard === "wrongpattern" ? "Starting and ending letter space not allowed" :Error.sslcBoard ? "Board of Learning field is required" : ""} fullWidth onChange={(e) => setSSLCboard(e.target.value)} size='small' label="Board" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} value={SSLCSchoolName} error={Error.sslcSchoolName} helperText={Error.sslcSchoolName === "wrongpattern" ? "Name should start with Caps and have minimum 4 letters" : Error.sslcSchoolName ? "School Name field cannot be Empty" : ""} fullWidth onChange={(e) => setSSLCSchool(e.target.value)} size='small' label="School Name" />
+                            <TextField disabled={Disable} value={SSLCSchoolName} error={Error.sslcSchoolName} helperText={Error.sslcSchoolName === "wrongpattern" ? "Starting and ending letter space not allowed" : Error.sslcSchoolName ? "School Name field cannot be Empty" : ""} fullWidth onChange={(e) => setSSLCSchool(e.target.value)} size='small' label="School Name" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField disabled={Disable} value={SSLCPassedYear} error={Error.sslcPassedYear} helperText={ Error.sslcPassedYear === "wrongpattern" ? "Year format is wrong (eg. 1999)" : Error.sslcPassedYear ? "Field Cannot be Empty" : ""} onChange={(e) => setSSLCPassedYear(e.target.value)} fullWidth on label="Passed-out Year" size="small" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} value={SSLCPercentage} error={Error.sslcPercentage} helperText={Error.sslcPercentage ? "Field Cannot be Empty" : ""} fullWidth label="Percentage of Marks" size="small" onChange={(e) => {if (e.target.value === "" || /^\d*\.?\d*$/.test(e.target.value) && e.target.value <= 100){setSSLCPercentage(e.target.value)}}} />                                                                                                                                                                                                          
+                            <TextField disabled={Disable} value={SSLCPercentage} error={Error.sslcPercentage} helperText={Error.sslcPercentage === "wrongpattern" ? "Starting zero not allowed" : Error.sslcPercentage ?"Field cannot be empty ":""} fullWidth label="Percentage of Marks" size="small" onChange={(e) => {if (e.target.value === "" || /^\d*\.?\d*$/.test(e.target.value) && e.target.value <= 100){setSSLCPercentage(e.target.value)}}} />                                                                                                                                                                                                          
                         </Grid>
                     </Grid>
                     <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
@@ -443,16 +443,16 @@ export default function Form(props) {
                             <Typography sx={{ fontWeight: "bold" }}>HSC</Typography>
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} value={HSCboard} error={Error.hscBoard} helperText={ Error.hscBoard === "wrongpattern" ? "begin with caps" : Error.hscBoard ? "Select the Board of Learning" : ""} fullWidth onChange={(e) => setHSCboard(e.target.value)} size='small' label="Board" />
+                            <TextField disabled={Disable} value={HSCboard} error={Error.hscBoard} helperText={ Error.hscBoard === "wrongpattern" ? "Starting and ending letter space not allowed" : Error.hscBoard ? "hsc feild is required" : ""} fullWidth onChange={(e) => setHSCboard(e.target.value)} size='small' label="Board" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} value={HSCSchoolName} error={Error.hscSchoolName} helperText={Error.hscSchoolName === "wrongpattern" ? "Name should start with Caps and have minimum 4 letters" : Error.hscSchoolName ? "School Name field cannot be Empty" : ""} fullWidth onChange={(e) => setHSCSchoolName(e.target.value)} size='small' label="School Name" />
+                            <TextField disabled={Disable} value={HSCSchoolName} error={Error.hscSchoolName} helperText={Error.hscSchoolName === "wrongpattern" ? "Starting and ending letter space not allowed" : Error.hscSchoolName ? "School Name field cannot be Empty" : ""} fullWidth onChange={(e) => setHSCSchoolName(e.target.value)} size='small' label="School Name" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
                             <TextField disabled={Disable} value={HSCPassedYear} error={Error.hscPassedYear} helperText={ Error.hscPassedYear === "wrongpattern" ? "HSC year should be atleast 2 years ahead of SSLC" : Error.hscPassedYear ? "Field Cannot be Empty" : ""} onChange={(e) => setHSCPassedYear(e.target.value)} fullWidth on label="Passed-out Year" size="small" />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} value={HSCPercentage} error={Error.hscPercentage} helperText={Error.hscPercentage ? "Field Cannot be Empty" : ""} onChange={(e) => {if (e.target.value === "" || /^\d*\.?\d*$/.test(e.target.value) && e.target.value <= 100){setHSCPercentage(e.target.value)}}} fullWidth label="Percentage of Marks" size="small" />
+                            <TextField disabled={Disable} value={HSCPercentage} error={Error.hscPercentage} helperText={Error.hscPercentage === "wrongpattern" ? "Starting zero not allowed" : Error.hscPercentage ?"Field cannot be empty ":""} onChange={(e) => {if (e.target.value === "" || /^\d*\.?\d*$/.test(e.target.value) && e.target.value <= 100){setHSCPercentage(e.target.value)}}} fullWidth label="Percentage of Marks" size="small" />
                         </Grid>
                     </Grid>
                     <Grid container rowGap={3} columnGap={5} paddingLeft={4} paddingTop={3}>
@@ -493,10 +493,18 @@ export default function Form(props) {
                             </Grid>
                         </Grid>
                         {Degree.map((val, ind)=>{
+
+                            console.log(val.Percentage);
+                           
+                             const b =val.Percentage ==="" || val.Percentage<=0? true :!(/^[1-9]\d*\.?[0-9]*$/.test(val.Percentage)) ? "wrongpattern" : false
+                             console.log(b);
                             return(
                                 <Grid container rowGap={3} columnGap={5} key={ind}>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField error={val.degreeErr} helperText={val.degreeErr ? "Degree Name is required" : ""} disabled={Disable} value={val.degree}  onChange={(e) => {
+                                        <TextField error={val.degreeErr} helperText={val.degreeErr === "wrongpattern" ? "Starting and ending letter space not allowed" : val.degreeErr ? "School Name field cannot be Empty" : ""} disabled={Disable} value={val.degree} 
+                                        
+                                
+                                        onChange={(e) => {
                                             const newDegree = [...Degree];
                                             newDegree[ind].degree = e.target.value;
                                             setDegree(newDegree)
@@ -520,7 +528,7 @@ export default function Form(props) {
                                         }} fullWidth label="Year of Passing" size='small' />
                                     </Grid>
                                     <Grid item xs={10} md={3.5}>
-                                        <TextField error={val.PercentageErr} helperText={val.PercentageErr ? "Percentage of Marks is required" : ""} disabled={Disable} value={val.Percentage} onChange={(e) => {
+                                        <TextField error={val.Percentage === '0' ? true :val.PercentageErr} helperText={val.Percentage === "0" ? "Starting zero not allowed" : val.PercentageErr ? "Degree cannot be empty" : ""} disabled={Disable} value={val.Percentage} onChange={(e) => {
                                             const newDegree = [...Degree];
                                             if(/^\d*\.?\d*$/.test(e.target.value ) && e.target.value <= 100){
                                                 newDegree[ind].Percentage = e.target.value;
@@ -731,8 +739,8 @@ export default function Form(props) {
                 </Grid>
                 <Box sx={{ mt: 3, display: "flex", justifyContent: "end", mr:8 }}>
                     {params.action === "read" ? "" :
-                    <Button style={{backgroundColor:"#4daaff",}} disableElevation disableRipple onClick={handleSubmit} variant='contained'>{params.action==="update"? "Update" : "Submit"}</Button> }
-                    <Link to='/students'><Button disableElevation disableRipple style={{ marginLeft: "10px", backgroundColor:"#ff726f" }} variant='contained' color='error'>{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
+                    <Button  color="primary" disableElevation disableRipple onClick={handleSubmit} variant='contained'>{params.action==="update"? "Update" : "Submit"}</Button> }
+                    <Link to='/students'><Button disableElevation disableRipple style={{ marginLeft: "10px",  }} variant='contained' color='secondary'>{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
         </ThemeProvider>)}

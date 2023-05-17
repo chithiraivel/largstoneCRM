@@ -26,6 +26,10 @@ export default function BatchForm(props) {
 
     const [CourseName, setCourseName] = useState("");
     const [CourseFee, setCourseFee] = useState("");
+    const [Description, setDescription] = useState("");
+console.log(Description);
+console.log(CourseName);
+
     const [Subjects, setSubjects] = useState([{ "id": 1, "Subject": "", "err": false}]);
     const [CourseDuration, setCourseDuration] = useState("");
     const [AdmissionFee, setAdmissionFee] = useState("");
@@ -39,6 +43,7 @@ export default function BatchForm(props) {
         subjects: [{ err :false }],
         courseDuration: false,
         terms: false,
+        description:false,
         admissionFee:false,
     });
     const [Disable, setDisable] = useState(false);
@@ -47,7 +52,7 @@ export default function BatchForm(props) {
 
     const PostCourses = ()=>{
         let data = {
-            CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, CreatedBy, CreatedDate
+            CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, CreatedBy, CreatedDate,Description
         };
         AxiosInstance.post("courses/create",data ).then((res) => {
             res.data.result ? 
@@ -72,7 +77,7 @@ export default function BatchForm(props) {
 
     const Update = ()=>{
         let data = {
-            CourseID: params.CourseID, CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, UpdatedBy, UpdatedDate
+            CourseID: params.CourseID, CourseFee, CourseName, CourseDuration, Subjects: JSON.stringify(Subjects), AdmissionFee, UpdatedBy, UpdatedDate,Description
         };
         AxiosInstance.post('courses/update', data).then((res)=>{
             res.data.result ? 
@@ -109,6 +114,8 @@ export default function BatchForm(props) {
                 setCourseDuration(res.data.result[0].CourseDuration ? res.data.result[0].CourseDuration :"")
                 setAdmissionFee(res.data.result[0].AdmissionFee ? res.data.result[0].AdmissionFee :"")
                 setSubjects(res.data.result[0].Subjects ? JSON.parse(res.data.result[0].Subjects) :"")
+                setDescription(res.data.result[0].Description ? res.data.result[0].Description :"")
+                console.log(res.data.result[0].Description);
             } 
             else{
                 props.history.push('/courses')
@@ -119,11 +126,13 @@ export default function BatchForm(props) {
     if (Loading){
         <CircularProgress variant="soft" />
     }
-
+    let NameReg = /^[-a-zA-Z-()]+(\s+[-a-zA-Z-()]+)*$/
     const handleSubmit = () => {
         const CreateCourse = {
-            courseName: CourseName.trim() === "" ? true : !(/^[A-Z][A-Za-z_\s]{2,29}$/.test(CourseName)) ? "wrong" : false,
-            courseFee: CourseFee === "" || CourseFee <= 0 ,
+            
+            courseName: CourseName.trim() === "" ? true : !(NameReg.test(CourseName)) ? "wrong" : false,
+            description: Description.trim() === "" ,
+            courseFee: CourseFee == "" ? true :!(/^[1-9]\d*\.?[0-9]*$/.test(CourseFee)) ? "wrong" : false,
             courseDuration: CourseDuration === "",
             admissionFee: AdmissionFee <= 0 || AdmissionFee === "" ? true : AdmissionFee > (30/100 * CourseFee) ? "wrong" : false,
         };
@@ -131,7 +140,7 @@ export default function BatchForm(props) {
         Subjects.map((val)=> {
                     if(val.Subject.trim() === ""){
                         val.err = true 
-                    }else if(!/^[A-Z][A-Za-z_\s]{2,29}$/.test(val.Subject)){
+                    }else if(!/^[-a-zA-Z-()]+(\s+[-a-zA-Z-()]+)*$/.test(val.Subject)){
                     val.err = "false"
                     console.log("else");
                     }else{
@@ -161,7 +170,7 @@ export default function BatchForm(props) {
         }
     }, []);
 
-    const CourseDura = [{title:"3 months",}, {title:"6 months",}, {title:"1 year",}];
+    const CourseDura = [{title:"3 months",}, {title:"6 months",}, {title:"4 months",}];
 
     return (
         <div>
@@ -173,10 +182,10 @@ export default function BatchForm(props) {
                             <Typography sx={{ fontWeight: "bold" }}>Course Details</Typography>
                         </Grid>                        
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} error={Error.courseName} helperText={ Error.courseName == "wrong" ? "Name must begin with caps and have min 3 characters" : Error.courseName ? "Course Name is required" : ""} type='text' label="Course Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
+                            <TextField disabled={Disable} error={Error.courseName} helperText={ Error.courseName == "wrong" ? "Name start and end  space not allowed zero not allowed" : Error.courseName ? "Course Name is required" : ""} type='text' label="Course Name" value={CourseName} size='small' fullWidth onChange={(e)=>setCourseName(e.target.value)} />
                         </Grid>
                         <Grid item xs={10} md={3.5}>
-                            <TextField disabled={Disable} error={Error.courseFee} helperText={ Error.courseFee ? "Course Fee is required" : ""} type='tel' label="Course Fee" value={CourseFee} size='small' fullWidth onChange={(e)=>{
+                            <TextField disabled={Disable} error={Error.courseFee} helperText={ Error.courseFee == "wrong" ? "Course fees only numbers start zero and space not allowed" : Error.courseFee ? "Course Name is required" : ""} type='tel' label="Course Fee" value={CourseFee} size='small' fullWidth onChange={(e)=>{
                                                                                                                                                                                                                     if (e.target.value == "" || /^\d*\.?\d*$/.test(e.target.value)){
                                                                                                                                                                                                                         setCourseFee(e.target.value);
                                                                                                                                                                                                                         setAdmissionFee(30/100 * e.target.value)
@@ -187,9 +196,9 @@ export default function BatchForm(props) {
                                       renderInput={(params) => <TextField {...params} error={Error.courseDuration} helperText={ Error.courseDuration ? "Course Duration is required" :""} label="Course Duration" />} onChange={(e, val) =>{ 
                                         if (val != null){setCourseDuration(val.title)} else{setCourseDuration("")}}} />
                         </Grid>
-                        <Grid item xs={10} md={3.5}>
+                        {/* <Grid item xs={10} md={3.5}>
                             <TextField disabled={Disable} error={Error.admissionFee} helperText={  Error.admissionFee === "wrong" ? "Admission Fee must be 30% of CourseFee" : Error.admissionFee ? "Admission Fee required" : ""} type='tel' label="Admission Fee" value={AdmissionFee} size='small' fullWidth onChange={(e)=>{if (e.target.value === "" || /^\d*\.?\d*$/.test(e.target.value)){setAdmissionFee(e.target.value)}}} />
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={10}>
                             <Grid container>
                                 <Grid item xs={1}>
@@ -201,7 +210,7 @@ export default function BatchForm(props) {
                                             Subjects.map((val)=> {
                                                 if(val.Subject.trim() === ""){
                                                     val.err = true 
-                                                }else if(!/^[A-Z][A-Za-z_\s]{2,29}$/.test(val.Subject)){
+                                                }else if(!/^[-a-zA-Z-()]+(\s+[-a-zA-Z-()]+)*$/.test(val.Subject)){
                                                 val.err = "false"
                                                 console.log("else");
                                                 }else{
@@ -209,7 +218,7 @@ export default function BatchForm(props) {
                                                 }
                                             })
                                             setSubjects([...Subjects]);
-                                            let a = Subjects.map((val)=>  val.Subject.trim() === "" ? true : (!/^[A-Z][A-Za-z_\s]{2,29}$/.test(val.Subject) ? true :false)).every(val => val === false) ? setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "", "err": false }]) : "" 
+                                            let a = Subjects.map((val)=>  val.Subject.trim() === "" ? true : (!/^[-a-zA-Z-()]+(\s+[-a-zA-Z-()]+)*$/.test(val.Subject) ? true :false)).every(val => val === false) ? setSubjects([...Subjects, { "id": Subjects.length + 1, "Subject": "", "err": false }]) : "" 
                                         }
                                         }>
                                         Add
@@ -218,6 +227,9 @@ export default function BatchForm(props) {
                             </Grid>
                         </Grid>
                         {Subjects.map((val, ind) => {
+            const a={ val: val.Subject.trim() === "" ? true : !(NameReg.test(val.Subject)) ? "wrong" : false}
+            console.log(a.val);
+ 
                             const handleSubjectsChange = (e) =>{
                                 const newSubjects = [...Subjects];
                                 newSubjects[ind] = { ...val, Subject: e.target.value };
@@ -226,7 +238,7 @@ export default function BatchForm(props) {
                             return (
                                     <Grid item  key={ind} xs={12} md={3.5}>
                                         <Box sx={{display:"flex"}}>
-                                            <TextField disabled={Disable} error={val.err} helperText={ val.err == "false" ? "Subject name must have 3 letters and Begin with caps" : val.err ? "Subject is required" : ""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
+                                            <TextField disabled={Disable} error={val.err} helperText={a.val == "wrong" ? "Subject name must have  letters start and end space not allowed" : val.err ? "Subject is required and num not allowed" : ""} name='Subjects' value={val.Subject} onChange={handleSubjectsChange} fullWidth label="Subject Name" size='small' />
                                             <IconButton  disabled={Disable} disableElevation disableRipple variant='contained' sx={{display: (ind === 0 ) ? "none" : "block", p:0}} 
                                                                 onClick={() =>{
                                                                                 const updatedSubjects = [...Subjects];
@@ -240,10 +252,20 @@ export default function BatchForm(props) {
                             
                             )
                         })}
+
+<Grid item xs={10} md={11}>
+                            <TextField disabled={Disable}  inputProps={{
+            style: {
+              height:80,
+              padding: '0 14px',
+            },
+        }} error={Error.description} helperText={  Error.description === "wrong" ? "Description feild is required" : Error.description ? "Description field required" : ""} type='tel' label="Description" value={Description} size='small' fullWidth onChange={(e)=>{setDescription(e.target.value)}} />
+                        </Grid>
                     </Grid> 
+                    
                     <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
-                        {params.action == "read" ? "" : <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action == "update"? "Update" : "Create"}</Button>}
-                        <Link to='/courses'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
+                        {params.action == "read" ? "" : <Button disableElevation disableRipple style={{marginRight:"10px"}} color="primary" variant='contained' onClick={handleSubmit}>{params.action == "update"? "Update" : "Create"}</Button>}
+                        <Link to='/courses'><Button disableElevation disableRipple style={{ color:"#fff"}} color="secondary" variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                     </Box>
                 </Box>
             </ThemeProvider>

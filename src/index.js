@@ -19,7 +19,7 @@ const store = createStore(
   rootReducer
 )
 
-document.title = 'SM'
+document.title = 'Game Start'
 
 ReactDOM.render(
   <Provider store={store}>

@@ -2,7 +2,7 @@ import { Box, Button, Grid, IconButton, TextField, ThemeProvider, Typography, cr
 import {CheckBoxOutlined, CheckBoxOutlineBlankOutlined, VisibilityOutlined, VisibilityOffOutlined} from '@mui/icons-material';
 import React, {useContext, useEffect, useState} from 'react'
 import Swal from 'sweetalert2'
-import LoginImage from '../../assets/images/footer.png'
+import LoginImage from '../../assets/images/logo1.png'
 import { Redirect } from 'react-router-dom';
 
 import {context} from '../layout/Layout'
@@ -34,11 +34,11 @@ export default function LoginForm() {
     });
 
     const {login, setLogin} = useContext(context)
-    let user = "Admin";
-    let pass = "admin123";
+    let user = "user";
+    let pass = "user@999";
 
-    let admin = "Puvan";
-    let adminPass = "puvan123";
+    let admin = "vel";
+    let adminPass = "vel123";
 
     const handleSubmit = ()=>{
         const ValidateUser = {
@@ -51,12 +51,12 @@ export default function LoginForm() {
           if (UserName == user && Password == pass){
             localStorage.setItem("LoggedIN", true);
             setIsLoggedIn(true) 
-            localStorage.setItem("Name", "SK") 
+            localStorage.setItem("Name", "Uzumaki") 
           }
           else if (UserName == admin && Password == adminPass){
             localStorage.setItem("LoggedIN", true);
             setIsLoggedIn(true) 
-            localStorage.setItem("Name", "Puvan") 
+            localStorage.setItem("Name", "vel") 
           }
         }
     };
@@ -77,9 +77,12 @@ export default function LoginForm() {
     <div>
         <ThemeProvider theme={theme}>
             <Grid container justifyContent='space-evenly' sx={{backgroundColor:"#fafafb", py:6}}>
+            <Grid item md={6} sx={{display:"flex"}} justifyContent='center' xs={2}>
+                    <img src={LoginImage} width="80%" height="80%" alt='login Image'/>
+                </Grid>
                 <Grid item sx={{backgroundColor:"white", p:3, pt:10, borderRadius:"20px"}} xs={12} md={4.5} >
                     <Box>
-                        <Typography variant='h3' sx={{fontWeight:"bold", pb:2}}>Login</Typography>
+                        <Typography variant='h3' sx={{fontWeight:"bold", pb:2,textAlign:"center"}}>Login</Typography>
                         <Box sx={{pt:3}} >
                           <Typography sx={{py:1}}>Enter your Username</Typography>
                           <TextField placeholder='username' error={Error.username} helperText={Error.username == "wrong" ? "Enter valid username" : Error.username ? "User Name is required"  :""} value={UserName} onChange={(e)=> setUserName(e.target.value)} fullWidth type='text' size='small' />
@@ -91,9 +94,7 @@ export default function LoginForm() {
                         <Button fullWidth disableElevation disableRipple size='large' style={{marginRight:"10px", backgroundColor:"#4daaff", marginTop:"15px"}} variant='contained' onClick={handleSubmit}>Login</Button>
                     </Box>
                 </Grid>
-                <Grid item md={6} sx={{display:"flex"}} justifyContent='center' xs={2}>
-                    <img src={LoginImage} width="80%" height="100%" alt='login Image'/>
-                </Grid>
+                
             </Grid>
         </ThemeProvider>
     </div>

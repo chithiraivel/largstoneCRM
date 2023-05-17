@@ -12,6 +12,8 @@ import BatchForm from './Forms/BatchForm';
 import BatchesPage from '../pages/BatchesPage';
 import CoursesForm from './Forms/CoursesForm';
 import InvoicePrintForm from './Forms/InvoicePrintForm';
+import Customers from '../pages/Customers';
+
 import NotFound from '../pages/NotFound';
 
 const Routes = () => {
@@ -34,7 +36,8 @@ const Routes = () => {
             <Route exact path='/batches/form' component={BatchForm} />
             <Route exact path='/batches/forms/:action/:BatchID' component={BatchForm} />
             <Route exact path='/batches' component={BatchesPage} />
-            <Route exact path='*' component={NotFound} />
+            <Route exact path='/Customer' component={Customers} />
+            {/* <Route exact path='*' component={NotFound} /> */}
         </Switch>
     );
 };

@@ -14,14 +14,15 @@ export default function InvoiceTable() {
 
     const ListInvoice = ()=>{
         instance.get('invoice/list').then((res) => {
+            console.log(res.data);
             if(res.data.result.length<1){
-                Swal.fire({
-                    title:"Oops!",
-                    text:"There is no relevant Data",
-                    timer:2000,
-                    icon:"info",
-                    showConfirmButton:false
-                })
+                // Swal.fire({
+                //     title:"Oops!",
+                //     text:"There is no relevant Data",
+                //     timer:2000,
+                //     icon:"info",
+                //     showConfirmButton:false
+                // })
             }
             setRows([...res.data.result]);
             console.log(rows);
@@ -38,6 +39,7 @@ export default function InvoiceTable() {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
         }).then((result) => {
+            console.log(result);
             if(result.isConfirmed){
                 instance.post(`invoice/delete`, {InvoiceID: InvoiceID}).then((res)=>{
                     if (res.data.status === true){
@@ -164,8 +166,8 @@ export default function InvoiceTable() {
                 return (
                     <Stack direction="row" spacing={2}>
                         <Link to={`/invoices/generate/${params.row.InvoiceID}`}> <IconButton disableRipple sx={{p:0, color:"#FDB750"}}><PrintOutlined/></IconButton></Link>
-                        <Link to={`/invoices/forms/update/${params.row.InvoiceID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
-                        <Link to={`/invoices/forms/read/${params.row.InvoiceID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
+                        <Link to={`/invoices/forms/update/${params.row.InvoiceID}`}> <IconButton disableRipple sx={{p:0, color:"gray"}}><EditOutlined/></IconButton></Link>
+                        <Link to={`/invoices/forms/read/${params.row.InvoiceID}`}><IconButton  disableRipple sx={{p:0, color:"orange"}}><VisibilityOutlined/></IconButton></Link>
                         <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.InvoiceID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
                     </Stack>
                 )
@@ -185,7 +187,7 @@ export default function InvoiceTable() {
             <div style={{ background: "#FFF", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", padding: "20px", borderRadius: "20px" }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography sx={{ fontWeight: "bold", color:"black !Important"  }}>Invoice Table</Typography>
-                    <Link to='/invoices/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
+                    <Link to='/invoices/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Create Invoice</Button></Link>
                 </Box>
                 <StyledDataGrid columns={columns} rows={rows} id='InvoiceID' />
             </div>

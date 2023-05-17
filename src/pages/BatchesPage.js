@@ -150,8 +150,8 @@ export default function BatchesPage() {
             renderCell: (params) => {
                 return (
                     <Stack direction="row" spacing={2}>
-                        <Link to={`/batches/forms/update/${params.row.BatchID}`}> <IconButton disableRipple sx={{p:0, color:"#2EFF2E"}}><EditOutlined/></IconButton></Link>
-                        <Link to={`/batches/forms/read/${params.row.BatchID}`}><IconButton  disableRipple sx={{p:0, color:"#4daaff"}}><VisibilityOutlined/></IconButton></Link>
+                        <Link to={`/batches/forms/update/${params.row.BatchID}`}> <IconButton disableRipple sx={{p:0, color:"gray"}}><EditOutlined/></IconButton></Link>
+                        <Link to={`/batches/forms/read/${params.row.BatchID}`}><IconButton  disableRipple sx={{p:0, color:"orange"}}><VisibilityOutlined/></IconButton></Link>
                         <IconButton disableRipple onClick={()=>{handleRowDelete(params.row.BatchID)}} sx={{p:0, color:"red"}}><DeleteOutlineOutlined/></IconButton>
                     </Stack>
                 )
@@ -169,7 +169,7 @@ export default function BatchesPage() {
             <div style={{ background: "#FFF", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px", padding: "20px", borderRadius: "20px" }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography sx={{ fontWeight: "bold", color:"black !Important"  }}>Batches Table</Typography>
-                    <Link to='/batches/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Add New</Button></Link>
+                    <Link to='/batches/form' underline="none"> <Button style={{ backgroundColor: "#4daaff" }} disableRipple disableElevation variant='contained'>Create Batch</Button></Link>
                 </Box>
                 <StyledDataGrid columns={columns} rows={rows} id="BatchID" />
             </div>

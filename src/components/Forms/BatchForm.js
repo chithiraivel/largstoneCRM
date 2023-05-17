@@ -143,7 +143,7 @@ export default function BatchForm(props) {
     const handleSubmit = () => {
 
         const CreateBatch = {
-            BatchName: BatchName.trim() === "" ? true : !/^[A-Z][A-Za-z0-9_\s/-]{3,29}$/.test(BatchName) ? "wrong" : false,
+            BatchName: BatchName.trim() === "" ? true : !/^[-a-zA-Z-()]+(\s+[-a-zA-Z-()]+)*$/.test(BatchName) ? "wrong" : false,
             BatchStartDate: BatchStartDate === " " ? true :  BatchStartDate < moment(new Date).format("YYYY-MM-DD") ? "wrong" : false,
             BatchEndDate: BatchEndDate ===" " ? true : BatchEndDate <= BatchStartDate ? "wrong" : false,
             session: Session === "",
@@ -210,13 +210,13 @@ export default function BatchForm(props) {
                         <Typography sx={{ fontWeight: "bold" }}>Batch Details</Typography>
                     </Grid>                        
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchName} helperText={ Error.BatchName === "wrong" ? "Batch name should begin with caps and hav minimum 3 letters" : Error.BatchName ? "Batch Name is required" :""} type='text' label="Batch Name" value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
+                        <TextField disabled={Disabled} error={Error.BatchName} helperText={ Error.BatchName === "wrong" ? "Start and end space not allowed and zero not allowed" : Error.BatchName ? "Batch Name is required" :""} type='text' label="Batch Name" value={BatchName} size='small' fullWidth onChange={(e)=>setBatchName(e.target.value)} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <TextField disabled={Disabled} error={Error.BatchStartDate} helperText={ Error.BatchStartDate == "wrong" ? "batch start time cannot set to be past date" : Error.BatchStartDate ? "Batch Start Time is required" :""} type='date' label="Batch Starting Date" value={BatchStartDate} size='small' fullWidth onChange={handleBatchStartDate} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
-                        <TextField disabled={Disabled} error={Error.BatchEndDate} helperText={ Error.BatchEndDate == "wrong" ? "Batch End Date cannot be before or same as Start Date" : Error.BatchEndDate ? "Batch End Time is required" :""}  type='date' label='Batch Ending Date' value={BatchEndDate} size='small' fullWidth onChange={handleBatchEndDate} />
+                        <TextField disabled={Disabled} error={Error.BatchEndDate} helperText={ Error.BatchEndDate == "wrong" ? "Batch End Date cannot be before or same as Start Date and no set past date" : Error.BatchEndDate ? "Batch End Time is required" :""}  type='date' label='Batch Ending Date' value={BatchEndDate} size='small' fullWidth onChange={handleBatchEndDate} />
                     </Grid>
                     <Grid item xs={10} md={3.5}>
                         <Autocomplete disabled={Disabled} size='small' disablePortal options={CourseSession} onChange={handleSessionChange} value={{label :Session}} renderInput={(params) => <TextField {...params} error={Error.session} helperText={ Error.session ? "Session is required" : ""} label=" Select the Session" />} />
@@ -233,8 +233,8 @@ export default function BatchForm(props) {
                 </Grid> 
                 <Box sx={{ mt: 3, mr:8, display: "flex", justifyContent: "end" }}>
                     {params.action == "read" ? "" :
-                        <Button disableElevation disableRipple style={{marginRight:"10px", backgroundColor:"#4daaff"}} variant='contained' onClick={handleSubmit}>{params.action == "update" ? "Update" : "Create"}</Button>}
-                    <Link to='/batches'><Button disableElevation disableRipple style={{backgroundColor:"#ff726f", color:"#fff"}} variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
+                        <Button disableElevation disableRipple style={{marginRight:"10px", }} color="primary" variant='contained' onClick={handleSubmit}>{params.action == "update" ? "Update" : "Create"}</Button>}
+                    <Link to='/batches'><Button disableElevation disableRipple style={{ color:"#fff"}} color="secondary" variant='contained' >{params.action == "read" ? "Back" : "Cancel"}</Button></Link>
                 </Box>
             </Box>
         </ThemeProvider>
